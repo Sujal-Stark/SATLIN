@@ -15,6 +15,8 @@ add_executable(Satlin
         MasterWindow.cpp
         MasterWindow.h
         Constants.h
+        ClipBoardUI.cpp
+        ClipBoardUI.h
         # add more .cpp or .ui files here
 )
 
