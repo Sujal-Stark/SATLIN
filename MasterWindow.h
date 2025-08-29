@@ -2,8 +2,7 @@
 // Created by sujal-stark on 8/11/25.
 //
 
-#ifndef SATLIN_MASTER_WINDOW_H
-#define SATLIN_MASTER_WINDOW_H
+#pragma once
 
 #include <QMainWindow>
 #include <QVBoxLayout>
@@ -35,5 +34,3 @@ class MasterWindow final : public QMainWindow {
     // Layouts
     QVBoxLayout *masterLayout = new QVBoxLayout();
 };
-
-#endif //SATLIN_MASTER_WINDOW_H

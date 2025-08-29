@@ -39,7 +39,7 @@ void ClipBoardUI::constructUI() {
     this->audioSection->setLayout(this->audioSectionLayout);
     this->audioSectionLayout->setSpacing(0);
     this->audioSectionLayout->addWidget(
-        this->audioSectionScrollArea, Qt::AlignmentFlag::AlignCenter
+        Jthis->audioSectionScrollArea, Qt::AlignmentFlag::AlignCenter
     );
 }
 

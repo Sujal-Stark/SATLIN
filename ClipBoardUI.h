@@ -2,8 +2,7 @@
 // Created by sujal-stark on 8/12/25.
 //
 
-#ifndef SATLIN_CLIPBOARDUI_H
-#define SATLIN_CLIPBOARDUI_H
+#pragma once
 
 #include <QWidget>
 #include <QVBoxLayout>
@@ -45,6 +44,3 @@ class ClipBoardUI final : public QWidget{
     QWidget *videoSection = new QWidget();
     QWidget *audioSection = new QWidget();
 };
-
-
-#endif //SATLIN_CLIPBOARDUI_H
