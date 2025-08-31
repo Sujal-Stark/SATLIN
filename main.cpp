@@ -8,5 +8,5 @@ int main(int argc, char *argv[]) {
     auto *masterWindow = new MasterWindow();
     masterWindow->show();
 
-    app.exec();
+    QApplication::exec();
 }

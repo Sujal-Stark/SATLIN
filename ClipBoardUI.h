@@ -4,30 +4,57 @@
 
 #pragma once
 
-#include <QWidget>
 #include <QVBoxLayout>
 #include <QTabWidget>
 #include <QScrollArea>
+#include <string>
+#include <QApplication>
+#include <queue>
+#include <QLabel>
+#include <QFrame>
 
+
+using namespace std;
 
 class ClipBoardUI final : public QWidget{
     private:
                                 // Method Declaration
-    void constructUI();
+    void constructUI() const;
+    string getCurrentCopiedText() const;
+    QLabel* createTextLabel() const;
+    void addNewTextToQueue();
+    void showTextOnScreen();
+    void widgetBehaviourSelection() const;
 
     public:
     explicit ClipBoardUI();
+    QClipboard *clipBoard;
+    queue<QLabel *> textQueue;
+
                                 // Method declaration
 
 
                                 // Attribute Declaration
+    // Frames
+    QFrame *textHolderFrame = new QFrame();
+    QFrame *imageHolderFrame = new QFrame();
+    QFrame *audioHolderFrame = new QFrame();
+    QFrame *videoHolderFrame = new QFrame();
+
     // Layout
     QVBoxLayout *masterLayout = new QVBoxLayout();
 
     QVBoxLayout *textSectionLayout = new QVBoxLayout();
+    QVBoxLayout *textScrollAreaInnerLayout = new QVBoxLayout();
+
     QVBoxLayout *imageSectionLayout = new QVBoxLayout();
+    QVBoxLayout *imageScrollAreaInnerLayout = new QVBoxLayout();
+
     QVBoxLayout *videoSectionLayout = new QVBoxLayout();
+    QVBoxLayout *videoScrollAreaInnerLayout = new QVBoxLayout();
+
     QVBoxLayout *audioSectionLayout = new QVBoxLayout();
+    QVBoxLayout *audioScrollAreaInnerLayout = new QVBoxLayout();
 
     // ScrollArea
     QScrollArea *textSectionScrollArea = new QScrollArea();
