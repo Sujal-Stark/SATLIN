@@ -12,16 +12,22 @@
 #include <queue>
 #include <QLabel>
 #include <QFrame>
+#include <QHashFunctions>
+
+// Custom Import
+#include "Constants.h"
 
 
 using namespace std;
 
 class ClipBoardUI final : public QWidget{
     private:
+    size_t currentTextHash = qHash(Constants::APPLICATION_NAME); //check's newly arrived string is same or not
+
                                 // Method Declaration
     void constructUI() const;
     string getCurrentCopiedText() const;
-    QLabel* createTextLabel() const;
+    QLabel* createTextLabel();
     void addNewTextToQueue();
     void showTextOnScreen();
     void widgetBehaviourSelection() const;

@@ -2,8 +2,10 @@
 // Created by sujal-stark on 8/12/25.
 //
 
+#include <iostream>
 #include <QMimeData>
 #include <QClipboard>
+#include <QHashFunctions>
 
 // custom import
 #include "Constants.h"
@@ -78,7 +80,7 @@ void ClipBoardUI::widgetBehaviourSelection() const {
 }
 
 string ClipBoardUI::getCurrentCopiedText() const{
-    const QMimeData *mimeData = this->clipBoard->mimeData(QClipboard::Selection);
+    const QMimeData *mimeData = this->clipBoard->mimeData(QClipboard::Clipboard);
 
     if (mimeData->hasText()) {
         return mimeData->text().toStdString();
@@ -88,10 +90,13 @@ string ClipBoardUI::getCurrentCopiedText() const{
     return "";
 }
 
-QLabel* ClipBoardUI::createTextLabel() const {
-    auto currText = ClipBoardUI::getCurrentCopiedText();
+QLabel* ClipBoardUI::createTextLabel(){
+    auto currText = getCurrentCopiedText();
 
-    if (!currText.empty()) {
+    if (!currText.empty() && currentTextHash != qHash(currText)) {
+        std::cout<<"I am in the method"<<endl;
+        std::cout <<currentTextHash<<" "<<qHash(currText);
+        currentTextHash = qHash(currText);
         auto *label = new QLabel(currText.data());
         label->setAlignment(Qt::AlignmentFlag::AlignCenter);
         label->setFixedHeight(40);
