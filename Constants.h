@@ -24,4 +24,7 @@ namespace  Constants {
 
     inline constexpr int MIN_WINDOW_WIDTH = 400;
     inline constexpr int MIN_WINDOW_HEIGHT = 300;
+
+    inline constexpr int TEXT_CARD_WIDTH = 520; // width of text copied Item
+    inline constexpr int WIDGET_MARGIN = 10;
 };

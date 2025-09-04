@@ -74,9 +74,20 @@ void ClipBoardUI::widgetBehaviourSelection() const {
 
     // Scroll Area
     this->textSectionScrollArea->setWidgetResizable(true);
+    this->textSectionScrollArea->setStyleSheet(
+        "QScrollBar:vertical {width: 0px;}"
+        "QScrollBar:horizontal{height: 0px;}"
+    );
     this->imageSectionScrollArea->setWidgetResizable(true);
     this->videoSectionScrollArea->setWidgetResizable(true);
     this->audioSectionScrollArea->setWidgetResizable(true);
+
+    // layout
+    this->textScrollAreaInnerLayout->setAlignment(Qt::AlignmentFlag::AlignTop);
+    this->textScrollAreaInnerLayout->setContentsMargins(
+        Constants::WIDGET_MARGIN, Constants::WIDGET_MARGIN, Constants::WIDGET_MARGIN,
+    Constants::WIDGET_MARGIN
+    );
 }
 
 string ClipBoardUI::getCurrentCopiedText() const{
@@ -94,12 +105,15 @@ QLabel* ClipBoardUI::createTextLabel(){
     auto currText = getCurrentCopiedText();
 
     if (!currText.empty() && currentTextHash != qHash(currText)) {
-        std::cout<<"I am in the method"<<endl;
-        std::cout <<currentTextHash<<" "<<qHash(currText);
         currentTextHash = qHash(currText);
         auto *label = new QLabel(currText.data());
-        label->setAlignment(Qt::AlignmentFlag::AlignCenter);
-        label->setFixedHeight(40);
+        label->setWordWrap(true);
+        label->setAlignment(Qt::AlignmentFlag::AlignLeft);
+        label->setFixedWidth(Constants::TEXT_CARD_WIDTH);
+        label->setStyleSheet(
+            "border: 1px solid white;"
+            "border-radius: 5px;"
+        );
         return label;
     }
 
