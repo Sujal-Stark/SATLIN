@@ -10,6 +10,7 @@
 // custom import
 #include "Constants.h"
 #include "ClipBoardUI.h"
+#include "ItemWidget.h"
 
 
 using namespace std;
@@ -101,12 +102,12 @@ string ClipBoardUI::getCurrentCopiedText() const{
     return "";
 }
 
-QLabel* ClipBoardUI::createTextLabel(){
+ItemWidget* ClipBoardUI::createTextLabel(){
     auto currText = getCurrentCopiedText();
 
     if (!currText.empty() && currentTextHash != qHash(currText)) {
         currentTextHash = qHash(currText);
-        auto *label = new QLabel(currText.data());
+        auto *label = new ItemWidget(currText.data());
         label->setWordWrap(true);
         label->setAlignment(Qt::AlignmentFlag::AlignLeft);
         label->setFixedWidth(Constants::TEXT_CARD_WIDTH);

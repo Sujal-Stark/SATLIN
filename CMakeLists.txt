@@ -17,6 +17,8 @@ add_executable(Satlin
         Constants.h
         ClipBoardUI.cpp
         ClipBoardUI.h
+        ItemWidget.cpp
+        ItemWidget.h
         # add more .cpp or .ui files here
 )
 

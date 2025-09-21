@@ -16,6 +16,7 @@
 
 // Custom Import
 #include "Constants.h"
+#include "ItemWidget.h"
 
 
 using namespace std;
@@ -27,7 +28,7 @@ class ClipBoardUI final : public QWidget{
                                 // Method Declaration
     void constructUI() const;
     string getCurrentCopiedText() const;
-    QLabel* createTextLabel();
+    ItemWidget* createTextLabel();
     void addNewTextToQueue();
     void showTextOnScreen();
     void widgetBehaviourSelection() const;
@@ -35,7 +36,7 @@ class ClipBoardUI final : public QWidget{
     public:
     explicit ClipBoardUI();
     QClipboard *clipBoard;
-    queue<QLabel *> textQueue;
+    queue<ItemWidget *> textQueue;
 
                                 // Method declaration
 
