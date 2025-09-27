@@ -9,6 +9,7 @@
 #include <QWidget>
 #include <QTabWidget>
 #include "ClipBoardUI.h"
+#include "EmojiBoardUI.h"
 
 class MasterWindow final : public QMainWindow {
     Q_OBJECT
@@ -26,7 +27,7 @@ class MasterWindow final : public QMainWindow {
     QWidget *mainWidget = new QWidget();
 
     ClipBoardUI *clipBoard = new ClipBoardUI(); // handles Clip board UI
-    QWidget *emojiBoard = new QWidget(); // handles emoji Section
+    QWidget *emojiBoard = new EmojiBoardUI(); // handles emoji Section
 
     // Tab Widgets
     QTabWidget *outerTabWidget = new QTabWidget(); // holds clip Board and Emoji Section

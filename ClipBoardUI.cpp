@@ -28,7 +28,7 @@ void ClipBoardUI::constructUI() const {
     this->masterLayout->addWidget(this->clipTabWidget);
 
     // tab insertion
-    this->clipTabWidget->addTab(this->textSection, Constants::TEXT_SECTION);
+    this->clipTabWidget->addTab(this->textSection, Constants::TEXT_SECTION); // Text
     this->textSection->setLayout(this->textSectionLayout);
     this->textSectionLayout->setSpacing(0);
     this->textSectionLayout->addWidget(
@@ -37,7 +37,7 @@ void ClipBoardUI::constructUI() const {
     this->textSectionScrollArea->setWidget(this->textHolderFrame);
     this->textHolderFrame->setLayout(this->textScrollAreaInnerLayout);
 
-    this->clipTabWidget->addTab(this->imageSection, Constants::IMAGE_SECTION);
+    this->clipTabWidget->addTab(this->imageSection, Constants::IMAGE_SECTION); // Image
     this->imageSection->setLayout(this->imageSectionLayout);
     this->imageSectionLayout->setSpacing(0);
     this->imageSectionLayout->addWidget(

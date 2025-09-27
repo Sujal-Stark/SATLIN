@@ -27,4 +27,10 @@ namespace  Constants {
 
     inline constexpr int TEXT_CARD_WIDTH = 520; // width of text copied Item
     inline constexpr int WIDGET_MARGIN = 10;
+
+    inline const QString RECENT = "Recent";
+    inline const QString REACTION = "Smileys & Reactions";
+    inline const QString ANIMALS = "Animals";
+    inline const QString FOODS = "Foods & Drinks";
+    inline const QString PLACES = "Places & tourism";
 };

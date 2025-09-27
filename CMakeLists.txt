@@ -19,6 +19,10 @@ add_executable(Satlin
         ClipBoardUI.h
         ItemWidget.cpp
         ItemWidget.h
+        EmojiGenerator.cpp
+        EmojiGenerator.h
+        EmojiboardUI.cpp
+        EmojiBoardUI.h
         # add more .cpp or .ui files here
 )
 
