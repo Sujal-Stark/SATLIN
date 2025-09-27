@@ -19,6 +19,7 @@ signals:
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 public:
     explicit ItemWidget(const QString &text, QWidget *parent = nullptr): QLabel(text, parent){};
