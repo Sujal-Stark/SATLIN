@@ -10,9 +10,9 @@
 #include <string>
 #include <QApplication>
 #include <queue>
-#include <QLabel>
 #include <QFrame>
 #include <QHashFunctions>
+#include <set>
 
 // Custom Import
 #include "Constants.h"
@@ -23,15 +23,17 @@ using namespace std;
 
 class ClipBoardUI final : public QWidget{
     private:
-    size_t currentTextHash = qHash(Constants::APPLICATION_NAME); //check's newly arrived string is same or not
+    set<size_t> currentTextHash; //check's newly arrived string already present or not
 
                                 // Method Declaration
     void constructUI() const;
-    string getCurrentCopiedText() const;
+    [[nodiscard]] string getCurrentCopiedText() const;
     ItemWidget* createTextLabel();
     void addNewTextToQueue();
     void showTextOnScreen();
     void widgetBehaviourSelection() const;
+    void itemWidgetClickedAction(const string &content) const;
+    void setActions();
 
     public:
     explicit ClipBoardUI();

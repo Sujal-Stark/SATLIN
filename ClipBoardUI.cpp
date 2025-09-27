@@ -12,7 +12,6 @@
 #include "ClipBoardUI.h"
 #include "ItemWidget.h"
 
-
 using namespace std;
 
 ClipBoardUI::ClipBoardUI() {
@@ -91,6 +90,10 @@ void ClipBoardUI::widgetBehaviourSelection() const {
     );
 }
 
+void ClipBoardUI::setActions() {
+
+}
+
 string ClipBoardUI::getCurrentCopiedText() const{
     const QMimeData *mimeData = this->clipBoard->mimeData(QClipboard::Clipboard);
 
@@ -105,8 +108,8 @@ string ClipBoardUI::getCurrentCopiedText() const{
 ItemWidget* ClipBoardUI::createTextLabel(){
     auto currText = getCurrentCopiedText();
 
-    if (!currText.empty() && currentTextHash != qHash(currText)) {
-        currentTextHash = qHash(currText);
+    if (!currText.empty() && !currentTextHash.contains(qHash(currText))) {
+        currentTextHash.insert(qHash(currText));
         auto *label = new ItemWidget(currText.data());
         label->setWordWrap(true);
         label->setAlignment(Qt::AlignmentFlag::AlignLeft);
@@ -114,6 +117,11 @@ ItemWidget* ClipBoardUI::createTextLabel(){
         label->setStyleSheet(
             "border: 1px solid white;"
             "border-radius: 5px;"
+            "background-color: rgba(145, 191, 250, 0);"
+        );
+        connect(
+            label, &ItemWidget::textItemClickedSignal,
+        this, &ClipBoardUI::itemWidgetClickedAction
         );
         return label;
     }
@@ -135,3 +143,8 @@ void ClipBoardUI::showTextOnScreen() {
         this->textScrollAreaInnerLayout->insertWidget(0,this->textQueue.back());
     }
 }
+
+void ClipBoardUI::itemWidgetClickedAction(const string &content) const {
+    this->clipBoard->setText(content.data());
+}
+
