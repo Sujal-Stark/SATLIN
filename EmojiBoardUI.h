@@ -9,6 +9,8 @@
 #include <QTabWidget>
 #include <QVBoxLayout>
 
+#include "ClipBoardUI.h"
+
 class EmojiBoardUI final : public QWidget{
 public:
                                     // Method Declaration
@@ -37,12 +39,24 @@ private:
     QVBoxLayout *placesSectionLayout = new QVBoxLayout();
     QGridLayout *placesSectionGrid = new QGridLayout();
 
+    QVBoxLayout *activitySectionLayout = new QVBoxLayout();
+    QGridLayout *activitySectionGrid = new QGridLayout();
+
+    QVBoxLayout *objectSectionLayout = new QVBoxLayout();
+    QGridLayout *objectSectionGrid = new QGridLayout();
+
+    QVBoxLayout *symbolSectionLayout = new QVBoxLayout();
+    QGridLayout *symbolSectionGrid = new QGridLayout();
+
     // ScrollArea
     QScrollArea *recentSectionScrollArea = new QScrollArea();
     QScrollArea *reactionSectionScrollArea = new QScrollArea();
     QScrollArea *animalSectionScrollArea = new QScrollArea();
     QScrollArea *foodSectionScrollArea = new QScrollArea();
     QScrollArea *placesSectionScrollArea = new QScrollArea();
+    QScrollArea *activitySectionScrollArea = new QScrollArea();
+    QScrollArea *objectSectionScrollArea = new QScrollArea();
+    QScrollArea *symbolSectionScrollArea = new QScrollArea();
 
     // Frames
     QFrame *recentSectionFrames = new QFrame();
@@ -50,7 +64,9 @@ private:
     QFrame *animalSectionFrames = new QFrame();
     QFrame *foodSectionFrames = new QFrame();
     QFrame *placesSectionFrames = new QFrame();
-
+    QFrame *activitySectionFrames = new QFrame();
+    QFrame *objectSectionFrames = new QFrame();
+    QFrame *symbolSectionFrames = new QFrame();
 
     // Main Tab
     QTabWidget *emojiPanel = new QTabWidget();
@@ -61,7 +77,7 @@ private:
     QWidget *emojiAnimalSection = new QWidget();
     QWidget *emojiFoodSection = new QWidget();
     QWidget *emojiPlaceSection = new QWidget();
-    // QWidget *emojiActivitySection = new QWidget();
-    // QWidget *emojiObjectsSection = new QWidget();
-    // QWidget *emojiSymbolSection = new QWidget();
+    QWidget *emojiActivitySection = new QWidget();
+    QWidget *emojiObjectsSection = new QWidget();
+    QWidget *emojiSymbolSection = new QWidget();
 };

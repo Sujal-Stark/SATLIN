@@ -33,4 +33,7 @@ namespace  Constants {
     inline const QString ANIMALS = "Animals";
     inline const QString FOODS = "Foods & Drinks";
     inline const QString PLACES = "Places & tourism";
+    inline const QString ACTIVITY = "Activity";
+    inline const QString OBJECTS_HEADER = "Objects";
+    inline const QString SYMBOLS = "Symbols";
 };

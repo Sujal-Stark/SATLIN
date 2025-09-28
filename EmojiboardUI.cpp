@@ -58,4 +58,31 @@ void EmojiBoardUI::constructUI() const {
         this->placesSectionScrollArea, Qt::AlignmentFlag::AlignCenter);
     this->placesSectionScrollArea->setWidget(this->placesSectionFrames);
     this->placesSectionFrames->setLayout(this->placesSectionGrid);
+
+    // Activity
+    this->emojiPanel->addTab(this->emojiActivitySection, Constants::ACTIVITY);
+    this->emojiActivitySection->setLayout(this->activitySectionLayout);
+    this->activitySectionLayout->setSpacing(0);
+    this->activitySectionLayout->addWidget(
+        this->activitySectionScrollArea, Qt::AlignmentFlag::AlignCenter);
+    this->activitySectionScrollArea->setWidget(this->activitySectionFrames);
+    this->activitySectionFrames->setLayout(this->activitySectionGrid);
+
+    // Objects
+    this->emojiPanel->addTab(this->emojiObjectsSection, Constants::OBJECTS_HEADER);
+    this->emojiObjectsSection->setLayout(this->objectSectionLayout);
+    this->objectSectionLayout->setSpacing(0);
+    this->objectSectionLayout->addWidget(
+        this->objectSectionScrollArea, Qt::AlignmentFlag::AlignCenter);
+    this->objectSectionScrollArea->setWidget(this->objectSectionFrames);
+    this->objectSectionFrames->setLayout(this->objectSectionGrid);
+
+    // Symbols
+    this->emojiPanel->addTab(this->emojiSymbolSection, Constants::SYMBOLS);
+    this->emojiSymbolSection->setLayout(this->symbolSectionLayout);
+    this->symbolSectionLayout->setSpacing(0);
+    this->symbolSectionLayout->addWidget(
+        this->symbolSectionScrollArea, Qt::AlignmentFlag::AlignCenter);
+    this->symbolSectionScrollArea->setWidget(this->symbolSectionFrames);
+    this->symbolSectionFrames->setLayout(this->symbolSectionGrid);
 }
