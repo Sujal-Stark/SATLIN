@@ -5,6 +5,7 @@
 #pragma once
 
 #include <QString>
+#include <string>
 
 using namespace std;
 
@@ -36,4 +37,12 @@ namespace  Constants {
     inline const QString ACTIVITY = "Activity";
     inline const QString OBJECTS_HEADER = "Objects";
     inline const QString SYMBOLS = "Symbols";
+
+    inline constexpr int EMOJI_CELL_WIDTH = 82;
+    inline constexpr int EMOJI_CELL_HEIGHT = 82;
+
+
+    // Fonts
+    inline const string EMOJI_FONT = "Noto Color Emoji";
+    inline constexpr int EMOJI_FONT_SIZE = 30;
 };

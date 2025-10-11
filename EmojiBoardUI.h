@@ -8,8 +8,10 @@
 #include <QWidget>
 #include <QTabWidget>
 #include <QVBoxLayout>
+#include <QTableWidget>
 
 #include "ClipBoardUI.h"
+#include "EmojiGenerator.h"
 
 class EmojiBoardUI final : public QWidget{
 public:
@@ -19,38 +21,42 @@ public:
 private:
                                     // Method Declaration
     void constructUI() const;
+    void signalConnector() const;
+    void propertyHandler() const;
+    void emojiReceivedAction(const QSharedPointer<std::map<int, std::vector<QString>>>& emojiWidgets);
 
                                     // Attribute Declaration
+    // Threads
+    EmojiGenerator eGenerator;
     // Layout
     QVBoxLayout *masterLayout = new QVBoxLayout();
 
     QVBoxLayout *recentSectionLayout = new QVBoxLayout();
-    QGridLayout *recentSectionGrid = new QGridLayout();
+    QTableWidget *recentSectionGrid = new QTableWidget();
 
     QVBoxLayout *reactionSectionLayout = new QVBoxLayout();
-    QGridLayout *reactionSectionGrid = new QGridLayout();
+    QTableWidget *reactionSectionGrid = new QTableWidget();
 
     QVBoxLayout *animalSectionLayout = new QVBoxLayout();
-    QGridLayout *animalSectionGrid = new QGridLayout();
+    QTableWidget *animalSectionGrid = new QTableWidget();
 
     QVBoxLayout *foodSectionLayout = new QVBoxLayout();
-    QGridLayout *foodSectionGrid = new QGridLayout();
+    QTableWidget *foodSectionGrid = new QTableWidget();
 
     QVBoxLayout *placesSectionLayout = new QVBoxLayout();
-    QGridLayout *placesSectionGrid = new QGridLayout();
+    QTableWidget *placesSectionGrid = new QTableWidget();
 
     QVBoxLayout *activitySectionLayout = new QVBoxLayout();
-    QGridLayout *activitySectionGrid = new QGridLayout();
+    QTableWidget *activitySectionGrid = new QTableWidget();
 
     QVBoxLayout *objectSectionLayout = new QVBoxLayout();
-    QGridLayout *objectSectionGrid = new QGridLayout();
+    QTableWidget *objectSectionGrid = new QTableWidget();
 
     QVBoxLayout *symbolSectionLayout = new QVBoxLayout();
-    QGridLayout *symbolSectionGrid = new QGridLayout();
+    QTableWidget *symbolSectionGrid = new QTableWidget();
 
     // ScrollArea
     QScrollArea *recentSectionScrollArea = new QScrollArea();
-    QScrollArea *reactionSectionScrollArea = new QScrollArea();
     QScrollArea *animalSectionScrollArea = new QScrollArea();
     QScrollArea *foodSectionScrollArea = new QScrollArea();
     QScrollArea *placesSectionScrollArea = new QScrollArea();
@@ -60,7 +66,6 @@ private:
 
     // Frames
     QFrame *recentSectionFrames = new QFrame();
-    QFrame *reactionSectionFrames = new QFrame();
     QFrame *animalSectionFrames = new QFrame();
     QFrame *foodSectionFrames = new QFrame();
     QFrame *placesSectionFrames = new QFrame();
@@ -72,12 +77,12 @@ private:
     QTabWidget *emojiPanel = new QTabWidget();
 
     // Emoji tabs
-    QWidget *emojiRecentSection = new QWidget();
-    QWidget *emojiReactionSection = new QWidget();
-    QWidget *emojiAnimalSection = new QWidget();
-    QWidget *emojiFoodSection = new QWidget();
-    QWidget *emojiPlaceSection = new QWidget();
-    QWidget *emojiActivitySection = new QWidget();
-    QWidget *emojiObjectsSection = new QWidget();
-    QWidget *emojiSymbolSection = new QWidget();
+    QWidget *emojiRecentSection = new QWidget(); // 0
+    QWidget *emojiReactionSection = new QWidget(); // 1
+    QWidget *emojiAnimalSection = new QWidget(); // 2
+    QWidget *emojiFoodSection = new QWidget(); // 3
+    QWidget *emojiPlaceSection = new QWidget(); // 4
+    QWidget *emojiActivitySection = new QWidget(); // 5
+    QWidget *emojiObjectsSection = new QWidget(); // 6
+    QWidget *emojiSymbolSection = new QWidget(); // 7
 };
