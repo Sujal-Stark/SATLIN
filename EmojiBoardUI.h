@@ -9,9 +9,11 @@
 #include <QTabWidget>
 #include <QVBoxLayout>
 #include <QTableWidget>
+#include <QString>
 
 #include "ClipBoardUI.h"
 #include "EmojiGenerator.h"
+#include "Constants.h"
 
 class EmojiBoardUI final : public QWidget{
 public:
@@ -20,14 +22,38 @@ public:
 
 private:
                                     // Method Declaration
+    void tabWidgetChangedAction(const int tabIndex);
     void constructUI() const;
     void signalConnector() const;
-    void propertyHandler() const;
-    void emojiReceivedAction(const QSharedPointer<std::map<int, std::vector<QString>>>& emojiWidgets);
+    void propertyHandler();
+    void emojiReceivedAction(const int count, int tab, const QSharedPointer<QString> &emojiLabel);
 
                                     // Attribute Declaration
+    // resource
+    const vector<vector<vector<int>>> emojiCodes = {
+        {
+
+        },// 0
+        {
+            {128512, 128591}, {129296, 129306}, {129325, 129329}
+        }, // 1
+        {
+            {128000, 128127}, {129409, 129423}
+        }, // 2
+        {
+        }, // 3
+        {
+        }, // 4
+        {
+        }, // 5
+        {
+        }, // 6
+        {
+        }, // 7
+    };
     // Threads
     EmojiGenerator eGenerator;
+
     // Layout
     QVBoxLayout *masterLayout = new QVBoxLayout();
 
@@ -85,4 +111,7 @@ private:
     QWidget *emojiActivitySection = new QWidget(); // 5
     QWidget *emojiObjectsSection = new QWidget(); // 6
     QWidget *emojiSymbolSection = new QWidget(); // 7
+
+    // fonts
+    QFont emojiFont;
 };

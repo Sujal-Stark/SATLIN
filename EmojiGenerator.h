@@ -13,13 +13,21 @@ class EmojiGenerator final : public QThread{
     Q_OBJECT
     signals:
     void emojiGeneratedSignal(
-        QSharedPointer<std::map<int, std::vector<QString>>> emojiWidgets
+        const int count, int tab, const QSharedPointer<QString>& emojiLabel
     ); // sends emoji back
 
 private:
-    static vector<QString> generateSmileyEmojis() ; // 1
+                            // Properties
+    bool emojiPanelPopulationFlag[8] = {false}; // to avoid repopulation
+    int emojiTab = -1; // store the current emoji tab that is open
+    vector<vector<int>> emojiCodes; // accepts the emoji code from EmojiBoardUI
+
+    void generateSmileyEmojis(const int tabIndex, const vector<vector<int>> &emojiCodeList) ;
     static QString stringToEmoji(const QString &emojiCode);
 
 protected:
     void run() override;
+
+public:
+    void acceptEmojiGeneratingResources(int tabIndex, const vector<vector<int>> &emojiCodeList);
 };

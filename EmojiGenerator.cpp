@@ -5,28 +5,32 @@
 #include "EmojiGenerator.h"
 #include "QDebug"
 #include "sstream"
-#include "map"
 
 void EmojiGenerator::run() {
-    const vector<QString> smileys = generateSmileyEmojis();
-    const auto finalData = QSharedPointer<
-        std::map<int, std::vector<QString>>
-    >::create();
-    (*finalData)[1] = smileys;
-    emit this->emojiGeneratedSignal(finalData);
+    if (!this->emojiPanelPopulationFlag[this->emojiTab]) {
+        this->emojiPanelPopulationFlag[this->emojiTab] = true; // makes sure copy shall not occur
+        generateSmileyEmojis(this->emojiTab, this->emojiCodes);
+    }
 }
 
-vector<QString> EmojiGenerator::generateSmileyEmojis() {
-    // 128512 is the starting emoji && 128591 is the ending emoji
-    constexpr int start = 128512, finish = 128591;
-    vector<QString> smileys(finish - start + 1); // store the output
-    for (int i = start; i <= finish; i++) {
-        stringstream ss;
-        ss<<hex<<uppercase<<i; // hex code creation
-        QString emoCode = QString::fromUtf8(ss.str());
-        smileys[i - start] = stringToEmoji(emoCode);
+void EmojiGenerator::generateSmileyEmojis(const int tabIndex, const vector<vector<int>> &emojiCodeList) {
+    QFont emojiFont(Constants::EMOJI_FONT.data());
+    emojiFont.setPointSize(Constants::EMOJI_FONT_SIZE);
+    int cnt = 0;
+    for (vector<int> currList : emojiCodeList) {
+        const int start = currList[0], finish = currList[1];
+        for (int i = start; i <= finish; i++) {
+            stringstream ss;
+            ss<<hex<<uppercase<<i; // hex code creation
+            QString emoCode = QString::fromUtf8(ss.str());
+            emit this->emojiGeneratedSignal(
+            cnt, tabIndex, QSharedPointer<QString>::create(
+                    stringToEmoji(emoCode)
+                )
+            );
+            cnt++;
+        }
     }
-    return smileys;
 }
 
 QString EmojiGenerator::stringToEmoji(const QString &emojiCode) {
@@ -35,3 +39,11 @@ QString EmojiGenerator::stringToEmoji(const QString &emojiCode) {
     if (ok)return QString::fromUcs4(&finalCode, 1);
     return QString::fromStdString("");
 }
+
+void EmojiGenerator::acceptEmojiGeneratingResources(
+    const int tabIndex, const vector<vector<int> > &emojiCodeList
+) {
+    this->emojiTab = tabIndex;
+    this->emojiCodes = emojiCodeList;
+}
+

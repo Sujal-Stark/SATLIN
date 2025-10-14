@@ -13,10 +13,16 @@ EmojiBoardUI::EmojiBoardUI() {
     this->propertyHandler();
     this->constructUI();
     this->signalConnector();
-    this->eGenerator.start();
 }
 
-void EmojiBoardUI::propertyHandler() const {
+void EmojiBoardUI::propertyHandler() {
+    this->emojiFont = QFont(QString::fromStdString(Constants::EMOJI_FONT));
+    emojiFont.setPointSize(Constants::EMOJI_FONT_SIZE);
+
+    // reactionSectionGrid
+    this->reactionSectionGrid->setColumnCount(6);
+    this->reactionSectionGrid->setRowCount(20);
+
     this->reactionSectionGrid->setShowGrid(false);
     this->reactionSectionGrid->horizontalHeader()->setVisible(false);
     this->reactionSectionGrid->verticalHeader()->setVisible(false);
@@ -27,6 +33,21 @@ void EmojiBoardUI::propertyHandler() const {
     this->reactionSectionGrid->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     this->reactionSectionGrid->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->reactionSectionGrid->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+
+    // animalSectionGrid
+    this->animalSectionGrid->setColumnCount(6);
+    this->animalSectionGrid->setRowCount(20);
+
+    this->animalSectionGrid->setShowGrid(false);
+    this->animalSectionGrid->horizontalHeader()->setVisible(false);
+    this->animalSectionGrid->verticalHeader()->setVisible(false);
+
+    this->animalSectionGrid->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    this->animalSectionGrid->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
+    this->animalSectionGrid->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    this->animalSectionGrid->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    this->animalSectionGrid->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 }
 
 void EmojiBoardUI::constructUI() const {
@@ -92,30 +113,62 @@ void EmojiBoardUI::constructUI() const {
 
 void EmojiBoardUI::signalConnector() const {
     connect(
-    &this->eGenerator, &EmojiGenerator::emojiGeneratedSignal, this, &EmojiBoardUI::emojiReceivedAction
+    &this->eGenerator, &EmojiGenerator::emojiGeneratedSignal, this, &EmojiBoardUI::emojiReceivedAction,
+    Qt::QueuedConnection
         );
+    connect(
+        this->emojiPanel, &QTabWidget::currentChanged, this, &EmojiBoardUI::tabWidgetChangedAction
+    );
 }
 
 
-void EmojiBoardUI::emojiReceivedAction(const QSharedPointer<std::map<int, std::vector<QString>>>& emojiWidgets) {
-    int j = 0;
-    QFont emojiFont(Constants::EMOJI_FONT.data());
-    emojiFont.setPointSize(Constants::EMOJI_FONT_SIZE);
-    auto const &reactions = (*emojiWidgets)[1];
-    this->reactionSectionGrid->setColumnCount(6);
-    this->reactionSectionGrid->setRowCount((reactions.size()/6) + 1);
-    for (int i = 0; i < reactions.size(); i++) {
-        this->reactionSectionGrid->setColumnWidth(j, Constants::EMOJI_CELL_WIDTH);
-        this->reactionSectionGrid->setRowHeight(i%6, Constants::EMOJI_CELL_HEIGHT);
-        auto *label = new QLabel(this);
-        label->setFont(emojiFont);
-        label->setText(reactions[i]);
-        label->setFixedSize(80, 80);
-        label->setAlignment(Qt::AlignmentFlag::AlignCenter);
-        this->reactionSectionGrid->setCellWidget(j, (i%6), label);
-        if ((i + 1) % 6 == 0)j++;
+void EmojiBoardUI::emojiReceivedAction(const int count, int tab, const QSharedPointer<QString> &emojiLabel) {
+    const int i = (count / 6), j = count % 6;
+    auto *label = new ItemWidget(*emojiLabel.get()); // access by Value
+    label->setFont(emojiFont);
+    label->setFixedSize(80, 80);
+    label->setAlignment(Qt::AlignmentFlag::AlignCenter);
+
+    switch (tab) {
+        case 0: {
+            break;
+        }
+        case 1: {
+            this->reactionSectionGrid->setColumnWidth(j, Constants::EMOJI_CELL_WIDTH);
+            this->reactionSectionGrid->setRowHeight(i, Constants::EMOJI_CELL_HEIGHT);
+            this->reactionSectionGrid->setCellWidget(i, j, label);
+            break;
+        }
+        case 2: {
+            this->animalSectionGrid->setColumnWidth(j, Constants::EMOJI_CELL_WIDTH);
+            this->animalSectionGrid->setRowHeight(i, Constants::EMOJI_CELL_HEIGHT);
+            this->animalSectionGrid->setCellWidget(i, j, label);
+            break;
+        }
+        case 3: {
+            break;
+        }
+        case 4: {
+            break;
+        }
+        case 5: {
+            break;
+        }
+        case 6: {
+            break;
+        }
+        case 7: {
+            break;
+        }
+        default: break;
     }
     this->update();
 }
+
+void EmojiBoardUI::tabWidgetChangedAction(const int tabIndex) {
+    this->eGenerator.acceptEmojiGeneratingResources(tabIndex, this->emojiCodes[tabIndex]);
+    this->eGenerator.start();
+}
+
 
 
