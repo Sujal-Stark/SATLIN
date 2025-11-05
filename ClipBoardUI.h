@@ -4,36 +4,35 @@
 
 #pragma once
 
+#include <QApplication>
 #include <QVBoxLayout>
 #include <QTabWidget>
 #include <QScrollArea>
-#include <string>
-#include <QApplication>
-#include <queue>
 #include <QFrame>
-#include <QHashFunctions>
+
+#include <string>
+#include <queue>
 #include <set>
 
 // Custom Import
 #include "Constants.h"
 #include "ItemWidget.h"
+#include "TextManagerInterface.h"
 
 
 using namespace std;
 
 class ClipBoardUI final : public QWidget{
-    private:
     set<size_t> currentTextHash; //check's newly arrived string already present or not
+    TextManagerInterface text_manager_interface;
 
                                 // Method Declaration
     void constructUI() const;
-    [[nodiscard]] string getCurrentCopiedText() const;
-    ItemWidget* createTextLabel();
-    void addNewTextToQueue();
-    void showTextOnScreen();
     void widgetBehaviourSelection() const;
-    void itemWidgetClickedAction(const string &content) const;
-    void setActions();
+    void showTextOnScreen(ItemWidget *item) const;
+    void itemWidgetClickedAction(const string &content) const; // extend later
+    void setActions(); // used to group all connections
+    void handleIncomingItems(); // get copied item from clip board
 
     public:
     explicit ClipBoardUI();

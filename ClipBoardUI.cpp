@@ -19,9 +19,7 @@ ClipBoardUI::ClipBoardUI() {
     this->widgetBehaviourSelection();
     this->constructUI();
     this->clipBoard = QApplication::clipboard();
-    connect(
-        this->clipBoard, &QClipboard::dataChanged, this, &ClipBoardUI::addNewTextToQueue
-    );
+    this->setActions();
 }
 
 void ClipBoardUI::constructUI() const {
@@ -90,57 +88,39 @@ void ClipBoardUI::widgetBehaviourSelection() const {
     );
 }
 
-void ClipBoardUI::setActions() {
+void ClipBoardUI::handleIncomingItems() {
+    const QMimeData *currentMime_data = this->clipBoard->mimeData(QClipboard::Selection);
+    if (currentMime_data->hasText()) {
+        this->text_manager_interface.setCurrentCopiedText(
+            currentMime_data->text().toStdString()
+        ); // sending data
 
-}
+        this->text_manager_interface.addNewTextToQueue();
 
-string ClipBoardUI::getCurrentCopiedText() const{
-    const QMimeData *mimeData = this->clipBoard->mimeData(QClipboard::Clipboard);
-
-    if (mimeData->hasText()) {
-        return mimeData->text().toStdString();
-    }if (mimeData->hasHtml()) {
-        return mimeData->html().toStdString();
-    }
-    return "";
-}
-
-ItemWidget* ClipBoardUI::createTextLabel(){
-    auto currText = getCurrentCopiedText();
-
-    if (!currText.empty() && !currentTextHash.contains(qHash(currText))) {
-        currentTextHash.insert(qHash(currText));
-        auto *label = new ItemWidget(currText.data());
-        label->setWordWrap(true);
-        label->setAlignment(Qt::AlignmentFlag::AlignLeft);
-        label->setFixedWidth(Constants::TEXT_CARD_WIDTH);
-        label->setStyleSheet(
-            "border: 1px solid white;"
-            "border-radius: 5px;"
-            "background-color: rgba(145, 191, 250, 0);"
-        );
+        // Receiving data
+        ItemWidget* outputWidget =  this->text_manager_interface.getCurrentCopiedText();
         connect(
-            label, &ItemWidget::textItemClickedSignal,
-        this, &ClipBoardUI::itemWidgetClickedAction
+            outputWidget, &ItemWidget::textItemClickedSignal,
+            this, &ClipBoardUI::itemWidgetClickedAction
         );
-        return label;
-    }
+        this->showTextOnScreen(outputWidget); // final data sent to UI
+    }else if (currentMime_data->hasImage()) {
 
-    return nullptr;
-}
-
-void ClipBoardUI::addNewTextToQueue() {
-    auto textLabel = this->createTextLabel();
-
-    if (textLabel != nullptr) {
-        this->textQueue.push(textLabel);
-        this->showTextOnScreen();
     }
 }
 
-void ClipBoardUI::showTextOnScreen() {
-    if (!this->textQueue.empty()) {
-        this->textScrollAreaInnerLayout->insertWidget(0,this->textQueue.back());
+
+void ClipBoardUI::setActions() {
+    connect(
+        this->clipBoard, &QClipboard::dataChanged,
+        this, &ClipBoardUI::handleIncomingItems
+    );
+}
+
+void ClipBoardUI::showTextOnScreen(ItemWidget *item) const {
+    if (item != nullptr) {
+        // New Text On top
+        this->textScrollAreaInnerLayout->insertWidget(0,item);
     }
 }
 
