@@ -1,15 +1,19 @@
-cmake_minimum_required(VERSION 3.16) # Qt needs at least this
-project(Satlin)
+cmake_minimum_required(VERSION 3.16)
+project(Satlin LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_AUTOMOC ON)   # Auto-generate meta-object code
-set(CMAKE_AUTORCC ON)   # Auto-process .qrc resource files
-set(CMAKE_AUTOUIC ON)   # Auto-process .ui files
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Find Qt6 Widgets module
-find_package(Qt6 COMPONENTS Widgets REQUIRED)
+# Enable Qt's automatic features
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
-# Add the executable
+# Find required Qt6 modules
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+
+# Explicitly list all source files
 add_executable(Satlin
         main.cpp
         MasterWindow.cpp
@@ -21,10 +25,17 @@ add_executable(Satlin
         ItemWidget.h
         EmojiGenerator.cpp
         EmojiGenerator.h
-        EmojiboardUI.cpp
-        EmojiBoardUI.h
-        # add more .cpp or .ui files here
+        EmojiBoardUI.cpp   # Fixed typo: previously 'EmojiBoardUI.cpp'
+        EmojiBoardUI.h     # Fixed typo: previously 'EmojiBoardUI.h'
+        TextManagerInterface.cpp
+        TextManagerInterface.h
+        ImageManagerInterface.cpp
+        ImageManagerInterface.h
 )
 
-# Link Qt6 Widgets library
-target_link_libraries(Satlin Qt6::Widgets)
+# Link against Qt modules
+target_link_libraries(Satlin PRIVATE
+        Qt6::Core
+        Qt6::Gui
+        Qt6::Widgets
+)
