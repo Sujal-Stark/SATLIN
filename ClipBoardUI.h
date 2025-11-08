@@ -16,6 +16,7 @@
 
 // Custom Import
 #include "Constants.h"
+#include "ImageManagerInterface.h"
 #include "ItemWidget.h"
 #include "TextManagerInterface.h"
 
@@ -25,13 +26,16 @@ using namespace std;
 class ClipBoardUI final : public QWidget{
     set<size_t> currentTextHash; //check's newly arrived string already present or not
     TextManagerInterface text_manager_interface;
+    ImageManagerInterface image_manager_interface;
 
                                 // Method Declaration
     void constructUI() const;
     void widgetBehaviourSelection() const;
-    void showTextOnScreen(ItemWidget *item) const;
-    void itemWidgetClickedAction(const string &content) const; // extend later
-    void setActions(); // used to group all connections
+    void showItemOnScreen(ItemWidget *item) const;
+    void showImageOnScreen(ItemWidget *image) const;
+    void textItemClickedAction(const string &content) const;
+    void imageItemClickedAction(const QPixmap &content) const;
+    void setActions() const; // used to group all connections
     void handleIncomingItems(); // get copied item from clip board
 
     public:

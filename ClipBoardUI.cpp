@@ -2,10 +2,9 @@
 // Created by sujal-stark on 8/12/25.
 //
 
-#include <iostream>
 #include <QMimeData>
 #include <QClipboard>
-#include <QHashFunctions>
+#include <QVariant>
 
 // custom import
 #include "Constants.h"
@@ -77,6 +76,10 @@ void ClipBoardUI::widgetBehaviourSelection() const {
         "QScrollBar:horizontal{height: 0px;}"
     );
     this->imageSectionScrollArea->setWidgetResizable(true);
+    this->imageSectionScrollArea->setStyleSheet(
+        "QScrollBar:vertical {width: 0px;}"
+        "QScrollBar:horizontal{height: 0px;}"
+    );
     this->videoSectionScrollArea->setWidgetResizable(true);
     this->audioSectionScrollArea->setWidgetResizable(true);
 
@@ -86,45 +89,88 @@ void ClipBoardUI::widgetBehaviourSelection() const {
         Constants::WIDGET_MARGIN, Constants::WIDGET_MARGIN, Constants::WIDGET_MARGIN,
     Constants::WIDGET_MARGIN
     );
+
+    this->imageScrollAreaInnerLayout->setAlignment(Qt::AlignmentFlag::AlignTop);
+    this->imageScrollAreaInnerLayout->setContentsMargins(
+        Constants::WIDGET_MARGIN, Constants::WIDGET_MARGIN, Constants::WIDGET_MARGIN,
+        Constants::WIDGET_MARGIN
+    );
 }
 
 void ClipBoardUI::handleIncomingItems() {
-    const QMimeData *currentMime_data = this->clipBoard->mimeData(QClipboard::Selection);
-    if (currentMime_data->hasText()) {
-        this->text_manager_interface.setCurrentCopiedText(
-            currentMime_data->text().toStdString()
-        ); // sending data
-
+    if (
+        const QMimeData *currentMime_data = this->clipBoard->mimeData(QClipboard::Selection);
+        currentMime_data->hasText()
+    ) {
+        // sending data
+        this->text_manager_interface.setCurrentCopiedText(currentMime_data->text().toStdString());
         this->text_manager_interface.addNewTextToQueue();
 
         // Receiving data
         ItemWidget* outputWidget =  this->text_manager_interface.getCurrentCopiedText();
-        connect(
-            outputWidget, &ItemWidget::textItemClickedSignal,
-            this, &ClipBoardUI::itemWidgetClickedAction
-        );
-        this->showTextOnScreen(outputWidget); // final data sent to UI
-    }else if (currentMime_data->hasImage()) {
 
+        if (outputWidget != nullptr) {
+            connect(
+                outputWidget, &ItemWidget::textItemClickedSignal,
+                this, &ClipBoardUI::textItemClickedAction
+            );
+            this->showItemOnScreen(outputWidget);
+        } // final data sent to UI
+
+    }else if (currentMime_data->hasImage()) {
+        if (
+            const auto image = qvariant_cast<QImage>(currentMime_data->imageData());
+            !image.isNull()
+        ) {
+            this->image_manager_interface.setCopiedImage(image); // sending data
+            this->image_manager_interface.addImageToQueue();
+
+            // Receiving data
+
+            if (
+                ItemWidget *outputImageLabel = this->image_manager_interface.getPixmap();
+                outputImageLabel != nullptr
+            ) {
+                connect(
+                    outputImageLabel, &ItemWidget::imageItemClickedSignal,
+                    this, &ClipBoardUI::imageItemClickedAction
+                );
+                this->showImageOnScreen(outputImageLabel);
+            } // final data sent to UI
+        }
     }
 }
 
 
-void ClipBoardUI::setActions() {
+void ClipBoardUI::setActions() const {
     connect(
         this->clipBoard, &QClipboard::dataChanged,
         this, &ClipBoardUI::handleIncomingItems
     );
 }
 
-void ClipBoardUI::showTextOnScreen(ItemWidget *item) const {
+void ClipBoardUI::showItemOnScreen(ItemWidget *item) const {
     if (item != nullptr) {
         // New Text On top
         this->textScrollAreaInnerLayout->insertWidget(0,item);
     }
 }
 
-void ClipBoardUI::itemWidgetClickedAction(const string &content) const {
+void ClipBoardUI::showImageOnScreen(ItemWidget *image) const {
+    if(image != nullptr) {
+        // New Image on top
+        this->imageScrollAreaInnerLayout->insertWidget(0, image);
+        image->show();
+    }
+}
+
+
+void ClipBoardUI::textItemClickedAction(const string &content) const {
     this->clipBoard->setText(content.data());
 }
+
+void ClipBoardUI::imageItemClickedAction(const QPixmap &content) const {
+    qDebug()<<this->textSectionScrollArea->size(); // shall be implemented
+}
+
 
