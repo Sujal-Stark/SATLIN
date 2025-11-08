@@ -32,6 +32,7 @@ ItemWidget *TextManagerInterface::createTextLabel() {
             "background-color: rgba(145, 191, 250, 0);"
         );
 
+        label->setObjectType(Constants::TEXT_SIGNAL_INDEX); // setting flag
         return label;
     }
 
@@ -40,8 +41,8 @@ ItemWidget *TextManagerInterface::createTextLabel() {
 
 void TextManagerInterface::addNewTextToQueue() {
     if (
-    const auto textLabel = this->createTextLabel();
-    textLabel != nullptr
+        const auto textLabel = this->createTextLabel();
+        textLabel != nullptr
     ) this->textQueue.push(textLabel);
 }
 
