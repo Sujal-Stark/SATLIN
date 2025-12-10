@@ -16,7 +16,7 @@ class ItemWidget : public QLabel{
     int OBJECT_RECOGNITION_FLAG_INDEX = -1; // stores Flag Index
 
 signals:
-    void textItemClickedSignal(string text); // returns Text item
+    void textItemClickedSignal(std::string text); // returns Text item
     void imageItemClickedSignal(QPixmap image); // returns Image item
 
 protected:

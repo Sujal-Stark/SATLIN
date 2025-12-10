@@ -18,19 +18,16 @@ ItemWidget *ImageManagerInterface::getPixmap() const {
 
 ItemWidget *ImageManagerInterface::createPixmapLabel() {
     if (!this->copiedImage.isNull()) {
+        const QImage thumbnailImage = generateThumbnail(copiedImage);
         // Redundancy Checking
         if(
-            const QString hash = getImageObjectHash(this->copiedImage);
+            const QString hash = getImageObjectHash(thumbnailImage);
             !this->hashImage.contains(hash)
         ) {
-            this->hashImage.insert(hash);
+            this->hashImage[hash] = new QImage(this->copiedImage);
 
             // Object Creation
-            const QPixmap currentPixmap = QPixmap::fromImage(this->copiedImage).scaled(
-                Constants::IMAGE_THUMBNAIL_WIDTH,
-                Constants::IMAGE_THUMBNAIL_HEIGHT,
-                Qt::AspectRatioMode::KeepAspectRatio
-            );
+            const QPixmap currentPixmap = QPixmap::fromImage(thumbnailImage);
 
             auto *pixmapLabel = new ItemWidget(""); // Label Creation
             pixmapLabel->setFixedSize(Constants::TEXT_CARD_WIDTH, currentPixmap.height() + 5);
@@ -59,11 +56,15 @@ void ImageManagerInterface::addImageToQueue() {
 }
 
 QString ImageManagerInterface::getImageObjectHash(const QImage &qImage) {
-    const QByteArray dataStream(
-        reinterpret_cast<const char *>(qImage.bits()), qImage.sizeInBytes()
-    );
-    const QByteArray hashCode = QCryptographicHash::hash(
-        dataStream, QCryptographicHash::Md4
-    );
-    return QString::fromUtf8(hashCode.toHex());
+    const uint hash = qHashBits(qImage.bits(), qImage.sizeInBytes());
+    return QString::number(hash, 16);
 }
+
+QImage ImageManagerInterface::generateThumbnail(const QImage &qImage) {
+    // Expects Not Null Image
+    return qImage.scaled(
+        Constants::IMAGE_THUMBNAIL_WIDTH, Constants::IMAGE_THUMBNAIL_HEIGHT,
+        Qt::AspectRatioMode::KeepAspectRatio
+    );
+}
+

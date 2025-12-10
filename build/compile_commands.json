@@ -1,0 +1,56 @@
+[
+{
+  "directory": "/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -I/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build/Satlin_autogen/include -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -std=gnu++20 -fPIC -o CMakeFiles/Satlin.dir/Satlin_autogen/mocs_compilation.cpp.o -c /home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build/Satlin_autogen/mocs_compilation.cpp",
+  "file": "/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build/Satlin_autogen/mocs_compilation.cpp",
+  "output": "CMakeFiles/Satlin.dir/Satlin_autogen/mocs_compilation.cpp.o"
+},
+{
+  "directory": "/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -I/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build/Satlin_autogen/include -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -std=gnu++20 -fPIC -o CMakeFiles/Satlin.dir/main.cpp.o -c /home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/main.cpp",
+  "file": "/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/main.cpp",
+  "output": "CMakeFiles/Satlin.dir/main.cpp.o"
+},
+{
+  "directory": "/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -I/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build/Satlin_autogen/include -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -std=gnu++20 -fPIC -o CMakeFiles/Satlin.dir/MasterWindow.cpp.o -c /home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/MasterWindow.cpp",
+  "file": "/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/MasterWindow.cpp",
+  "output": "CMakeFiles/Satlin.dir/MasterWindow.cpp.o"
+},
+{
+  "directory": "/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -I/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build/Satlin_autogen/include -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -std=gnu++20 -fPIC -o CMakeFiles/Satlin.dir/ClipBoardUI.cpp.o -c /home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/ClipBoardUI.cpp",
+  "file": "/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/ClipBoardUI.cpp",
+  "output": "CMakeFiles/Satlin.dir/ClipBoardUI.cpp.o"
+},
+{
+  "directory": "/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -I/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build/Satlin_autogen/include -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -std=gnu++20 -fPIC -o CMakeFiles/Satlin.dir/ItemWidget.cpp.o -c /home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/ItemWidget.cpp",
+  "file": "/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/ItemWidget.cpp",
+  "output": "CMakeFiles/Satlin.dir/ItemWidget.cpp.o"
+},
+{
+  "directory": "/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -I/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build/Satlin_autogen/include -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -std=gnu++20 -fPIC -o CMakeFiles/Satlin.dir/EmojiGenerator.cpp.o -c /home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/EmojiGenerator.cpp",
+  "file": "/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/EmojiGenerator.cpp",
+  "output": "CMakeFiles/Satlin.dir/EmojiGenerator.cpp.o"
+},
+{
+  "directory": "/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -I/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build/Satlin_autogen/include -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -std=gnu++20 -fPIC -o CMakeFiles/Satlin.dir/EmojiBoardUI.cpp.o -c /home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/EmojiBoardUI.cpp",
+  "file": "/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/EmojiBoardUI.cpp",
+  "output": "CMakeFiles/Satlin.dir/EmojiBoardUI.cpp.o"
+},
+{
+  "directory": "/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -I/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build/Satlin_autogen/include -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -std=gnu++20 -fPIC -o CMakeFiles/Satlin.dir/TextManagerInterface.cpp.o -c /home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/TextManagerInterface.cpp",
+  "file": "/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/TextManagerInterface.cpp",
+  "output": "CMakeFiles/Satlin.dir/TextManagerInterface.cpp.o"
+},
+{
+  "directory": "/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build",
+  "command": "/usr/bin/c++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -I/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build/Satlin_autogen/include -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -std=gnu++20 -fPIC -o CMakeFiles/Satlin.dir/ImageManagerInterface.cpp.o -c /home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/ImageManagerInterface.cpp",
+  "file": "/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/ImageManagerInterface.cpp",
+  "output": "CMakeFiles/Satlin.dir/ImageManagerInterface.cpp.o"
+}
+]

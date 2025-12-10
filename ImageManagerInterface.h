@@ -13,7 +13,7 @@ using namespace std;
 
 class ImageManagerInterface {
     QImage copiedImage; // stores newly copied Image
-    set<QString>hashImage; // checks for unique image
+    unordered_map<QString, QImage *>hashImage; // checks for unique image
     queue<ItemWidget *>imageQueue;  // stores output
 
     [[nodiscard]] ItemWidget* createPixmapLabel(); // Creates the PixMap
@@ -23,4 +23,5 @@ public:
     void setCopiedImage(const QImage &qImage); // takes input
     [[nodiscard]] ItemWidget* getPixmap() const; // sends output
     void addImageToQueue(); // takes an instance of QImage
+    [[nodiscard]]static QImage generateThumbnail(const QImage &qImage);
 };

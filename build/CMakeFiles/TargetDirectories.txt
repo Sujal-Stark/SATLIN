@@ -1,0 +1,5 @@
+/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build/CMakeFiles/Satlin.dir
+/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build/CMakeFiles/edit_cache.dir
+/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build/CMakeFiles/rebuild_cache.dir
+/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build/CMakeFiles/Satlin_autogen_timestamp_deps.dir
+/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/build/CMakeFiles/Satlin_autogen.dir
