@@ -2,12 +2,10 @@
 // Created by sujal-stark on 12/29/25.
 //
 
-#ifndef SATLIN_EMOJIWIDGET_H
-#define SATLIN_EMOJIWIDGET_H
+#pragma once
+#include <QLabel>
 
 
-class EmojiWidget {
+class EmojiWidget : public QLabel{
+
 };
-
-
-#endif //SATLIN_EMOJIWIDGET_H
