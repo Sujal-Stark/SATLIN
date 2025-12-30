@@ -31,6 +31,8 @@ add_executable(Satlin
         TextManagerInterface.h
         ImageManagerInterface.cpp
         ImageManagerInterface.h
+        EmojiWidget.cpp
+        EmojiWidget.h
 )
 
 # Link against Qt modules
