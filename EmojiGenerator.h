@@ -13,7 +13,7 @@ class EmojiGenerator final : public QThread{
     Q_OBJECT
     signals:
     void emojiGeneratedSignal(
-        const int count, int tab, const QSharedPointer<QString>& emojiLabel
+        int count, int tab, const QSharedPointer<QString>& emojiLabel
     ); // sends emoji back
 
 private:
