@@ -4,6 +4,7 @@
 
 #include "Constants.h"
 #include "EmojiBoardUI.h"
+#include "EmojiWidget.h"
 #include "QDebug"
 #include "QHeaderView"
 #include <QFont>
@@ -124,7 +125,7 @@ void EmojiBoardUI::signalConnector() const {
 
 void EmojiBoardUI::emojiReceivedAction(const int count, int tab, const QSharedPointer<QString> &emojiLabel) {
     const int i = (count / 6), j = count % 6;
-    auto *label = new ItemWidget(*emojiLabel.get()); // access by Value
+    auto *label = new EmojiWidget(*emojiLabel, this->reactionSectionGrid); // access by Value
     label->setFont(emojiFont);
     label->setFixedSize(80, 80);
     label->setAlignment(Qt::AlignmentFlag::AlignCenter);

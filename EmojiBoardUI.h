@@ -22,11 +22,11 @@ public:
 
 private:
                                     // Method Declaration
-    void tabWidgetChangedAction(const int tabIndex);
+    void tabWidgetChangedAction(int tabIndex);
     void constructUI() const;
     void signalConnector() const;
     void propertyHandler();
-    void emojiReceivedAction(const int count, int tab, const QSharedPointer<QString> &emojiLabel);
+    void emojiReceivedAction(int count, int tab, const QSharedPointer<QString> &emojiLabel);
 
                                     // Attribute Declaration
     // resource
