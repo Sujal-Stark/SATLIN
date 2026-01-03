@@ -11,15 +11,43 @@
 
 using namespace std;
 
+void ItemWidget::assignProperties() {
+    this->setLayout(this->masterLayout);
+    this->setFixedWidth(Constants::ITEM_WIDGET_WIDTH);
+}
+
+ItemWidget::ItemWidget(const QString &text, QWidget *parent) {
+    this->assignProperties();
+    this->image_Text_HolderLabel = new QLabel(text);
+    this->masterLayout->addWidget(this->image_Text_HolderLabel, Qt::AlignmentFlag::AlignCenter);
+    this->image_Text_HolderLabel->show();
+}
+
+ItemWidget::ItemWidget(const QPixmap &image, QWidget *parent) {
+    this->assignProperties();
+    this->image_Text_HolderLabel = new QLabel("");
+    this->image_Text_HolderLabel->setPixmap(image);
+    this->masterLayout->addWidget(this->image_Text_HolderLabel, Qt::AlignmentFlag::AlignCenter);
+    this->image_Text_HolderLabel->show();
+}
+
+QLabel* ItemWidget::getImageHolder() const {
+    return this->image_Text_HolderLabel;
+}
+
+QLabel *ItemWidget::getTextHolder() const {
+    return this->image_Text_HolderLabel;
+}
+
 void ItemWidget::mousePressEvent(QMouseEvent *event){
     // identifies the content of item and then send it as signal
     if (event->button() == Qt::MouseButton::LeftButton) {
         if (OBJECT_RECOGNITION_FLAG_ARRAY[Constants::TEXT_SIGNAL_INDEX]) {
-            emit this->textItemClickedSignal(this->text().toStdString());
+            emit this->textItemClickedSignal(this->image_Text_HolderLabel->text().toStdString());
             OBJECT_RECOGNITION_FLAG_ARRAY[Constants::TEXT_SIGNAL_INDEX] = false; // reset
         }
         else if (OBJECT_RECOGNITION_FLAG_ARRAY[Constants::IMAGE_SIGNAL_INDEX]) {
-            emit this->imageItemClickedSignal(this->pixmap());
+            emit this->imageItemClickedSignal(this->image_Text_HolderLabel->pixmap());
             OBJECT_RECOGNITION_FLAG_ARRAY[Constants::IMAGE_SIGNAL_INDEX] = false; // reset
         }
     }
