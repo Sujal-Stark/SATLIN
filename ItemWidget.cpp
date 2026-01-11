@@ -26,9 +26,13 @@ ItemWidget::ItemWidget(const QString &text, QWidget *parent) {
 ItemWidget::ItemWidget(const QPixmap &image, QWidget *parent) {
     this->assignProperties();
     this->image_Text_HolderLabel = new QLabel("");
-    this->image_Text_HolderLabel->setPixmap(image);
     this->masterLayout->addWidget(this->image_Text_HolderLabel, Qt::AlignmentFlag::AlignCenter);
-    this->image_Text_HolderLabel->show();
+    this->image_Text_HolderLabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
+    this->image_Text_HolderLabel->setContentsMargins(5, 5, 5, 5);
+    this->image_Text_HolderLabel->setFixedSize(
+        Constants::TEXT_CARD_WIDTH, image.height() + 5
+    );
+    this->image_Text_HolderLabel->setPixmap(image);
 }
 
 QLabel* ItemWidget::getImageHolder() const {

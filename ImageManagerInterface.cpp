@@ -28,21 +28,16 @@ ItemWidget *ImageManagerInterface::createPixmapLabel() {
 
             // Object Creation
             const QPixmap currentPixmap = QPixmap::fromImage(thumbnailImage);
-
-            auto *pixmapLabel = new ItemWidget(""); // Label Creation
-            pixmapLabel->setFixedSize(Constants::TEXT_CARD_WIDTH, currentPixmap.height() + 5);
-            pixmapLabel->setContentsMargins(5, 5, 5, 5);
-            pixmapLabel->setAlignment(Qt::AlignmentFlag::AlignVCenter);
+            auto *imageItemWidget = new ItemWidget(currentPixmap);
+            auto *pixmapLabel = imageItemWidget->getImageHolder(); // Label Creation
             pixmapLabel->setStyleSheet(
                 "border: 1px solid white;"
                 "border-radius: 5px;"
                 "background-color: rgba(145, 191, 250, 0);"
             );
-            pixmapLabel->hide();
-            pixmapLabel->setPixmap(currentPixmap);
-
-            pixmapLabel->setObjectType(Constants::IMAGE_SIGNAL_INDEX); // setting flag
-            return pixmapLabel; // Returning output pixmap
+            pixmapLabel->show();
+            imageItemWidget->setObjectType(Constants::IMAGE_SIGNAL_INDEX); // setting flag
+            return imageItemWidget; // Returning output pixmap
         }
     }
     return nullptr;
