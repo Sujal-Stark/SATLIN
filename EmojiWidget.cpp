@@ -4,3 +4,10 @@
 
 #include "EmojiWidget.h"
 
+EmojiWidget::EmojiWidget(const QString &text, QWidget *parent) {
+    this->setText(text);
+    this->setParent(parent);
+    this->show();
+}
+
+

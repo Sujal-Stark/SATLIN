@@ -7,5 +7,9 @@
 
 
 class EmojiWidget : public QLabel{
+    Q_OBJECT
+
+public:
+    explicit EmojiWidget(const QString &text, QWidget *parent = nullptr);
 
 };

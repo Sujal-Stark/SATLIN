@@ -3,20 +3,20 @@
 //
 
 #pragma once
-#include <queue>
-#include <set>
+#include <QLabel>
 
-#include "ItemWidget.h"
+using namespace std;
 
 class TextManagerInterface {
-    queue<ItemWidget *>textQueue; // Holds The final output
-    set<size_t> currentTextHash; // Checks if the text exists or not
-    string copiedText; // holds input
-    [[nodiscard]] ItemWidget* createTextLabel(); // creates the output
+    map<size_t, QLabel *>textMap; // Holds The final output
+    size_t currentTextHash;
+    QString copiedText; // holds input
+    [[nodiscard]] QLabel* createTextLabel() const; // creates the output
 
 public:
     explicit TextManagerInterface();
-    void setCurrentCopiedText(const string &text); // receive input
-    void addNewTextToQueue(); // fill textQueue with new Item
-    [[nodiscard]] ItemWidget * getCurrentCopiedText() const; // sends output
+    void setInputText(const QString& text, size_t textHashValue);
+
+    void addNewTextToTextMap(); // fill textMap with new Item
+    [[nodiscard]] QLabel * getCurrentCopiedText(); // sends output
 };

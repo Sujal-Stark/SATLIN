@@ -102,41 +102,46 @@ void ClipBoardUI::handleIncomingItems() {
         const QMimeData *currentMime_data = this->clipBoard->mimeData(QClipboard::Selection);
         currentMime_data->hasText()
     ) {
-        // sending data
-        this->text_manager_interface.setCurrentCopiedText(currentMime_data->text().toStdString());
-        this->text_manager_interface.addNewTextToQueue();
+        const QString currentText = currentMime_data->text();
+        const size_t currHash = qHash(currentText);
 
-        // Receiving data
-        ItemWidget* outputWidget =  this->text_manager_interface.getCurrentCopiedText();
+        if(!this->currentTextHash.contains(currHash)) {
+            this->currentTextHash.insert(currHash);
+            auto *textWidget = new ItemWidget();
+            textWidget->setTextManagerInterfaceInput(this->text_manager_interface);
+            textWidget->assignText(currentMime_data->text(), currHash); // issue
 
-        if (outputWidget != nullptr) {
-            connect(
-                outputWidget, &ItemWidget::textItemClickedSignal,
-                this, &ClipBoardUI::textItemClickedAction
-            );
-            this->showItemOnScreen(outputWidget);
-        } // final data sent to UI
+            if (textWidget != nullptr) {
+                connect(
+                    textWidget, &ItemWidget::textItemClickedSignal,
+                    this, &ClipBoardUI::textItemClickedAction
+                );
+                this->showItemOnScreen(textWidget);
+            } // final data sent to UI
+        }
 
     }else if (currentMime_data->hasImage()) {
         if (
             const auto image = qvariant_cast<QImage>(currentMime_data->imageData());
             !image.isNull()
         ) {
-            this->image_manager_interface.setCopiedImage(image); // sending data
-            this->image_manager_interface.addImageToQueue();
+            QString imageHash = getImageObjectHash(image);
 
-            // Receiving data
+            if (!this->currentImageHash.contains(imageHash)) {
+                this->currentImageHash.insert(imageHash);
+                auto *imageWidget = new ItemWidget();
+                imageWidget->setImageManagerInterfaceInput(this->image_manager_interface);
 
-            if (
-                ItemWidget *outputImageLabel = this->image_manager_interface.getPixmap();
-                outputImageLabel != nullptr
-            ) {
-                connect(
-                    outputImageLabel, &ItemWidget::imageItemClickedSignal,
-                    this, &ClipBoardUI::imageItemClickedAction
-                );
-                this->showImageOnScreen(outputImageLabel);
-            } // final data sent to UI
+                imageWidget->assignImage(image, imageHash); // issue
+
+                if (imageWidget != nullptr) {
+                    connect(
+                        imageWidget, &ItemWidget::imageItemClickedSignal,
+                        this, &ClipBoardUI::imageItemClickedAction
+                    );
+                    this->showImageOnScreen(imageWidget);
+                } // final data sent to UI
+            }
         }
     }
 }
@@ -152,25 +157,30 @@ void ClipBoardUI::setActions() const {
 void ClipBoardUI::showItemOnScreen(ItemWidget *item) const {
     if (item != nullptr) {
         // New Text On top
-        this->textScrollAreaInnerLayout->insertWidget(0,item);
+        this->textScrollAreaInnerLayout->insertWidget(0, (QWidget *)item);
     }
 }
 
 void ClipBoardUI::showImageOnScreen(ItemWidget *image) const {
     if(image != nullptr) {
         // New Image on top
-        this->imageScrollAreaInnerLayout->insertWidget(0, image);
-        image->show();
+        this->imageScrollAreaInnerLayout->insertWidget(0, (QWidget *)image);
     }
 }
 
 
-void ClipBoardUI::textItemClickedAction(const string &content) const {
-    this->clipBoard->setText(content.data());
+void ClipBoardUI::textItemClickedAction(const QString &content) const {
+    this->clipBoard->setText(content.toStdString().data());
 }
 
 void ClipBoardUI::imageItemClickedAction(const QPixmap &content) const {
     qDebug()<<this->textSectionScrollArea->size(); // shall be implemented
 }
 
-
+QString ClipBoardUI::getImageObjectHash(const QImage &qImage) {
+    /*
+     * Generates unique hashValue for a new PixMap
+     */
+    const uint hash = qHashBits(qImage.bits(), qImage.sizeInBytes());
+    return QString::number(hash, 16);
+}

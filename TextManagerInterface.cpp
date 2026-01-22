@@ -5,44 +5,50 @@
 #include "TextManagerInterface.h"
 #include "Constants.h"
 
-TextManagerInterface::TextManagerInterface() = default;
+TextManagerInterface::TextManagerInterface() {
+    this->currentTextHash = -1;
+};
 
-void TextManagerInterface::setCurrentCopiedText(const string &text) {
+void TextManagerInterface::setInputText(const QString &text, const size_t textHashValue){
+    /*
+     * Takes Input text int QString format (Not Null) from ItemWidget
+     */
     this->copiedText = text;
+    this->currentTextHash = textHashValue;
+    this->addNewTextToTextMap();
 }
 
-ItemWidget *TextManagerInterface::getCurrentCopiedText() const {
-    if (!this->textQueue.empty()) {
-        return  this->textQueue.back();
-    }
-    return nullptr;
+QLabel *TextManagerInterface::getCurrentCopiedText() {
+    /*
+     * Returns the QLabel holding currently copied text from ClipBoard
+     */
+    const size_t currentHash = this->currentTextHash;
+    this->currentTextHash = 0;
+    return !this->textMap.empty()? this->textMap[currentHash] : nullptr;
 }
 
-ItemWidget *TextManagerInterface::createTextLabel() {
-    if (!this->copiedText.empty() && !currentTextHash.contains(qHash(this->copiedText))) {
-        currentTextHash.insert(qHash(this->copiedText)); // hashing
+QLabel *TextManagerInterface::createTextLabel() const {
+    /*
+     * Creates The Label and stylize it and return the QLabel
+     */
+    auto *label = new QLabel(this->copiedText); // CAN LEAK. FIX LATER
+    label->setWordWrap(true);
+    label->setAlignment(Qt::AlignmentFlag::AlignLeft);
+    label->setFixedWidth(Constants::TEXT_CARD_WIDTH);
+    label->setStyleSheet(
+        "border: 1px solid white;"
+        "border-radius: 5px;"
+        "background-color: rgba(145, 191, 250, 0);"
+    );
 
-        auto *label = new ItemWidget(QString::fromStdString(this->copiedText)); // CAN LEAK
-        label->setWordWrap(true);
-        label->setAlignment(Qt::AlignmentFlag::AlignLeft);
-        label->setFixedWidth(Constants::TEXT_CARD_WIDTH);
-        label->setStyleSheet(
-            "border: 1px solid white;"
-            "border-radius: 5px;"
-            "background-color: rgba(145, 191, 250, 0);"
-        );
-
-        label->setObjectType(Constants::TEXT_SIGNAL_INDEX); // setting flag
-        return label;
-    }
-
-    return nullptr;
+    return label;
 }
 
-void TextManagerInterface::addNewTextToQueue() {
-    if (
-        const auto textLabel = this->createTextLabel();
-        textLabel != nullptr
-    ) this->textQueue.push(textLabel);
+void TextManagerInterface::addNewTextToTextMap() {
+    /*
+     * If New Text Label Arrives, It takes it into Map
+     */
+    const auto textLabel = this->createTextLabel();
+    this->textMap[this->currentTextHash] = textLabel;
 }
 

@@ -3,56 +3,55 @@
 //
 
 #include <QCryptographicHash>
+#include <utility>
 
 #include "ImageManagerInterface.h"
 #include "Constants.h"
 
-void ImageManagerInterface::setCopiedImage(const QImage &qImage) {
-    this->copiedImage = qImage;
+ImageManagerInterface::ImageManagerInterface() = default;
+
+void ImageManagerInterface::setInputImage(const QImage &qImage, QString currentHash) {
+    this->currentImage = qImage;
+    this->currentHash = std::move(currentHash);
+    this->addImageToMap();
 }
 
-ItemWidget *ImageManagerInterface::getPixmap() const {
-    return !imageQueue.empty()? imageQueue.back() : nullptr;
+QLabel *ImageManagerInterface::getCurrentPixmapLabel() {
+    /*
+     * Returns the current HashMap Object if the hash is valid
+     */
+    return !this->hashImage.empty()? this->hashImage[this->currentHash] : nullptr;
 }
 
 
-ItemWidget *ImageManagerInterface::createPixmapLabel() {
-    if (!this->copiedImage.isNull()) {
-        const QImage thumbnailImage = generateThumbnail(copiedImage);
-        // Redundancy Checking
-        if(
-            const QString hash = getImageObjectHash(thumbnailImage);
-            !this->hashImage.contains(hash)
-        ) {
-            this->hashImage[hash] = new QImage(this->copiedImage);
+QLabel *ImageManagerInterface::createPixmapLabel() const {
+    /*
+     * Generates a thumbnail for the image and if the image is new then create a label for it
+     */
+    const QImage thumbnailImage = generateThumbnail(currentImage);
 
-            // Object Creation
-            const QPixmap currentPixmap = QPixmap::fromImage(thumbnailImage);
-            auto *imageItemWidget = new ItemWidget(currentPixmap);
-            auto *pixmapLabel = imageItemWidget->getImageHolder(); // Label Creation
-            pixmapLabel->setStyleSheet(
-                "border: 1px solid white;"
-                "border-radius: 5px;"
-                "background-color: rgba(145, 191, 250, 0);"
-            );
-            pixmapLabel->show();
-            imageItemWidget->setObjectType(Constants::IMAGE_SIGNAL_INDEX); // setting flag
-            return imageItemWidget; // Returning output pixmap
-        }
-    }
-    return nullptr;
+    // Redundancy Checking
+    const QPixmap currentPixmap = QPixmap::fromImage(thumbnailImage);
+    auto *imageLabel = new QLabel();
+    imageLabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
+    imageLabel->setContentsMargins(5, 5, 5, 5);
+    imageLabel->setFixedSize(Constants::TEXT_CARD_WIDTH, currentPixmap.height() + 5);
+    imageLabel->setStyleSheet(
+        "border: 1px solid white;"
+        "border-radius: 5px;"
+        "background-color: rgba(145, 191, 250, 0);"
+        );
+    imageLabel->setPixmap(currentPixmap);
+
+    return imageLabel; // Returning output pixmap
 }
 
-void ImageManagerInterface::addImageToQueue() {
-    if (
-        const auto pixmap = this->createPixmapLabel();
-        pixmap != nullptr
-    )this->imageQueue.push(pixmap);
-}
-
-QString ImageManagerInterface::getImageObjectHash(const QImage &qImage) {
-    const uint hash = qHashBits(qImage.bits(), qImage.sizeInBytes());
-    return QString::number(hash, 16);
+void ImageManagerInterface::addImageToMap() {
+    /*
+     * Adds the new PixMapLabel to the Hash if it's new.
+     */
+    QLabel *pixLabel = this->createPixmapLabel();
+    this->hashImage[currentHash] = pixLabel;
 }
 
 QImage ImageManagerInterface::generateThumbnail(const QImage &qImage) {

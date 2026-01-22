@@ -6,48 +6,61 @@
 #include<Qt>
 #include<QPixmap>
 #include<iostream>
+#include <utility>
 
 #include "Constants.h"
 
 using namespace std;
 
+ItemWidget::ItemWidget() = default;
+
 void ItemWidget::assignProperties() {
+    /*
+     * Default properties related to this widget will be added here. It will only hold common properties
+     * for all types of media
+     */
     this->setLayout(this->masterLayout);
-    this->setFixedWidth(Constants::ITEM_WIDGET_WIDTH);
+    this->setFixedWidth(Constants::ITEM_WIDGET_WIDTH); // for constant width
 }
 
-ItemWidget::ItemWidget(const QString &text, QWidget *parent) {
+void ItemWidget::setTextManagerInterfaceInput(TextManagerInterface *interface) {
+    this->text_manager_interface = interface;
+}
+
+void ItemWidget::setImageManagerInterfaceInput(ImageManagerInterface *interface) {
+    this->image_manager_interface = interface;
+}
+
+void ItemWidget::assignText(const QString &text, const size_t textHash) {
     this->assignProperties();
-    this->image_Text_HolderLabel = new QLabel(text);
-    this->masterLayout->addWidget(this->image_Text_HolderLabel, Qt::AlignmentFlag::AlignCenter);
-    this->image_Text_HolderLabel->show();
+
+    this->text_manager_interface->setInputText(text, textHash);
+    this->image_Text_HolderLabel = this->text_manager_interface->getCurrentCopiedText();
+
+    if (this->image_Text_HolderLabel != nullptr) {
+        this->image_Text_HolderLabel->show();
+        this->masterLayout->addWidget(this->image_Text_HolderLabel, Qt::AlignmentFlag::AlignCenter);
+    }
 }
 
-ItemWidget::ItemWidget(const QPixmap &image, QWidget *parent) {
+void ItemWidget::assignImage(const QImage &image, QString imageHash) {
     this->assignProperties();
-    this->image_Text_HolderLabel = new QLabel("");
-    this->masterLayout->addWidget(this->image_Text_HolderLabel, Qt::AlignmentFlag::AlignCenter);
-    this->image_Text_HolderLabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
-    this->image_Text_HolderLabel->setContentsMargins(5, 5, 5, 5);
-    this->image_Text_HolderLabel->setFixedSize(
-        Constants::TEXT_CARD_WIDTH, image.height() + 5
-    );
-    this->image_Text_HolderLabel->setPixmap(image);
-}
 
-QLabel* ItemWidget::getImageHolder() const {
-    return this->image_Text_HolderLabel;
-}
+    this->image_manager_interface->setInputImage(image, std::move(imageHash)); // ref
+    this->image_Text_HolderLabel = this->image_manager_interface->getCurrentPixmapLabel();
 
-QLabel *ItemWidget::getTextHolder() const {
-    return this->image_Text_HolderLabel;
+    if (image_Text_HolderLabel != nullptr) {
+        this->image_Text_HolderLabel->show();
+        this->masterLayout->addWidget(this->image_Text_HolderLabel, Qt::AlignmentFlag::AlignCenter);
+    }
+
 }
 
 void ItemWidget::mousePressEvent(QMouseEvent *event){
     // identifies the content of item and then send it as signal
     if (event->button() == Qt::MouseButton::LeftButton) {
         if (OBJECT_RECOGNITION_FLAG_ARRAY[Constants::TEXT_SIGNAL_INDEX]) {
-            emit this->textItemClickedSignal(this->image_Text_HolderLabel->text().toStdString());
+            emit this->textItemClickedSignal(this->image_Text_HolderLabel->text());
             OBJECT_RECOGNITION_FLAG_ARRAY[Constants::TEXT_SIGNAL_INDEX] = false; // reset
         }
         else if (OBJECT_RECOGNITION_FLAG_ARRAY[Constants::IMAGE_SIGNAL_INDEX]) {

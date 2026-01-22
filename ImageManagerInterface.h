@@ -6,22 +6,21 @@
 #include <qimage.h>
 #include <queue>
 #include <set>
-
-#include "ItemWidget.h"
+#include  <QLabel>
 
 using namespace std;
 
 class ImageManagerInterface {
-    QImage copiedImage; // stores newly copied Image
-    unordered_map<QString, QImage *>hashImage; // checks for unique image
-    queue<ItemWidget *>imageQueue;  // stores output
+    QImage currentImage; // stores newly copied Image
+    QString currentHash;
+    unordered_map<QString, QLabel *>hashImage; // checks for unique image
 
-    [[nodiscard]] ItemWidget* createPixmapLabel(); // Creates the PixMap
-    static QString getImageObjectHash(const QImage &qImage); // creates Hash for current image
+    [[nodiscard]] QLabel* createPixmapLabel() const; // Creates the PixMap
 
 public:
-    void setCopiedImage(const QImage &qImage); // takes input
-    [[nodiscard]] ItemWidget* getPixmap() const; // sends output
-    void addImageToQueue(); // takes an instance of QImage
+    explicit ImageManagerInterface();
+    void setInputImage(const QImage &qImage, QString currentHash);
+    [[nodiscard]] QLabel* getCurrentPixmapLabel(); // sends output
+    void addImageToMap(); // takes an instance of QImage
     [[nodiscard]]static QImage generateThumbnail(const QImage &qImage);
 };
