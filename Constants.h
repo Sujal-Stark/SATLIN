@@ -10,8 +10,6 @@
 using namespace std;
 
 namespace  Constants {
-    inline constexpr int ITEM_WIDGET_WIDTH = 520;
-
     inline const QString APPLICATION_NAME = "Satlin";
 
     inline const QString CLIP_BOARD = "Clip Board";
@@ -35,7 +33,7 @@ namespace  Constants {
     inline constexpr int MIN_WINDOW_WIDTH = 400;
     inline constexpr int MIN_WINDOW_HEIGHT = 300;
 
-    inline constexpr int TEXT_CARD_WIDTH = 500; // width of text copied Item
+    inline constexpr int TEXT_CARD_WIDTH = 490; // width of text copied Item
     inline constexpr int WIDGET_MARGIN = 10;
 
     inline const QString RECENT = "Recent";
@@ -58,4 +56,12 @@ namespace  Constants {
     // Image
     inline constexpr int IMAGE_THUMBNAIL_WIDTH = 200;
     inline constexpr int IMAGE_THUMBNAIL_HEIGHT = 200;
+
+    // ItemWidget
+    inline constexpr int ITEM_WIDGET_WIDTH = 530;
+    inline constexpr int ITEM_MAIN_FRAME_WIDTH = ITEM_WIDGET_WIDTH - 20;
+    inline const QString EDIT_LABEL = "Edit";
+    inline const QString DELETE_LABEL = "Delete";
+    inline constexpr int ITEM_WIDGET_EDIT_BUTTON_WIDTH = 60;
+    inline constexpr int ITEM_WIDGET_EDIT_BUTTON_HEIGHT = 25;
 };

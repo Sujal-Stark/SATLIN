@@ -12,15 +12,47 @@
 
 using namespace std;
 
-ItemWidget::ItemWidget() = default;
-
-void ItemWidget::assignProperties() {
+ItemWidget::ItemWidget() {
     /*
      * Default properties related to this widget will be added here. It will only hold common properties
      * for all types of media
      */
     this->setLayout(this->masterLayout);
     this->setFixedWidth(Constants::ITEM_WIDGET_WIDTH); // for constant width
+    this->stylizeButtons();
+    this->stylizeFrames();
+    this->construct();
+    this->setStyleSheet(
+        "border: 1px solid white;"
+        "border-radius: 5px;"
+        "background-color: rgba(37, 37, 38, 150);"
+    );
+};
+
+void ItemWidget::stylizeButtons() const {
+    this->editButton->setFixedSize(
+        Constants::ITEM_WIDGET_EDIT_BUTTON_WIDTH, Constants::ITEM_WIDGET_EDIT_BUTTON_HEIGHT
+    );
+    this->deleteButton->setFixedSize(
+        Constants::ITEM_WIDGET_EDIT_BUTTON_WIDTH, Constants::ITEM_WIDGET_EDIT_BUTTON_HEIGHT
+    );
+}
+
+void ItemWidget::stylizeFrames() const {
+    this->mainFrame->setFixedWidth(
+        Constants::ITEM_MAIN_FRAME_WIDTH
+    );
+}
+
+void ItemWidget::construct() const {
+    this->masterLayout->addWidget(this->mainFrame, Qt::AlignmentFlag::AlignCenter);
+    this->mainFrame->setLayout(this->masterInnerLayout);
+
+    this->masterInnerLayout->addLayout(this->contentHolder);
+
+    this->masterInnerLayout->addLayout(this->buttonHolder);
+    this->buttonHolder->addWidget(this->deleteButton, Qt::AlignmentFlag::AlignRight);
+    this->buttonHolder->addWidget(this->editButton, Qt::AlignmentFlag::AlignRight);
 }
 
 void ItemWidget::setTextManagerInterfaceInput(TextManagerInterface *interface) {
@@ -32,26 +64,24 @@ void ItemWidget::setImageManagerInterfaceInput(ImageManagerInterface *interface)
 }
 
 void ItemWidget::assignText(const QString &text, const size_t textHash) {
-    this->assignProperties();
 
     this->text_manager_interface->setInputText(text, textHash);
     this->image_Text_HolderLabel = this->text_manager_interface->getCurrentCopiedText();
 
     if (this->image_Text_HolderLabel != nullptr) {
         this->image_Text_HolderLabel->show();
-        this->masterLayout->addWidget(this->image_Text_HolderLabel, Qt::AlignmentFlag::AlignCenter);
+        this->contentHolder->addWidget(this->image_Text_HolderLabel, Qt::AlignmentFlag::AlignCenter);
     }
 }
 
 void ItemWidget::assignImage(const QImage &image, QString imageHash) {
-    this->assignProperties();
 
     this->image_manager_interface->setInputImage(image, std::move(imageHash)); // ref
     this->image_Text_HolderLabel = this->image_manager_interface->getCurrentPixmapLabel();
 
     if (image_Text_HolderLabel != nullptr) {
         this->image_Text_HolderLabel->show();
-        this->masterLayout->addWidget(this->image_Text_HolderLabel, Qt::AlignmentFlag::AlignCenter);
+        this->contentHolder->addWidget(this->image_Text_HolderLabel, Qt::AlignmentFlag::AlignCenter);
     }
 
 }

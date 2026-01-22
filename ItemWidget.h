@@ -4,11 +4,11 @@
 
 #pragma once
 
-#include <qboxlayout.h>
-#include<QLabel>
 #include<QMouseEvent>
-#include<string>
+#include<QPushButton>
+#include<QHBoxLayout>
 
+#include "Constants.h"
 #include "ImageManagerInterface.h"
 #include "TextManagerInterface.h"
 
@@ -25,14 +25,26 @@ class ItemWidget : public QWidget{
     TextManagerInterface *text_manager_interface = nullptr;
     ImageManagerInterface *image_manager_interface = nullptr;
 
+    // QButtons
+    QPushButton *deleteButton = new QPushButton(Constants::DELETE_LABEL);
+    QPushButton *editButton = new QPushButton(Constants::EDIT_LABEL);
+
     // holder object declaration
     QLabel* image_Text_HolderLabel = nullptr;
 
     // Layouts
-    QHBoxLayout *masterLayout = new QHBoxLayout();
+    QVBoxLayout *masterLayout = new QVBoxLayout();
+    QVBoxLayout *masterInnerLayout = new QVBoxLayout();
+
+    QHBoxLayout *contentHolder = new QHBoxLayout();
+    QHBoxLayout *buttonHolder = new QHBoxLayout();
+
+    // Frames
+    QFrame *mainFrame = new QFrame();
 
     // Methods
-    void assignProperties();
+    void stylizeButtons() const;
+    void stylizeFrames() const;
 
 signals:
     void textItemClickedSignal(QString text); // returns Text item
@@ -46,6 +58,7 @@ protected:
 
 public:
     explicit ItemWidget();
+    void construct() const;
     void assignText(const QString &text, size_t textHash); // holds text
     void assignImage(const QImage &image, QString imageHash); // holds image
     void setObjectType(int objectFlag); // accepts flag
