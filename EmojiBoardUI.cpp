@@ -14,6 +14,7 @@ EmojiBoardUI::EmojiBoardUI() {
     this->propertyHandler();
     this->constructUI();
     this->signalConnector();
+    this->setCustomStyle();
 }
 
 void EmojiBoardUI::propertyHandler() {
@@ -169,6 +170,17 @@ void EmojiBoardUI::emojiReceivedAction(const int count, int tab, const QSharedPo
 void EmojiBoardUI::tabWidgetChangedAction(const int tabIndex) {
     this->eGenerator.acceptEmojiGeneratingResources(tabIndex, this->emojiCodes[tabIndex]);
     this->eGenerator.start();
+}
+
+void EmojiBoardUI::setCustomStyle() {
+    this->setStyleSheet(
+        "background-color: rgba(43, 43, 43, 100);"
+    );
+    this->emojiPanel->setStyleSheet(
+        "QTabBar::tab { "
+            "width: 160px; "  // Fixed width for each tab
+        "}"
+    );
 }
 
 

@@ -39,6 +39,7 @@ class ClipBoardUI final : public QWidget{
     void setActions() const; // used to group all connections
     void handleIncomingItems(); // get copied item from clip board
     static QString getImageObjectHash(const QImage &qImage); // creates Hash for current image
+    void setCustomStyle();
 
     public:
     explicit ClipBoardUI();

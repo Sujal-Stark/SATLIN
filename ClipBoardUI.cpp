@@ -19,6 +19,7 @@ ClipBoardUI::ClipBoardUI() {
     this->constructUI();
     this->clipBoard = QApplication::clipboard();
     this->setActions();
+    this->setCustomStyle();
 }
 
 void ClipBoardUI::constructUI() const {
@@ -99,7 +100,7 @@ void ClipBoardUI::widgetBehaviourSelection() const {
 
 void ClipBoardUI::handleIncomingItems() {
     if (
-        const QMimeData *currentMime_data = this->clipBoard->mimeData(QClipboard::Selection);
+        const QMimeData *currentMime_data = this->clipBoard->mimeData(QClipboard::Clipboard);
         currentMime_data->hasText()
     ) {
         const QString currentText = currentMime_data->text();
@@ -183,4 +184,15 @@ QString ClipBoardUI::getImageObjectHash(const QImage &qImage) {
      */
     const uint hash = qHashBits(qImage.bits(), qImage.sizeInBytes());
     return QString::number(hash, 16);
+}
+
+void ClipBoardUI::setCustomStyle() {
+    this->setStyleSheet(
+        "background-color: rgba(43, 43, 43, 100);"
+    );
+    this->clipTabWidget->setStyleSheet(
+        "QTabBar::tab { "
+            "width: 139px; "
+        "}"
+    );
 }

@@ -27,6 +27,7 @@ private:
     void signalConnector() const;
     void propertyHandler();
     void emojiReceivedAction(int count, int tab, const QSharedPointer<QString> &emojiLabel);
+    void setCustomStyle();
 
                                     // Attribute Declaration
     // resource

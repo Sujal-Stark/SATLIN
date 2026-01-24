@@ -25,7 +25,7 @@ ItemWidget::ItemWidget() {
     this->setStyleSheet(
         "border: 1px solid white;"
         "border-radius: 5px;"
-        "background-color: rgba(37, 37, 38, 150);"
+        "background-color: rgba(15, 14, 14, 150);"
     );
 };
 
@@ -49,8 +49,11 @@ void ItemWidget::construct() const {
     this->mainFrame->setLayout(this->masterInnerLayout);
 
     this->masterInnerLayout->addLayout(this->contentHolder);
+    this->contentHolder->addStretch();
 
     this->masterInnerLayout->addLayout(this->buttonHolder);
+    this->buttonHolder->setSpacing(10);
+    this->buttonHolder->addStretch();
     this->buttonHolder->addWidget(this->deleteButton, Qt::AlignmentFlag::AlignRight);
     this->buttonHolder->addWidget(this->editButton, Qt::AlignmentFlag::AlignRight);
 }
@@ -103,7 +106,7 @@ void ItemWidget::mousePressEvent(QMouseEvent *event){
     this->setStyleSheet(
         "border: 1px solid white;"
         "border-radius: 5px;"
-        "background-color: rgba(145, 191, 250, 20);"
+        "background-color: rgba(54, 54, 54, 150);"
     );
 }
 
@@ -112,7 +115,7 @@ void ItemWidget::mouseReleaseEvent(QMouseEvent *event) {
     this->setStyleSheet(
         "border: 1px solid white;"
         "border-radius: 5px;"
-        "background-color: rgba(145, 191, 250, 0);"
+        "background-color: rgba(15, 14, 14, 150);"
     );
     OBJECT_RECOGNITION_FLAG_ARRAY[OBJECT_RECOGNITION_FLAG_INDEX] = true; // set
 }

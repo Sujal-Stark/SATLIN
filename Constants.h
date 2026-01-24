@@ -15,16 +15,16 @@ namespace  Constants {
     inline const QString CLIP_BOARD = "Clip Board";
     inline const QString EMOJI = "Emoji";
 
-    inline const QString TEXT_SECTION = "text";
+    inline const QString TEXT_SECTION = "Text";
     inline constexpr int TEXT_SIGNAL_INDEX = 0;
 
-    inline const QString IMAGE_SECTION = "image";
+    inline const QString IMAGE_SECTION = "Image";
     inline constexpr int IMAGE_SIGNAL_INDEX = 1;
 
-    inline const QString VIDEO_SECTION = "video";
+    inline const QString VIDEO_SECTION = "Video";
     inline constexpr int VIDEO_SIGNAL_INDEX = 2;
 
-    inline const QString AUDIO_SECTION = "audio";
+    inline const QString AUDIO_SECTION = "Audio";
     inline constexpr int AUDIO_SIGNAL_INDEX = 3;
 
     inline constexpr int WINDOW_WIDTH = 600;
@@ -51,7 +51,7 @@ namespace  Constants {
 
     // Fonts
     inline const string EMOJI_FONT = "Noto Color Emoji";
-    inline constexpr int EMOJI_FONT_SIZE = 30;
+    inline constexpr int EMOJI_FONT_SIZE = 45;
 
     // Image
     inline constexpr int IMAGE_THUMBNAIL_WIDTH = 200;

@@ -11,5 +11,4 @@ class EmojiWidget : public QLabel{
 
 public:
     explicit EmojiWidget(const QString &text, QWidget *parent = nullptr);
-
 };
