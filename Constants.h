@@ -15,6 +15,11 @@ namespace  Constants {
     inline const QString CLIP_BOARD = "Clip Board";
     inline const QString EMOJI = "Emoji";
 
+    inline const QString EDIT_LABEL = "Edit";
+    inline const QString DELETE_LABEL = "Delete";
+    inline const QString SAVE_LABEL = "Save";
+    inline const QString CANCEL_LABEL = "Cancel";
+
     inline const QString TEXT_SECTION = "Text";
     inline constexpr int TEXT_SIGNAL_INDEX = 0;
 
@@ -53,15 +58,20 @@ namespace  Constants {
     inline const string EMOJI_FONT = "Noto Color Emoji";
     inline constexpr int EMOJI_FONT_SIZE = 45;
 
+    // Text Editor
+    inline const QString TEXT_EDITOR_WINDOW_TITLE = "Text Editor";
+    inline constexpr int TEXT_EDITOR_WIDTH = 500;
+    inline constexpr int TEXT_EDITOR_HEIGHT = 500;
+
     // Image
     inline constexpr int IMAGE_THUMBNAIL_WIDTH = 200;
     inline constexpr int IMAGE_THUMBNAIL_HEIGHT = 200;
 
+    // ClipBoard UI
+
     // ItemWidget
     inline constexpr int ITEM_WIDGET_WIDTH = 530;
     inline constexpr int ITEM_MAIN_FRAME_WIDTH = ITEM_WIDGET_WIDTH - 20;
-    inline const QString EDIT_LABEL = "Edit";
-    inline const QString DELETE_LABEL = "Delete";
     inline constexpr int ITEM_WIDGET_EDIT_BUTTON_WIDTH = 60;
     inline constexpr int ITEM_WIDGET_EDIT_BUTTON_HEIGHT = 25;
 };
