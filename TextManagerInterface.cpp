@@ -52,3 +52,20 @@ void TextManagerInterface::addNewTextToTextMap() {
     this->textMap[this->currentTextHash] = textLabel;
 }
 
+bool TextManagerInterface::removeItem(const size_t textHash) {
+    /*
+     * Check's if a hash value already exists or not. If exists then
+     * we remove the hash and the label from the map and schedule it
+     * for deletion.
+     */
+    if (this->textMap.contains(textHash)) {
+        QLabel *currLabel = this->textMap[textHash];
+        this->textMap.erase(textHash);
+        currLabel->clear(); // clear's the content as well
+        currLabel->deleteLater();
+        return  true;
+    }
+    return  false;
+
+}
+

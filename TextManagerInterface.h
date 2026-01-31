@@ -19,4 +19,5 @@ public:
 
     void addNewTextToTextMap(); // fill textMap with new Item
     [[nodiscard]] QLabel * getCurrentCopiedText(); // sends output
+    bool removeItem(size_t textHash);
 };
