@@ -22,8 +22,9 @@ ItemWidget::ItemWidget() {
     this->stylizeButtons();
     this->stylizeFrames();
     this->construct();
+    this->establishConnections();
     this->setStyleSheet(
-        "border: 1px solid white;"
+        "border: 0px solid white;"
         "border-radius: 5px;"
         "background-color: rgba(15, 14, 14, 150);"
     );
@@ -34,6 +35,9 @@ void ItemWidget::stylizeButtons() const {
         Constants::ITEM_WIDGET_EDIT_BUTTON_WIDTH, Constants::ITEM_WIDGET_EDIT_BUTTON_HEIGHT
     );
     this->deleteButton->setFixedSize(
+        Constants::ITEM_WIDGET_EDIT_BUTTON_WIDTH, Constants::ITEM_WIDGET_EDIT_BUTTON_HEIGHT
+    );
+    this->saveButton->setFixedSize(
         Constants::ITEM_WIDGET_EDIT_BUTTON_WIDTH, Constants::ITEM_WIDGET_EDIT_BUTTON_HEIGHT
     );
 }
@@ -54,12 +58,27 @@ void ItemWidget::construct() const {
     this->masterInnerLayout->addLayout(this->buttonHolder);
     this->buttonHolder->setSpacing(10);
     this->buttonHolder->addStretch();
+    this->buttonHolder->addWidget(this->saveButton, Qt::AlignmentFlag::AlignRight);
     this->buttonHolder->addWidget(this->deleteButton, Qt::AlignmentFlag::AlignRight);
     this->buttonHolder->addWidget(this->editButton, Qt::AlignmentFlag::AlignRight);
 }
 
-void ItemWidget::setTextManagerInterfaceInput(TextManagerInterface *interface) {
+void ItemWidget::establishConnections() {
+    connect(
+        this->deleteButton, &QPushButton::clicked,
+        this, &ItemWidget::deleteButtonClicked
+    );
+    connect(
+        this->saveButton, &QPushButton::clicked,
+        this, &ItemWidget::saveButtonClicked
+    );
+}
+
+void ItemWidget::setTextManagerInterfaceInputs(
+        TextManagerInterface *interface, TextEditor *textEditor
+    ) {
     this->text_manager_interface = interface;
+    this->text_editor = textEditor;
 }
 
 void ItemWidget::setImageManagerInterfaceInput(ImageManagerInterface *interface) {
@@ -67,6 +86,8 @@ void ItemWidget::setImageManagerInterfaceInput(ImageManagerInterface *interface)
 }
 
 void ItemWidget::assignText(const QString &text, const size_t textHash) {
+    this->OBJECT_RECOGNITION_FLAG_INDEX = Constants::TEXT_SIGNAL_INDEX;
+    this->text_item_hash = textHash;
 
     this->text_manager_interface->setInputText(text, textHash);
     this->image_Text_HolderLabel = this->text_manager_interface->getCurrentCopiedText();
@@ -78,6 +99,8 @@ void ItemWidget::assignText(const QString &text, const size_t textHash) {
 }
 
 void ItemWidget::assignImage(const QImage &image, QString imageHash) {
+    this->OBJECT_RECOGNITION_FLAG_INDEX = Constants::IMAGE_SIGNAL_INDEX;
+    this->image_item_Hash = imageHash;
 
     this->image_manager_interface->setInputImage(image, std::move(imageHash)); // ref
     this->image_Text_HolderLabel = this->image_manager_interface->getCurrentPixmapLabel();
@@ -92,13 +115,11 @@ void ItemWidget::assignImage(const QImage &image, QString imageHash) {
 void ItemWidget::mousePressEvent(QMouseEvent *event){
     // identifies the content of item and then send it as signal
     if (event->button() == Qt::MouseButton::LeftButton) {
-        if (OBJECT_RECOGNITION_FLAG_ARRAY[Constants::TEXT_SIGNAL_INDEX]) {
+        if (this->OBJECT_RECOGNITION_FLAG_INDEX == Constants::TEXT_SIGNAL_INDEX) {
             emit this->textItemClickedSignal(this->image_Text_HolderLabel->text());
-            OBJECT_RECOGNITION_FLAG_ARRAY[Constants::TEXT_SIGNAL_INDEX] = false; // reset
         }
-        else if (OBJECT_RECOGNITION_FLAG_ARRAY[Constants::IMAGE_SIGNAL_INDEX]) {
+        else if (this->OBJECT_RECOGNITION_FLAG_INDEX == Constants::IMAGE_SIGNAL_INDEX) {
             emit this->imageItemClickedSignal(this->image_Text_HolderLabel->pixmap());
-            OBJECT_RECOGNITION_FLAG_ARRAY[Constants::IMAGE_SIGNAL_INDEX] = false; // reset
         }
     }
 
@@ -113,16 +134,34 @@ void ItemWidget::mousePressEvent(QMouseEvent *event){
 void ItemWidget::mouseReleaseEvent(QMouseEvent *event) {
     // revert the color changes due to mouse press
     this->setStyleSheet(
-        "border: 1px solid white;"
+        "border: 0px solid white;"
         "border-radius: 5px;"
         "background-color: rgba(15, 14, 14, 150);"
     );
-    OBJECT_RECOGNITION_FLAG_ARRAY[OBJECT_RECOGNITION_FLAG_INDEX] = true; // set
 }
 
-void ItemWidget::setObjectType(const int objectFlag) {
-    OBJECT_RECOGNITION_FLAG_ARRAY[objectFlag] = true; // set
-    OBJECT_RECOGNITION_FLAG_INDEX = objectFlag;
+void ItemWidget::deleteButtonClicked() {
+    if (this->OBJECT_RECOGNITION_FLAG_INDEX == Constants::TEXT_SIGNAL_INDEX) {
+        this->text_manager_interface->removeItem(this->text_item_hash);
+        emit this->text_Hash_Removal_Request_Signal(this->text_item_hash);
+        this->deleteLater();
+    }else if (this->OBJECT_RECOGNITION_FLAG_INDEX == Constants::IMAGE_SIGNAL_INDEX) {
+        this->image_manager_interface->removeItem(this->image_item_Hash);
+        emit this->image_Hash_Removal_Request_Signal(this->image_item_Hash);
+        this->deleteLater();
+    }else if (this->OBJECT_RECOGNITION_FLAG_INDEX == Constants::VIDEO_SIGNAL_INDEX) {
+
+    }else if (this->OBJECT_RECOGNITION_FLAG_INDEX == Constants::AUDIO_SIGNAL_INDEX) {
+
+    }
+}
+
+void ItemWidget::saveButtonClicked() {
+    if (this->OBJECT_RECOGNITION_FLAG_INDEX == Constants::TEXT_SIGNAL_INDEX) {
+        QString text = this->image_Text_HolderLabel->text();
+        this->text_editor->receiveText(&text);
+        this->text_editor->show();
+    }
 }
 
 
