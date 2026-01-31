@@ -109,21 +109,26 @@ void ClipBoardUI::handleIncomingItems() {
         if(!this->currentTextHash.contains(currHash)) {
             this->currentTextHash.insert(currHash);
             auto *textWidget = new ItemWidget();
-            textWidget->setTextManagerInterfaceInput(this->text_manager_interface);
+            textWidget->setTextManagerInterfaceInputs(
+                this->text_manager_interface, this->text_editor
+            );
             textWidget->assignText(currentMime_data->text(), currHash); // issue
 
-            if (textWidget != nullptr) {
-                connect(
-                    textWidget, &ItemWidget::textItemClickedSignal,
-                    this, &ClipBoardUI::textItemClickedAction
+            connect(
+                textWidget, &ItemWidget::textItemClickedSignal,
+                this, &ClipBoardUI::textItemClickedAction
                 );
-                this->showItemOnScreen(textWidget);
-            } // final data sent to UI
+            connect(
+                textWidget, &ItemWidget::text_Hash_Removal_Request_Signal,
+                this, &ClipBoardUI::accept_Text_Hash_Removal
+                );
+
+            this->showTextItemOnScreen(textWidget);
         }
 
     }else if (currentMime_data->hasImage()) {
         if (
-            const auto image = qvariant_cast<QImage>(currentMime_data->imageData());
+            const auto image = convertToQImage(currentMime_data);
             !image.isNull()
         ) {
             QString imageHash = getImageObjectHash(image);
@@ -134,14 +139,15 @@ void ClipBoardUI::handleIncomingItems() {
                 imageWidget->setImageManagerInterfaceInput(this->image_manager_interface);
 
                 imageWidget->assignImage(image, imageHash); // issue
-
-                if (imageWidget != nullptr) {
-                    connect(
-                        imageWidget, &ItemWidget::imageItemClickedSignal,
-                        this, &ClipBoardUI::imageItemClickedAction
+                connect(
+                    imageWidget, &ItemWidget::imageItemClickedSignal,
+                    this, &ClipBoardUI::imageItemClickedAction
                     );
-                    this->showImageOnScreen(imageWidget);
-                } // final data sent to UI
+                connect(
+                    imageWidget, &ItemWidget::image_Hash_Removal_Request_Signal,
+                    this, &ClipBoardUI::accept_Image_Hash_Removal
+                    );
+                this->showImageOnScreen(imageWidget);
             }
         }
     }
@@ -155,7 +161,7 @@ void ClipBoardUI::setActions() const {
     );
 }
 
-void ClipBoardUI::showItemOnScreen(ItemWidget *item) const {
+void ClipBoardUI::showTextItemOnScreen(ItemWidget *item) const {
     if (item != nullptr) {
         // New Text On top
         this->textScrollAreaInnerLayout->insertWidget(0, (QWidget *)item);
@@ -186,6 +192,16 @@ QString ClipBoardUI::getImageObjectHash(const QImage &qImage) {
     return QString::number(hash, 16);
 }
 
+QImage ClipBoardUI::convertToQImage(const QMimeData *mime_data) {
+    QVariant imageVariant = mime_data->imageData();
+
+    if (imageVariant.isValid() && imageVariant.canConvert<QImage>()) {
+        return qvariant_cast<QImage>(imageVariant);
+    }
+
+    return QImage(nullptr);
+}
+
 void ClipBoardUI::setCustomStyle() {
     this->setStyleSheet(
         "background-color: rgba(43, 43, 43, 100);"
@@ -195,4 +211,27 @@ void ClipBoardUI::setCustomStyle() {
             "width: 139px; "
         "}"
     );
+}
+
+void ClipBoardUI::accept_Text_Hash_Removal(const size_t textHash) {
+    if (this->currentTextHash.contains(textHash)) {
+        const QMimeData *mime_data = this->clipBoard->mimeData(QClipboard::Clipboard);
+        if (mime_data && mime_data->hasText() && qHash(mime_data->text()) == textHash) {
+            this->clipBoard->clear(QClipboard::Clipboard); // makes the ClipBoard Empty
+        }
+        this->currentTextHash.erase(textHash);
+    }
+}
+
+void ClipBoardUI::accept_Image_Hash_Removal(const QString &imageHash) {
+    if (this->currentImageHash.contains(imageHash)) {
+        const QMimeData *mime_data = this->clipBoard->mimeData(QClipboard::Clipboard);
+        if (mime_data && mime_data->hasImage()) {
+            const QImage image = convertToQImage(mime_data);
+            if (!image.isNull() && getImageObjectHash(image) == imageHash) {
+                this->clipBoard->clear(QClipboard::Clipboard);
+            }
+        }
+        this->currentImageHash.erase(imageHash);
+    }
 }

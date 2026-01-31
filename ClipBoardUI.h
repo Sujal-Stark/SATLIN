@@ -19,27 +19,37 @@
 #include "ImageManagerInterface.h"
 #include "ItemWidget.h"
 #include "TextManagerInterface.h"
+#include "TextEditor.h"
 
 
 using namespace std;
 
 class ClipBoardUI final : public QWidget{
-    set<size_t> currentTextHash; //check's newly arrived string already present or not
-    set<QString> currentImageHash;
-    TextManagerInterface *text_manager_interface = new TextManagerInterface();
-    ImageManagerInterface *image_manager_interface = new ImageManagerInterface();
-
-                                // Method Declaration
+    // General
     void constructUI() const;
     void widgetBehaviourSelection() const;
-    void showItemOnScreen(ItemWidget *item) const;
-    void showImageOnScreen(ItemWidget *image) const;
-    void textItemClickedAction(const QString &content) const;
-    void imageItemClickedAction(const QPixmap &content) const;
     void setActions() const; // used to group all connections
-    void handleIncomingItems(); // get copied item from clip board
-    static QString getImageObjectHash(const QImage &qImage); // creates Hash for current image
     void setCustomStyle();
+
+    // Text Section
+    set<size_t> currentTextHash; //check's newly arrived string already present or not
+    TextManagerInterface *text_manager_interface = new TextManagerInterface();
+    TextEditor *text_editor = new TextEditor();
+    void showTextItemOnScreen(ItemWidget *item) const;
+    void textItemClickedAction(const QString &content) const;
+
+    // Image Section Related
+    set<QString> currentImageHash;
+    ImageManagerInterface *image_manager_interface = new ImageManagerInterface();
+    void showImageOnScreen(ItemWidget *image) const;
+    void imageItemClickedAction(const QPixmap &content) const;
+    static QString getImageObjectHash(const QImage &qImage); // creates Hash for current image
+    static QImage convertToQImage(const QMimeData *mime_data);
+
+    // Signal Reception
+    void handleIncomingItems(); // get copied item from clip board
+    void accept_Text_Hash_Removal(size_t textHash);
+    void accept_Image_Hash_Removal(const QString &imageHash);
 
     public:
     explicit ClipBoardUI();
