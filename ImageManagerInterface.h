@@ -23,4 +23,5 @@ public:
     [[nodiscard]] QLabel* getCurrentPixmapLabel(); // sends output
     void addImageToMap(); // takes an instance of QImage
     [[nodiscard]]static QImage generateThumbnail(const QImage &qImage);
+    bool removeItem(const QString &imageHash);
 };

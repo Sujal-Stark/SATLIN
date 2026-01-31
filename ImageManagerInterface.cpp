@@ -62,3 +62,17 @@ QImage ImageManagerInterface::generateThumbnail(const QImage &qImage) {
     );
 }
 
+bool ImageManagerInterface::removeItem(const QString &imageHash) {
+    /*
+     * Takes out the reference of the QLabel and delete with its content
+     */
+    if (this->hashImage.contains(imageHash)) {
+        QLabel *imageLabel = this->hashImage[imageHash];
+        this->hashImage.erase(imageHash);
+        imageLabel->clear(); // removes the pixmap as well
+        imageLabel->deleteLater(); // delete the label as well
+        return  true;
+    }
+    return  false; // if the hash value doesn't exist
+}
+
