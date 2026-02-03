@@ -8,6 +8,7 @@
 #include<iostream>
 #include <utility>
 
+#include "ClipBoardUI.h"
 #include "Constants.h"
 
 using namespace std;
@@ -71,6 +72,10 @@ void ItemWidget::establishConnections() {
     connect(
         this->saveButton, &QPushButton::clicked,
         this, &ItemWidget::saveButtonClicked
+    );
+    connect(
+        this->editButton, &QPushButton::clicked,
+        this, &ItemWidget::editButtonClicked
     );
 }
 
@@ -156,10 +161,18 @@ void ItemWidget::deleteButtonClicked() {
     }
 }
 
-void ItemWidget::saveButtonClicked() {
+void ItemWidget::saveButtonClicked() const {
     if (this->OBJECT_RECOGNITION_FLAG_INDEX == Constants::TEXT_SIGNAL_INDEX) {
-        QString text = this->image_Text_HolderLabel->text();
-        this->text_editor->receiveText(&text);
+        const QString text = this->image_Text_HolderLabel->text();
+        this->text_editor->receiveText(text, 0); // 0 -> save Action
+        this->text_editor->show();
+    }
+}
+
+void ItemWidget::editButtonClicked() const {
+    if (this->OBJECT_RECOGNITION_FLAG_INDEX == Constants::TEXT_SIGNAL_INDEX) {
+        const QString text = this->image_Text_HolderLabel->text();
+        this->text_editor->receiveText(text, 1); // 1 -> edit operation
         this->text_editor->show();
     }
 }

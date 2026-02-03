@@ -57,7 +57,8 @@ class ItemWidget : public QWidget{
     void stylizeFrames() const;
     void establishConnections();
     void deleteButtonClicked();
-    void saveButtonClicked();
+    void saveButtonClicked() const;
+    void editButtonClicked() const;
 
 signals:
     void textItemClickedSignal(QString text); // returns Text item
