@@ -30,6 +30,7 @@ class TextEditor : public QWidget{
 
     // buttons
     QPushButton *saveButton = new QPushButton(Constants::SAVE_LABEL);
+    QPushButton *confirmButton = new QPushButton(Constants::CONFIRM_LABEL);
     QPushButton *cancelButton = new QPushButton(Constants::CANCEL_LABEL);
 
                                             // Members
@@ -40,12 +41,19 @@ class TextEditor : public QWidget{
     void establishConnections();
     void cancelButtonAction();
     void saveButtonAction();
+    void confirmButtonAction();
+    void closingAction();
     static void writeTextFile(const QString &fileName, const QString &content);
+    void dynamicWidgetIntegration();
+
+                                        // Attributes
+    // General
+    int operationModeSignal = -1; // 0 -> save button 1 -> Edit Button
 
     // Text Related
-    QString *incomingText = nullptr;
+    QString incomingText = nullptr;
 
 public:
     explicit TextEditor();
-    void receiveText(QString *text);
+    void receiveText(const QString &text, int operationMode);
 };
