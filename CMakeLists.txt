@@ -35,6 +35,8 @@ add_executable(Satlin
         EmojiWidget.h
         TextEditor.cpp
         TextEditor.h
+        IconManager.cpp
+        IconManager.h
 )
 
 # Link against Qt modules
