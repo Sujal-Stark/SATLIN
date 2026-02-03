@@ -62,7 +62,6 @@ namespace  Constants {
     inline const QString TEXT_EDITOR_WINDOW_TITLE = "Text Editor";
     inline const QString SAVE_FILE_LABEL = "Save File";
     inline const QString CONFIRM_LABEL = "Confirm";
-    inline const QString OPERATION_MODE = "Operation Mode";
     inline constexpr int TEXT_EDITOR_WIDTH = 500;
     inline constexpr int TEXT_EDITOR_HEIGHT = 500;
 
