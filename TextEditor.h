@@ -9,6 +9,7 @@
 
 #include "EmojiWidget.h"
 #include "Constants.h"
+#include "IconManager.h"
 
 
 class TextEditor : public QWidget{
@@ -29,9 +30,9 @@ class TextEditor : public QWidget{
     QTextEdit *inputArea = new QTextEdit();
 
     // buttons
-    QPushButton *saveButton = new QPushButton(Constants::SAVE_LABEL);
-    QPushButton *confirmButton = new QPushButton(Constants::CONFIRM_LABEL);
-    QPushButton *cancelButton = new QPushButton(Constants::CANCEL_LABEL);
+    QPushButton *saveButton = new QPushButton();
+    QPushButton *confirmButton = new QPushButton();
+    QPushButton *cancelButton = new QPushButton();
 
                                             // Members
     // General

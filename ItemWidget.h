@@ -34,9 +34,9 @@ class ItemWidget : public QWidget{
     ImageManagerInterface *image_manager_interface = nullptr;
 
     // QButtons
-    QPushButton *deleteButton = new QPushButton(Constants::DELETE_LABEL);
-    QPushButton *editButton = new QPushButton(Constants::EDIT_LABEL);
-    QPushButton *saveButton = new QPushButton(Constants::SAVE_LABEL);
+    QPushButton *deleteButton = new QPushButton();
+    QPushButton *editButton = new QPushButton();
+    QPushButton *saveButton = new QPushButton();
 
     // holder object declaration
     QLabel* image_Text_HolderLabel = nullptr;

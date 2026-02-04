@@ -35,12 +35,17 @@ void ItemWidget::stylizeButtons() const {
     this->editButton->setFixedSize(
         Constants::ITEM_WIDGET_EDIT_BUTTON_WIDTH, Constants::ITEM_WIDGET_EDIT_BUTTON_HEIGHT
     );
+    this->editButton->setIcon(IconManager::editIcon());
+
     this->deleteButton->setFixedSize(
         Constants::ITEM_WIDGET_EDIT_BUTTON_WIDTH, Constants::ITEM_WIDGET_EDIT_BUTTON_HEIGHT
     );
+    this->deleteButton->setIcon(IconManager::cancelIcon());
+
     this->saveButton->setFixedSize(
         Constants::ITEM_WIDGET_EDIT_BUTTON_WIDTH, Constants::ITEM_WIDGET_EDIT_BUTTON_HEIGHT
     );
+    this->saveButton->setIcon(IconManager::saveIcon());
 }
 
 void ItemWidget::stylizeFrames() const {

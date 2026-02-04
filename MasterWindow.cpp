@@ -24,8 +24,12 @@ void MasterWindow::constructUI() {
     this->outerTabWidget->tabBar()->setUsesScrollButtons(false);
     this->outerTabWidget->tabBar()->setExpanding(true);
 
-    outerTabWidget->addTab(clipBoard, Constants::CLIP_BOARD);
-    outerTabWidget->addTab(emojiBoard, Constants::EMOJI);
+    outerTabWidget->addTab(
+        clipBoard, IconManager::clipboardIcon(), Constants::CLIP_BOARD
+    );
+    outerTabWidget->addTab(
+        emojiBoard, IconManager::emojiPanelIcon(), Constants::EMOJI
+    );
 }
 
 void MasterWindow::setCustomStyle() {

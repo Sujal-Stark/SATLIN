@@ -26,7 +26,9 @@ void ClipBoardUI::constructUI() const {
     this->masterLayout->addWidget(this->clipTabWidget);
 
     // tab insertion
-    this->clipTabWidget->addTab(this->textSection, Constants::TEXT_SECTION); // Text
+    this->clipTabWidget->addTab(
+        this->textSection, IconManager::textIcon(), Constants::TEXT_SECTION
+    ); // Text
     this->textSection->setLayout(this->textSectionLayout);
     this->textSectionLayout->setSpacing(0);
     this->textSectionLayout->addWidget(
@@ -35,7 +37,9 @@ void ClipBoardUI::constructUI() const {
     this->textSectionScrollArea->setWidget(this->textHolderFrame);
     this->textHolderFrame->setLayout(this->textScrollAreaInnerLayout);
 
-    this->clipTabWidget->addTab(this->imageSection, Constants::IMAGE_SECTION); // Image
+    this->clipTabWidget->addTab(
+        this->imageSection, IconManager::photoIcon(), Constants::IMAGE_SECTION
+    ); // Image
     this->imageSection->setLayout(this->imageSectionLayout);
     this->imageSectionLayout->setSpacing(0);
     this->imageSectionLayout->addWidget(
@@ -44,7 +48,9 @@ void ClipBoardUI::constructUI() const {
     this->imageSectionScrollArea->setWidget(this->imageHolderFrame);
     this->imageHolderFrame->setLayout(this->imageScrollAreaInnerLayout);
 
-    this->clipTabWidget->addTab(this->videoSection, Constants::VIDEO_SECTION);
+    this->clipTabWidget->addTab(
+        this->videoSection, IconManager::videoIcon(), Constants::VIDEO_SECTION
+    );
     this->videoSection->setLayout(this->videoSectionLayout);
     this->videoSectionLayout->setSpacing(0);
     this->videoSectionLayout->addWidget(
@@ -53,7 +59,9 @@ void ClipBoardUI::constructUI() const {
     this->videoSectionScrollArea->setWidget(this->videoHolderFrame);
     this->videoHolderFrame->setLayout(this->videoScrollAreaInnerLayout);
 
-    this->clipTabWidget->addTab(this->audioSection, Constants::AUDIO_SECTION);
+    this->clipTabWidget->addTab(
+        this->audioSection, IconManager::audioIcon(), Constants::AUDIO_SECTION
+    );
     this->audioSection->setLayout(this->audioSectionLayout);
     this->audioSectionLayout->setSpacing(0);
     this->audioSectionLayout->addWidget(

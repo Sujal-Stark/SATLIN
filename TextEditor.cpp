@@ -65,12 +65,17 @@ void TextEditor::assignProperties() const {
     this->saveButton->setFixedSize(
         Constants::ITEM_WIDGET_EDIT_BUTTON_WIDTH, Constants::ITEM_WIDGET_EDIT_BUTTON_HEIGHT
     );
+    this->saveButton->setIcon(IconManager::saveIcon());
+
     this->confirmButton->setFixedSize(
         Constants::ITEM_WIDGET_EDIT_BUTTON_WIDTH, Constants::ITEM_WIDGET_EDIT_BUTTON_HEIGHT
     );
+    this->confirmButton->setIcon(IconManager::confirmIcon());
+
     this->cancelButton->setFixedSize(
         Constants::ITEM_WIDGET_EDIT_BUTTON_WIDTH, Constants::ITEM_WIDGET_EDIT_BUTTON_HEIGHT
     );
+    this->cancelButton->setIcon(IconManager::cancelIcon());
 
     // Text Edit
     this->inputArea->setWordWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
