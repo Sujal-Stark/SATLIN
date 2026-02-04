@@ -37,6 +37,7 @@ add_executable(Satlin
         TextEditor.h
         IconManager.cpp
         IconManager.h
+        resources.qrc
 )
 
 # Link against Qt modules

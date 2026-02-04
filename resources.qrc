@@ -1,0 +1,15 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource>
+        <file alias = "Download">images/downloadIcon.svg</file>
+        <file alias = "Cancel">images/cancelIcon.svg</file>
+        <file alias = "Edit">images/EditIcon.svg</file>
+        <file alias = "Check">images/CheckIcon.svg</file>
+        <file alias = "Text">images/TextIcon.svg</file>
+        <file alias = "Photo">images/PhotoIcon.svg</file>
+        <file alias = "Video">images/VideoIcon.svg</file>
+        <file alias = "Audio">images/AudioIcon.svg</file>
+        <file alias = "Clipboard">images/ClipboardIcon.svg</file>
+        <file alias = "EmojiPanel">images/EmojiPanelIcon.svg</file>
+    </qresource>
+</RCC>
