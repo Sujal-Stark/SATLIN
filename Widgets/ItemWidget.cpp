@@ -173,10 +173,16 @@ void ItemWidget::deleteButtonClicked() {
 }
 
 void ItemWidget::saveButtonClicked() const {
+    /*
+     * Saves The media corresponding to Signal_Index.
+     */
     if (this->OBJECT_RECOGNITION_FLAG_INDEX == Constants::TEXT_SIGNAL_INDEX) {
         const QString text = this->image_Text_HolderLabel->text();
         this->text_editor->receiveText(text, 0); // 0 -> save Action
         this->text_editor->show();
+    }
+    else if (this->OBJECT_RECOGNITION_FLAG_INDEX == Constants::IMAGE_SIGNAL_INDEX) {
+        this->image_manager_interface->saveActionPerformed(this->image_item_Hash);
     }
 }
 

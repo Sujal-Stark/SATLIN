@@ -2,8 +2,8 @@
 // Created by sujal-stark on 11/5/25.
 //
 
-#include <QCryptographicHash>
 #include <utility>
+#include <QFileDialog>
 
 #include "ImageManagerInterface.h"
 #include "../Util/Constants.h"
@@ -13,7 +13,7 @@ ImageManagerInterface::ImageManagerInterface() = default;
 void ImageManagerInterface::setInputImage(const QImage &qImage, QString currentHash) {
     this->currentImage = qImage;
     this->currentHash = std::move(currentHash);
-    this->addImageToMap();
+    this->addThumbnailToMap();
 }
 
 QLabel *ImageManagerInterface::getCurrentPixmapLabel() {
@@ -24,10 +24,12 @@ QLabel *ImageManagerInterface::getCurrentPixmapLabel() {
 }
 
 
-QLabel *ImageManagerInterface::createPixmapLabel() const {
+QLabel *ImageManagerInterface::createPixmapLabel() {
     /*
-     * Generates a thumbnail for the image and if the image is new then create a label for it
+     * Generates a thumbnail for the image and if the image is new then create a label for it.
+     * Also stores the original QImage as a Pixmap.
      */
+    this->storePixmap(this->currentImage);
     const QImage thumbnailImage = generateThumbnail(currentImage);
 
     // Redundancy Checking
@@ -46,7 +48,7 @@ QLabel *ImageManagerInterface::createPixmapLabel() const {
     return imageLabel; // Returning output pixmap
 }
 
-void ImageManagerInterface::addImageToMap() {
+void ImageManagerInterface::addThumbnailToMap() {
     /*
      * Adds the new PixMapLabel to the Hash if it's new.
      */
@@ -64,15 +66,47 @@ QImage ImageManagerInterface::generateThumbnail(const QImage &qImage) {
 
 bool ImageManagerInterface::removeItem(const QString &imageHash) {
     /*
-     * Takes out the reference of the QLabel and delete with its content
+     * Takes out the reference of the QLabel and delete with its content.
+     * corresponding QPixmap from the qPixmapHash.
      */
     if (this->hashImage.contains(imageHash)) {
         QLabel *imageLabel = this->hashImage[imageHash];
         this->hashImage.erase(imageHash);
         imageLabel->clear(); // removes the pixmap as well
         imageLabel->deleteLater(); // delete the label as well
+        if (this->qPixmapHash.contains(imageHash)) {
+            this->qPixmapHash.erase(imageHash);
+        }
         return  true;
     }
     return  false; // if the hash value doesn't exist
+}
+
+void ImageManagerInterface::saveActionPerformed(const QString &imageHash) {
+    /*
+     * Selects directory, file name for the image to be saved.
+     * and saved using QPixmap save method.
+     */
+    if (this->qPixmapHash.contains(imageHash)) {
+        QString fileName = QFileDialog::getSaveFileName(
+            this, Constants::SAVE_FILE_LABEL,QDir::homePath(),
+            "Images (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*)"
+        );
+
+        QPixmap pixmap = *this->qPixmapHash[imageHash]; // dereferencing qPixMap
+        pixmap.save(fileName); // output not required.
+    }
+}
+
+void ImageManagerInterface::storePixmap(const QImage& image) {
+    /*
+     * Check's if the hash corresponding to pixmap already exists or not.
+     * If not then stores the hash.
+     */
+    if (!this->qPixmapHash.contains(this->currentHash)) {
+        this->qPixmapHash[this->currentHash] = make_unique<QPixmap>(
+            QPixmap::fromImage(image)
+        );
+    }
 }
 

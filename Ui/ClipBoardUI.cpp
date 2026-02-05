@@ -178,17 +178,13 @@ void ClipBoardUI::setActions() const {
 }
 
 void ClipBoardUI::showTextItemOnScreen(ItemWidget *item) const {
-    if (item != nullptr) {
-        // New Text On top
-        this->textScrollAreaInnerLayout->insertWidget(0, (QWidget *)item);
-    }
+    // New Text On top
+    this->textScrollAreaInnerLayout->insertWidget(0, (QWidget *)item);
 }
 
 void ClipBoardUI::showImageOnScreen(ItemWidget *image) const {
-    if(image != nullptr) {
-        // New Image on top
-        this->imageScrollAreaInnerLayout->insertWidget(0, (QWidget *)image);
-    }
+    // New Image on top
+    this->imageScrollAreaInnerLayout->insertWidget(0, (QWidget *)image);
 }
 
 
