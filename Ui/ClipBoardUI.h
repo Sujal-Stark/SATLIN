@@ -31,6 +31,8 @@ class ClipBoardUI final : public QWidget{
     void setActions() const; // used to group all connections
     void setCustomStyle();
 
+    int ptr = 0;
+
     // Text Section
     set<size_t> currentTextHash; //check's newly arrived string already present or not
     TextManagerInterface *text_manager_interface = new TextManagerInterface();
@@ -48,7 +50,12 @@ class ClipBoardUI final : public QWidget{
 
     // Signal Reception
     void handleIncomingItems(); // get copied item from clip board
+
+    // Text
     void accept_Text_Hash_Removal(size_t textHash);
+    void acceptTextHashReplacement(size_t currentHash, size_t nextHash);
+
+    // Image
     void accept_Image_Hash_Removal(const QString &imageHash);
 
     public:

@@ -54,6 +54,9 @@ class TextEditor : public QWidget{
     // Text Related
     QString incomingText = nullptr;
 
+    signals:
+    void textEditedSignal(QSharedPointer<QString> editedText);
+
 public:
     explicit TextEditor();
     void receiveText(const QString &text, int operationMode);

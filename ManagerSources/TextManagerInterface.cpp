@@ -66,6 +66,23 @@ bool TextManagerInterface::removeItem(const size_t textHash) {
         return  true;
     }
     return  false;
+}
 
+bool TextManagerInterface::receiveTextForSwapping(
+        const QSharedPointer<QString>&text, const size_t currentHash, const size_t nextHash
+    ) {
+    /*
+     * Removes old key value pair from the TextMap and set the new text in the same
+     * QLabel, store it in the TextMap. if succeed returns true.
+     */
+    if (this->textMap.contains(currentHash)) {
+        QLabel *currLabel = this->textMap[currentHash];
+        this->textMap.erase(currentHash);
+        currLabel->clear(); // QString is cleared.
+        currLabel->setText(*text);
+        this->textMap[nextHash] = currLabel;
+        return true;
+    }
+    return false;
 }
 

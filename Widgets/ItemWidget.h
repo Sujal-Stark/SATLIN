@@ -59,15 +59,21 @@ class ItemWidget : public QWidget{
     void deleteButtonClicked();
     void saveButtonClicked() const;
     void editButtonClicked() const;
+    void textEditedSignalReceivedAction(const QSharedPointer<QString>& editedText);
 
 signals:
-    void textItemClickedSignal(QString text); // returns Text item
+    // Text
+    void textItemClickedSignal(QString text);
+    void text_Hash_Removal_Request_Signal(size_t text_Hash);
+    void textHashReplacementSignal(size_t currentHash, size_t nextHash);
+
+    // Images
     void imageItemClickedSignal(QPixmap image); // returns Image item
+    void image_Hash_Removal_Request_Signal(QString &image_Hash);
+
     // video signal
     // audio signal
 
-    void text_Hash_Removal_Request_Signal(size_t text_Hash);
-    void image_Hash_Removal_Request_Signal(QString &image_Hash);
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;

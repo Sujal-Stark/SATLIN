@@ -169,6 +169,14 @@ void TextEditor::writeTextFile(const QString &fileName, const QString &content) 
 }
 
 void TextEditor::confirmButtonAction() {
+    /*
+     * Creates a QSharedPointer from the output. Sends this signal to
+     * the ItemWidget for further operation. Closes the Editor.
+     */
+    QSharedPointer<QString>finalText = QSharedPointer<QString>::create(
+        this->inputArea->toPlainText()
+    );
+    emit this->textEditedSignal(finalText);
     this->closingAction();
 }
 

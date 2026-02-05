@@ -88,7 +88,13 @@ void ItemWidget::setTextManagerInterfaceInputs(
         TextManagerInterface *interface, TextEditor *textEditor
     ) {
     this->text_manager_interface = interface;
+
+    // Text Editor
     this->text_editor = textEditor;
+    connect(
+        this->text_editor, &TextEditor::textEditedSignal,
+        this, &ItemWidget::textEditedSignalReceivedAction
+    );
 }
 
 void ItemWidget::setImageManagerInterfaceInput(ImageManagerInterface *interface) {
@@ -182,4 +188,20 @@ void ItemWidget::editButtonClicked() const {
     }
 }
 
+void ItemWidget::textEditedSignalReceivedAction(const QSharedPointer<QString>& editedText) {
+    /*
+     * Receives edited Text(AS a QSharedPointer) and send it to the Text manager interface.
+     */
+    size_t nextHash = qHash(*editedText);
 
+    if (
+        this->text_manager_interface->receiveTextForSwapping(
+            editedText, this->text_item_hash, nextHash
+        )
+    ) {
+        this->textHashReplacementSignal(this->text_item_hash, nextHash);
+        this->text_item_hash = nextHash;
+        emit textItemClickedSignal(this->image_Text_HolderLabel->text());
+        this->update();
+    }
+}

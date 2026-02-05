@@ -16,6 +16,9 @@ class TextManagerInterface {
 public:
     explicit TextManagerInterface();
     void setInputText(const QString& text, size_t textHashValue);
+    [[nodiscard]] bool receiveTextForSwapping(
+        const QSharedPointer<QString>& text, size_t currentHash, size_t nextHash
+    );
 
     void addNewTextToTextMap(); // fill textMap with new Item
     [[nodiscard]] QLabel * getCurrentCopiedText(); // sends output

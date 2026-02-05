@@ -112,6 +112,9 @@ void ClipBoardUI::handleIncomingItems() {
         currentMime_data->hasText()
     ) {
         const QString currentText = currentMime_data->text();
+
+        if (currentText.isEmpty())return;
+
         const size_t currHash = qHash(currentText);
 
         if(!this->currentTextHash.contains(currHash)) {
@@ -125,15 +128,20 @@ void ClipBoardUI::handleIncomingItems() {
             connect(
                 textWidget, &ItemWidget::textItemClickedSignal,
                 this, &ClipBoardUI::textItemClickedAction
-                );
+            );
+
             connect(
                 textWidget, &ItemWidget::text_Hash_Removal_Request_Signal,
                 this, &ClipBoardUI::accept_Text_Hash_Removal
-                );
+            );
+
+            connect(
+                textWidget, &ItemWidget::textHashReplacementSignal,
+                this, &ClipBoardUI::acceptTextHashReplacement
+            );
 
             this->showTextItemOnScreen(textWidget);
         }
-
     }else if (currentMime_data->hasImage()) {
         if (
             const auto image = convertToQImage(currentMime_data);
@@ -228,6 +236,13 @@ void ClipBoardUI::accept_Text_Hash_Removal(const size_t textHash) {
             this->clipBoard->clear(QClipboard::Clipboard); // makes the ClipBoard Empty
         }
         this->currentTextHash.erase(textHash);
+    }
+}
+
+void ClipBoardUI::acceptTextHashReplacement(const size_t currentHash, const size_t nextHash) {
+    if (this->currentTextHash.contains(currentHash)) {
+        this->currentTextHash.erase(currentHash);
+        this->currentTextHash.insert(nextHash);
     }
 }
 
