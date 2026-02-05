@@ -12,8 +12,8 @@
 #include <QString>
 
 #include "ClipBoardUI.h"
-#include "EmojiGenerator.h"
-#include "Constants.h"
+#include "../Util/EmojiGenerator.h"
+#include "../Util/Constants.h"
 
 class EmojiBoardUI final : public QWidget{
 public:

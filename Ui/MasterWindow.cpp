@@ -5,7 +5,7 @@
 #include <QMainWindow>
 
 #include "MasterWindow.h"
-#include "Constants.h"
+#include "../Util/Constants.h"
 
 MasterWindow::MasterWindow(QWidget *parent)
     : QMainWindow(parent) {

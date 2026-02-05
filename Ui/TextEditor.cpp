@@ -4,7 +4,7 @@
 #include <QFileDialog>
 
 #include "TextEditor.h"
-#include "Constants.h"
+#include "../Util/Constants.h"
 
 TextEditor::TextEditor() {
     this->setWindowModality(Qt::ApplicationModal);

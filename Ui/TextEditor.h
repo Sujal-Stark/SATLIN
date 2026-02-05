@@ -7,9 +7,9 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 
-#include "EmojiWidget.h"
-#include "Constants.h"
-#include "IconManager.h"
+#include "../Widgets/EmojiWidget.h"
+#include "../Util/Constants.h"
+#include "../ManagerSources/IconManager.h"
 
 
 class TextEditor : public QWidget{

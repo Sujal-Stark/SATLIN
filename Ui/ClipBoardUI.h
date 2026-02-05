@@ -15,10 +15,10 @@
 #include <set>
 
 // Custom Import
-#include "Constants.h"
-#include "ImageManagerInterface.h"
-#include "ItemWidget.h"
-#include "TextManagerInterface.h"
+#include "../Util/Constants.h"
+#include "../ManagerSources/ImageManagerInterface.h"
+#include "../Widgets/ItemWidget.h"
+#include "../ManagerSources/TextManagerInterface.h"
 #include "TextEditor.h"
 
 

@@ -6,7 +6,7 @@
 #include <utility>
 
 #include "ImageManagerInterface.h"
-#include "Constants.h"
+#include "../Util/Constants.h"
 
 ImageManagerInterface::ImageManagerInterface() = default;
 

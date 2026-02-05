@@ -3,7 +3,7 @@
 //
 
 #include "TextManagerInterface.h"
-#include "Constants.h"
+#include "../Util/Constants.h"
 
 TextManagerInterface::TextManagerInterface() {
     this->currentTextHash = -1;

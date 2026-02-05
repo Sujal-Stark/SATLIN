@@ -7,9 +7,9 @@
 #include <QVariant>
 
 // custom import
-#include "Constants.h"
+#include "../Util/Constants.h"
 #include "ClipBoardUI.h"
-#include "ItemWidget.h"
+#include "../Widgets/ItemWidget.h"
 
 using namespace std;
 

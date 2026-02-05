@@ -8,8 +8,8 @@
 #include<iostream>
 #include <utility>
 
-#include "ClipBoardUI.h"
-#include "Constants.h"
+#include "../Ui/ClipBoardUI.h"
+#include "../Util/Constants.h"
 
 using namespace std;
 

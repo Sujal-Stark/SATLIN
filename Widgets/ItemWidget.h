@@ -8,10 +8,10 @@
 #include<QPushButton>
 #include<QHBoxLayout>
 
-#include "Constants.h"
-#include "ImageManagerInterface.h"
-#include "TextEditor.h"
-#include "TextManagerInterface.h"
+#include "../Util/Constants.h"
+#include "../ManagerSources/ImageManagerInterface.h"
+#include "../Ui/TextEditor.h"
+#include "../ManagerSources/TextManagerInterface.h"
 
 using namespace std;
 

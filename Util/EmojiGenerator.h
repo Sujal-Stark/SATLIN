@@ -7,7 +7,7 @@
 #include<QThread>
 
 // custom imports
-#include "ClipBoardUI.h"
+#include "../Ui/ClipBoardUI.h"
 
 class EmojiGenerator final : public QThread{
     Q_OBJECT

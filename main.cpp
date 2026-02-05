@@ -1,6 +1,6 @@
 #include <QApplication>
 
-#include "MasterWindow.h"
+#include "Ui/MasterWindow.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);

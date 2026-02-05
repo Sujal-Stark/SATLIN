@@ -2,9 +2,9 @@
 // Created by sujal-stark on 9/28/25.
 //
 
-#include "Constants.h"
+#include "../Util/Constants.h"
 #include "EmojiBoardUI.h"
-#include "EmojiWidget.h"
+#include "../Widgets/EmojiWidget.h"
 #include "QDebug"
 #include "QHeaderView"
 #include <QFont>
