@@ -8,12 +8,12 @@
 
 // custom import
 #include "../Util/Constants.h"
-#include "ClipBoardUI.h"
+#include "ClipBoardInterface.h"
 #include "../Widgets/ItemWidget.h"
 
 using namespace std;
 
-ClipBoardUI::ClipBoardUI() {
+ClipBoardInterface::ClipBoardInterface() {
     this->setLayout(this->masterLayout);
     this->widgetBehaviourSelection();
     this->constructUI();
@@ -22,7 +22,7 @@ ClipBoardUI::ClipBoardUI() {
     this->setCustomStyle();
 }
 
-void ClipBoardUI::constructUI() const {
+void ClipBoardInterface::constructUI() const {
     this->masterLayout->addWidget(this->clipTabWidget);
 
     // tab insertion
@@ -71,7 +71,7 @@ void ClipBoardUI::constructUI() const {
     this->audioHolderFrame->setLayout(this->audioScrollAreaInnerLayout);
 }
 
-void ClipBoardUI::widgetBehaviourSelection() const {
+void ClipBoardInterface::widgetBehaviourSelection() const {
     // Frame
     this->textHolderFrame->setFrameShape(QFrame::Shape::StyledPanel);
     this->imageHolderFrame->setFrameShape(QFrame::Shape::StyledPanel);
@@ -106,97 +106,105 @@ void ClipBoardUI::widgetBehaviourSelection() const {
     );
 }
 
-void ClipBoardUI::handleIncomingItems() {
-    if (
-        const QMimeData *currentMime_data = this->clipBoard->mimeData(QClipboard::Clipboard);
-        currentMime_data->hasText()
-    ) {
-        const QString currentText = currentMime_data->text();
+void ClipBoardInterface::handleTextItem(const QSharedPointer<QString>& textPtr) {
+    const QString& currentText = *textPtr;
 
-        if (currentText.isEmpty())return;
+    if (currentText.isEmpty())return;
 
-        const size_t currHash = qHash(currentText);
+    const size_t currHash = qHash(currentText);
 
-        if(!this->currentTextHash.contains(currHash)) {
-            this->currentTextHash.insert(currHash);
-            auto *textWidget = new ItemWidget();
-            textWidget->setTextManagerInterfaceInputs(
-                this->text_manager_interface, this->text_editor
-            );
-            textWidget->assignText(currentMime_data->text(), currHash); // issue
+    if(!this->currentTextHash.contains(currHash)) {
+        this->currentTextHash.insert(currHash);
+        auto *textWidget = new ItemWidget();
+        textWidget->setTextManagerInterfaceInputs(
+            this->text_manager_interface, this->text_editor
+        );
+        textWidget->assignText(currentText, currHash); // issue
 
-            connect(
-                textWidget, &ItemWidget::textItemClickedSignal,
-                this, &ClipBoardUI::textItemClickedAction
-            );
+        connect(
+            textWidget, &ItemWidget::textItemClickedSignal,
+            this, &ClipBoardInterface::textItemClickedAction
+        );
 
-            connect(
-                textWidget, &ItemWidget::text_Hash_Removal_Request_Signal,
-                this, &ClipBoardUI::accept_Text_Hash_Removal
-            );
+        connect(
+            textWidget, &ItemWidget::text_Hash_Removal_Request_Signal,
+            this, &ClipBoardInterface::accept_Text_Hash_Removal
+        );
 
-            connect(
-                textWidget, &ItemWidget::textHashReplacementSignal,
-                this, &ClipBoardUI::acceptTextHashReplacement
-            );
+        connect(
+            textWidget, &ItemWidget::textHashReplacementSignal,
+            this, &ClipBoardInterface::acceptTextHashReplacement
+        );
 
-            this->showTextItemOnScreen(textWidget);
-        }
-    }else if (currentMime_data->hasImage()) {
-        if (
-            const auto image = convertToQImage(currentMime_data);
-            !image.isNull()
-        ) {
-            QString imageHash = getImageObjectHash(image);
-
-            if (!this->currentImageHash.contains(imageHash)) {
-                this->currentImageHash.insert(imageHash);
-                auto *imageWidget = new ItemWidget();
-                imageWidget->setImageManagerInterfaceInput(this->image_manager_interface);
-
-                imageWidget->assignImage(image, imageHash); // issue
-                connect(
-                    imageWidget, &ItemWidget::imageItemClickedSignal,
-                    this, &ClipBoardUI::imageItemClickedAction
-                    );
-                connect(
-                    imageWidget, &ItemWidget::image_Hash_Removal_Request_Signal,
-                    this, &ClipBoardUI::accept_Image_Hash_Removal
-                    );
-                this->showImageOnScreen(imageWidget);
-            }
-        }
+        this->showTextItemOnScreen(textWidget);
     }
 }
 
+void ClipBoardInterface::handleImageObjectItem(const QSharedPointer<QImage> &imagePtr) {
+    const QImage& image = *imagePtr;
+    QString imageHash = getImageObjectHash(image);
 
-void ClipBoardUI::setActions() const {
+    if (!this->currentImageHash.contains(imageHash)) {
+        this->currentImageHash.insert(imageHash);
+        auto *imageWidget = new ItemWidget();
+        imageWidget->setImageManagerInterfaceInput(this->image_manager_interface);
+
+        imageWidget->assignImage(image, imageHash); // issue
+        connect(
+            imageWidget, &ItemWidget::imageItemClickedSignal,
+            this, &ClipBoardInterface::imageItemClickedAction
+            );
+        connect(
+            imageWidget, &ItemWidget::image_Hash_Removal_Request_Signal,
+            this, &ClipBoardInterface::accept_Image_Hash_Removal
+            );
+        this->showImageOnScreen(imageWidget);
+    }
+}
+
+void ClipBoardInterface::handleIncomingItems() const {
+    const QMimeData *currentMime_data = this->clipBoard->mimeData(QClipboard::Clipboard);
+    this->mimeDataAnalyzer->mimeObjectReceiver(*currentMime_data);
+}
+
+
+void ClipBoardInterface::setActions() const {
     connect(
         this->clipBoard, &QClipboard::dataChanged,
-        this, &ClipBoardUI::handleIncomingItems
+        this, &ClipBoardInterface::handleIncomingItems
+    );
+
+    connect(
+        this->mimeDataAnalyzer, &MimeDataAnalyzer::textReleaseSignal,
+        this, &ClipBoardInterface::handleTextItem
+    );
+
+    connect(
+        this->mimeDataAnalyzer, &MimeDataAnalyzer::imageObjectReleaseSignal,
+        this, &ClipBoardInterface::handleImageObjectItem
     );
 }
 
-void ClipBoardUI::showTextItemOnScreen(ItemWidget *item) const {
+void ClipBoardInterface::showTextItemOnScreen(ItemWidget *item) const {
     // New Text On top
     this->textScrollAreaInnerLayout->insertWidget(0, (QWidget *)item);
 }
 
-void ClipBoardUI::showImageOnScreen(ItemWidget *image) const {
+void ClipBoardInterface::showImageOnScreen(ItemWidget *image) const {
     // New Image on top
     this->imageScrollAreaInnerLayout->insertWidget(0, (QWidget *)image);
 }
 
 
-void ClipBoardUI::textItemClickedAction(const QString &content) const {
+void ClipBoardInterface::textItemClickedAction(const QString &content) const {
     this->clipBoard->setText(content.toStdString().data());
 }
 
-void ClipBoardUI::imageItemClickedAction(const QPixmap &content) const {
+void ClipBoardInterface::imageItemClickedAction(const QPixmap &content) const {
     qDebug()<<this->textSectionScrollArea->size(); // shall be implemented
 }
 
-QString ClipBoardUI::getImageObjectHash(const QImage &qImage) {
+QString ClipBoardInterface::getImageObjectHash(const QImage &qImage) {
     /*
      * Generates unique hashValue for a new PixMap
      */
@@ -204,17 +212,7 @@ QString ClipBoardUI::getImageObjectHash(const QImage &qImage) {
     return QString::number(hash, 16);
 }
 
-QImage ClipBoardUI::convertToQImage(const QMimeData *mime_data) {
-    QVariant imageVariant = mime_data->imageData();
-
-    if (imageVariant.isValid() && imageVariant.canConvert<QImage>()) {
-        return qvariant_cast<QImage>(imageVariant);
-    }
-
-    return QImage(nullptr);
-}
-
-void ClipBoardUI::setCustomStyle() {
+void ClipBoardInterface::setCustomStyle() {
     this->setStyleSheet(
         "background-color: rgba(43, 43, 43, 100);"
     );
@@ -225,7 +223,7 @@ void ClipBoardUI::setCustomStyle() {
     );
 }
 
-void ClipBoardUI::accept_Text_Hash_Removal(const size_t textHash) {
+void ClipBoardInterface::accept_Text_Hash_Removal(const size_t textHash) {
     if (this->currentTextHash.contains(textHash)) {
         const QMimeData *mime_data = this->clipBoard->mimeData(QClipboard::Clipboard);
         if (mime_data && mime_data->hasText() && qHash(mime_data->text()) == textHash) {
@@ -235,18 +233,18 @@ void ClipBoardUI::accept_Text_Hash_Removal(const size_t textHash) {
     }
 }
 
-void ClipBoardUI::acceptTextHashReplacement(const size_t currentHash, const size_t nextHash) {
+void ClipBoardInterface::acceptTextHashReplacement(const size_t currentHash, const size_t nextHash) {
     if (this->currentTextHash.contains(currentHash)) {
         this->currentTextHash.erase(currentHash);
         this->currentTextHash.insert(nextHash);
     }
 }
 
-void ClipBoardUI::accept_Image_Hash_Removal(const QString &imageHash) {
+void ClipBoardInterface::accept_Image_Hash_Removal(const QString &imageHash) {
     if (this->currentImageHash.contains(imageHash)) {
         const QMimeData *mime_data = this->clipBoard->mimeData(QClipboard::Clipboard);
         if (mime_data && mime_data->hasImage()) {
-            const QImage image = convertToQImage(mime_data);
+            const QImage image = MimeDataAnalyzer::convertToQImage(*mime_data);
             if (!image.isNull() && getImageObjectHash(image) == imageHash) {
                 this->clipBoard->clear(QClipboard::Clipboard);
             }

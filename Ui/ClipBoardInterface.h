@@ -20,12 +20,14 @@
 #include "../Widgets/ItemWidget.h"
 #include "../ManagerSources/TextManagerInterface.h"
 #include "TextEditor.h"
+#include "../Util/MimeDataAnalyzer.h"
 
 
 using namespace std;
 
-class ClipBoardUI final : public QWidget{
+class ClipBoardInterface final : public QWidget{
     // General
+    MimeDataAnalyzer *mimeDataAnalyzer = new MimeDataAnalyzer();
     void constructUI() const;
     void widgetBehaviourSelection() const;
     void setActions() const; // used to group all connections
@@ -33,7 +35,7 @@ class ClipBoardUI final : public QWidget{
 
     int ptr = 0;
 
-    // Text Section
+    // Text Section Related
     set<size_t> currentTextHash; //check's newly arrived string already present or not
     TextManagerInterface *text_manager_interface = new TextManagerInterface();
     TextEditor *text_editor = new TextEditor();
@@ -46,12 +48,13 @@ class ClipBoardUI final : public QWidget{
     void showImageOnScreen(ItemWidget *image) const;
     void imageItemClickedAction(const QPixmap &content) const;
     static QString getImageObjectHash(const QImage &qImage); // creates Hash for current image
-    static QImage convertToQImage(const QMimeData *mime_data);
 
     // Signal Reception
-    void handleIncomingItems(); // get copied item from clip board
+    void handleIncomingItems() const; // get copied item from clip board
 
     // Text
+    void handleTextItem(const QSharedPointer<QString>& textPtr);
+    void handleImageObjectItem(const QSharedPointer<QImage>& imagePtr);
     void accept_Text_Hash_Removal(size_t textHash);
     void acceptTextHashReplacement(size_t currentHash, size_t nextHash);
 
@@ -59,7 +62,7 @@ class ClipBoardUI final : public QWidget{
     void accept_Image_Hash_Removal(const QString &imageHash);
 
     public:
-    explicit ClipBoardUI();
+    explicit ClipBoardInterface();
     QClipboard *clipBoard;
     queue<ItemWidget *> textQueue;
 

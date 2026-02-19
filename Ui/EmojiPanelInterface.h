@@ -11,14 +11,14 @@
 #include <QTableWidget>
 #include <QString>
 
-#include "ClipBoardUI.h"
+#include "ClipBoardInterface.h"
 #include "../Util/EmojiGenerator.h"
 #include "../Util/Constants.h"
 
-class EmojiBoardUI final : public QWidget{
+class EmojiPanelInterface final : public QWidget{
 public:
                                     // Method Declaration
-    explicit EmojiBoardUI();
+    explicit EmojiPanelInterface();
 
 private:
                                     // Method Declaration

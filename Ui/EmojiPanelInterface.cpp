@@ -3,13 +3,13 @@
 //
 
 #include "../Util/Constants.h"
-#include "EmojiBoardUI.h"
+#include "EmojiPanelInterface.h"
 #include "../Widgets/EmojiWidget.h"
 #include "QDebug"
 #include "QHeaderView"
 #include <QFont>
 
-EmojiBoardUI::EmojiBoardUI() {
+EmojiPanelInterface::EmojiPanelInterface() {
     this->setLayout(this->masterLayout);
     this->propertyHandler();
     this->constructUI();
@@ -17,7 +17,7 @@ EmojiBoardUI::EmojiBoardUI() {
     this->setCustomStyle();
 }
 
-void EmojiBoardUI::propertyHandler() {
+void EmojiPanelInterface::propertyHandler() {
     this->emojiFont = QFont(QString::fromStdString(Constants::EMOJI_FONT));
     emojiFont.setPointSize(Constants::EMOJI_FONT_SIZE);
 
@@ -52,7 +52,7 @@ void EmojiBoardUI::propertyHandler() {
     this->animalSectionGrid->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 }
 
-void EmojiBoardUI::constructUI() const {
+void EmojiPanelInterface::constructUI() const {
     // Panel addition
     this->masterLayout->addWidget(this->emojiPanel);
 
@@ -113,18 +113,18 @@ void EmojiBoardUI::constructUI() const {
         this->symbolSectionGrid, Qt::AlignmentFlag::AlignCenter);
 }
 
-void EmojiBoardUI::signalConnector() const {
+void EmojiPanelInterface::signalConnector() const {
     connect(
-    &this->eGenerator, &EmojiGenerator::emojiGeneratedSignal, this, &EmojiBoardUI::emojiReceivedAction,
+    &this->eGenerator, &EmojiGenerator::emojiGeneratedSignal, this, &EmojiPanelInterface::emojiReceivedAction,
     Qt::QueuedConnection
         );
     connect(
-        this->emojiPanel, &QTabWidget::currentChanged, this, &EmojiBoardUI::tabWidgetChangedAction
+        this->emojiPanel, &QTabWidget::currentChanged, this, &EmojiPanelInterface::tabWidgetChangedAction
     );
 }
 
 
-void EmojiBoardUI::emojiReceivedAction(const int count, int tab, const QSharedPointer<QString> &emojiLabel) {
+void EmojiPanelInterface::emojiReceivedAction(const int count, int tab, const QSharedPointer<QString> &emojiLabel) {
     const int i = (count / 6), j = count % 6;
     auto *label = new EmojiWidget(*emojiLabel, this->reactionSectionGrid); // access by Value
     label->setFont(emojiFont);
@@ -167,12 +167,12 @@ void EmojiBoardUI::emojiReceivedAction(const int count, int tab, const QSharedPo
     this->update();
 }
 
-void EmojiBoardUI::tabWidgetChangedAction(const int tabIndex) {
+void EmojiPanelInterface::tabWidgetChangedAction(const int tabIndex) {
     this->eGenerator.acceptEmojiGeneratingResources(tabIndex, this->emojiCodes[tabIndex]);
     this->eGenerator.start();
 }
 
-void EmojiBoardUI::setCustomStyle() {
+void EmojiPanelInterface::setCustomStyle() {
     this->setStyleSheet(
         "background-color: rgba(43, 43, 43, 100);"
     );
