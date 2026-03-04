@@ -5,7 +5,6 @@
 #include "../Util/Constants.h"
 #include "EmojiPanelInterface.h"
 #include "../Widgets/EmojiWidget.h"
-#include "QDebug"
 #include "QHeaderView"
 #include <QFont>
 

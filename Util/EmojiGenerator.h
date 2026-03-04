@@ -7,7 +7,7 @@
 #include<QThread>
 
 // custom imports
-#include "../Ui/ClipBoardUI.h"
+#include "../Ui/ClipBoardInterface.h"
 
 class EmojiGenerator final : public QThread{
     Q_OBJECT
@@ -20,7 +20,7 @@ private:
                             // Properties
     bool emojiPanelPopulationFlag[8] = {false}; // to avoid repopulation
     int emojiTab = -1; // store the current emoji tab that is open
-    vector<vector<int>> emojiCodes; // accepts the emoji code from EmojiBoardUI
+    vector<vector<int>> emojiCodes; // accepts the emoji code from EmojiPanelInterface
 
     void generateSmileyEmojis(const int tabIndex, const vector<vector<int>> &emojiCodeList) ;
     static QString stringToEmoji(const QString &emojiCode);
