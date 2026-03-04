@@ -53,6 +53,12 @@ namespace  Constants {
     inline constexpr int EMOJI_CELL_WIDTH = 82;
     inline constexpr int EMOJI_CELL_HEIGHT = 82;
 
+    // General
+    inline const char* MODE = "Mode";
+    inline const char* TEXT_HASH_KEY = "TextHashKey";
+    inline const char* OBJECT_HASH_KEY = "ObjectHashKey";
+    inline const QString HTTP = "http";
+    inline const QString HTTPS = "https";
 
     // Fonts
     inline const string EMOJI_FONT = "Noto Color Emoji";
@@ -66,8 +72,28 @@ namespace  Constants {
     inline constexpr int TEXT_EDITOR_HEIGHT = 500;
 
     // Image
+    inline const string JPG = ".jpg";
+    inline const string JPEG = ".jpeg";
+    inline const string PNG = ".png";
+    inline const string WEBP = ".webp";
+    inline const string TIFF = ".tiff";
     inline constexpr int IMAGE_THUMBNAIL_WIDTH = 200;
     inline constexpr int IMAGE_THUMBNAIL_HEIGHT = 200;
+
+    // Audio
+    inline const string MP3 = ".mp3";
+    inline const string WAV = ".wav";
+    inline const string AAC = ".aac";
+    inline const string FLAC = ".flac";
+    inline const string OGG = ".ogg";
+    inline const string WMA = ".wma";
+    inline const string M4A = ".m4a";
+
+    // Video
+    inline const string MP4 = ".mp4";
+    inline const string MKV = ".mkv";
+    inline const string AVI = ".avi";
+    inline const string WEBM = ".webm";
 
     // ClipBoard UI
 
