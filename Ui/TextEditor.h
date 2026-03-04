@@ -14,8 +14,6 @@
 
 class TextEditor : public QWidget{
     Q_OBJECT
-
-                                            // Components
     // Layouts
     QVBoxLayout *masterOuterLayout = new QVBoxLayout();
     QVBoxLayout *masterLayout = new QVBoxLayout();
@@ -30,7 +28,6 @@ class TextEditor : public QWidget{
     QTextEdit *inputArea = new QTextEdit();
 
     // buttons
-    QPushButton *saveButton = new QPushButton();
     QPushButton *confirmButton = new QPushButton();
     QPushButton *cancelButton = new QPushButton();
 
@@ -38,26 +35,47 @@ class TextEditor : public QWidget{
     // General
     void assignProperties() const;
     void construct() const;
+
     void setCustomStyle();
+
+    /**
+     * Build Connections with UI Components and Member Classes
+     * with the Actionable methods.
+     */
     void establishConnections();
+
+    /**
+     * If the editing is canceled in between then this method calls
+     * closing actions. It sends an textEditedSignal to
+     * TextManagerInterface with a nullPtr.
+     */
     void cancelButtonAction();
-    void saveButtonAction();
+
+    /**
+     * Sends The edited text to the TextEditorInterface and
+     * calls closingAction()
+     */
     void confirmButtonAction();
+
+    /**
+     * Performs Termination of the TextEditor. Clears The QTextEdit Object.
+     * Closes the window.
+     */
     void closingAction();
-    static void writeTextFile(const QString &fileName, const QString &content);
-    void dynamicWidgetIntegration();
-
-                                        // Attributes
-    // General
-    int operationModeSignal = -1; // 0 -> save button 1 -> Edit Button
-
-    // Text Related
-    QString incomingText = nullptr;
 
     signals:
-    void textEditedSignal(QSharedPointer<QString> editedText);
+    /**
+     * When the text is edited this signal transfer's the edited text
+     * to TextManagerInterface.
+     */
+    void textEditedSignal(QString editedText);
 
 public:
     explicit TextEditor();
-    void receiveText(const QString &text, int operationMode);
+
+    /**
+     * Receives a QString from TextManagerInterface to perform
+     * further editing.
+     */
+    void receiveText(const QString &text) const;
 };
