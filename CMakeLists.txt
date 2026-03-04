@@ -17,10 +17,10 @@ find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 set(UI_SOURCES
         Ui/MasterWindow.cpp
         Ui/MasterWindow.h
-        Ui/ClipBoardUI.cpp
-        Ui/ClipBoardUI.h
-        Ui/EmojiBoardUI.cpp
-        Ui/EmojiBoardUI.h
+        Ui/ClipBoardInterface.cpp
+        Ui/ClipBoardInterface.h
+        Ui/EmojiPanelInterface.cpp
+        Ui/EmojiPanelInterface.h
         Ui/TextEditor.cpp
         Ui/TextEditor.h
 )
@@ -45,6 +45,14 @@ set(UTIL_SOURCES
         Util/EmojiGenerator.cpp
         Util/EmojiGenerator.h
         Util/Constants.h
+        Util/MimeDataAnalyzer.cpp
+        Util/MimeDataAnalyzer.h
+        Widgets/ImageWidget.cpp
+        Widgets/ImageWidget.h
+        Util/HashGenerator.cpp
+        Util/HashGenerator.h
+        Util/ItemRepository.cpp
+        Util/ItemRepository.h
 )
 
 # Combine all sources
