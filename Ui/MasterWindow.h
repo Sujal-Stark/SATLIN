@@ -8,8 +8,8 @@
 #include <QVBoxLayout>
 #include <QWidget>
 #include <QTabWidget>
-#include "ClipBoardUI.h"
-#include "EmojiBoardUI.h"
+#include "ClipBoardInterface.h"
+#include "EmojiPanelInterface.h"
 
 class MasterWindow final : public QMainWindow {
     Q_OBJECT
@@ -27,8 +27,8 @@ class MasterWindow final : public QMainWindow {
     // QWidgets
     QWidget *mainWidget = new QWidget();
 
-    ClipBoardUI *clipBoard = new ClipBoardUI(); // handles Clip board UI
-    QWidget *emojiBoard = new EmojiBoardUI(); // handles emoji Section
+    ClipBoardInterface *clipBoard = new ClipBoardInterface(); // handles Clip board UI
+    QWidget *emojiBoard = new EmojiPanelInterface(); // handles emoji Section
 
     // Tab Widgets
     QTabWidget *outerTabWidget = new QTabWidget(); // holds clip Board and Emoji Section
