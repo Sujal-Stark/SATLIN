@@ -4,20 +4,15 @@
 
 #include "ItemWidget.h"
 #include<Qt>
-#include<QPixmap>
 #include<iostream>
-#include <utility>
+#include <QFileDialog>
 
-#include "../Ui/ClipBoardUI.h"
+#include "../Ui/ClipBoardInterface.h"
 #include "../Util/Constants.h"
 
 using namespace std;
 
 ItemWidget::ItemWidget() {
-    /*
-     * Default properties related to this widget will be added here. It will only hold common properties
-     * for all types of media
-     */
     this->setLayout(this->masterLayout);
     this->setFixedWidth(Constants::ITEM_WIDGET_WIDTH); // for constant width
     this->stylizeButtons();
@@ -85,61 +80,27 @@ void ItemWidget::establishConnections() {
 }
 
 void ItemWidget::setTextManagerInterfaceInputs(
-        TextManagerInterface *interface, TextEditor *textEditor
+    const shared_ptr<TextManagerInterface>& interface,
+    const shared_ptr<ItemRepository>& repo
     ) {
-    this->text_manager_interface = interface;
-
-    // Text Editor
-    this->text_editor = textEditor;
-    connect(
-        this->text_editor, &TextEditor::textEditedSignal,
-        this, &ItemWidget::textEditedSignalReceivedAction
-    );
+    this->textManagerInterface = interface;
+    this->textManagerInterface->assignDrivers(repo);
 }
 
-void ItemWidget::setImageManagerInterfaceInput(ImageManagerInterface *interface) {
-    this->image_manager_interface = interface;
-}
+void ItemWidget::assignText(const QString &text, const QString& textHash) {
+    this->textLabel = TextManagerInterface::generateNewTextLabel(text, textHash);
 
-void ItemWidget::assignText(const QString &text, const size_t textHash) {
-    this->OBJECT_RECOGNITION_FLAG_INDEX = Constants::TEXT_SIGNAL_INDEX;
-    this->text_item_hash = textHash;
-
-    this->text_manager_interface->setInputText(text, textHash);
-    this->image_Text_HolderLabel = this->text_manager_interface->getCurrentCopiedText();
-
-    if (this->image_Text_HolderLabel != nullptr) {
-        this->image_Text_HolderLabel->show();
-        this->contentHolder->addWidget(this->image_Text_HolderLabel, Qt::AlignmentFlag::AlignCenter);
+    if (this->textLabel != nullptr) {
+        this->textLabel->show();
+        this->contentHolder->addWidget(this->textLabel, Qt::AlignmentFlag::AlignCenter);
     }
-}
-
-void ItemWidget::assignImage(const QImage &image, QString imageHash) {
-    this->OBJECT_RECOGNITION_FLAG_INDEX = Constants::IMAGE_SIGNAL_INDEX;
-    this->image_item_Hash = imageHash;
-
-    this->image_manager_interface->setInputImage(image, std::move(imageHash)); // ref
-    this->image_Text_HolderLabel = this->image_manager_interface->getCurrentPixmapLabel();
-
-    if (image_Text_HolderLabel != nullptr) {
-        this->image_Text_HolderLabel->show();
-        this->contentHolder->addWidget(this->image_Text_HolderLabel, Qt::AlignmentFlag::AlignCenter);
-    }
-
 }
 
 void ItemWidget::mousePressEvent(QMouseEvent *event){
-    // identifies the content of item and then send it as signal
     if (event->button() == Qt::MouseButton::LeftButton) {
-        if (this->OBJECT_RECOGNITION_FLAG_INDEX == Constants::TEXT_SIGNAL_INDEX) {
-            emit this->textItemClickedSignal(this->image_Text_HolderLabel->text());
-        }
-        else if (this->OBJECT_RECOGNITION_FLAG_INDEX == Constants::IMAGE_SIGNAL_INDEX) {
-            emit this->imageItemClickedSignal(this->image_Text_HolderLabel->pixmap());
-        }
+        emit this->textItemClickedSignal(this->textLabel->text());
     }
 
-    // changes the label color
     this->setStyleSheet(
         "border: 1px solid white;"
         "border-radius: 5px;"
@@ -148,7 +109,6 @@ void ItemWidget::mousePressEvent(QMouseEvent *event){
 }
 
 void ItemWidget::mouseReleaseEvent(QMouseEvent *event) {
-    // revert the color changes due to mouse press
     this->setStyleSheet(
         "border: 0px solid white;"
         "border-radius: 5px;"
@@ -157,57 +117,55 @@ void ItemWidget::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void ItemWidget::deleteButtonClicked() {
-    if (this->OBJECT_RECOGNITION_FLAG_INDEX == Constants::TEXT_SIGNAL_INDEX) {
-        this->text_manager_interface->removeItem(this->text_item_hash);
-        emit this->text_Hash_Removal_Request_Signal(this->text_item_hash);
-        this->deleteLater();
-    }else if (this->OBJECT_RECOGNITION_FLAG_INDEX == Constants::IMAGE_SIGNAL_INDEX) {
-        this->image_manager_interface->removeItem(this->image_item_Hash);
-        emit this->image_Hash_Removal_Request_Signal(this->image_item_Hash);
-        this->deleteLater();
-    }else if (this->OBJECT_RECOGNITION_FLAG_INDEX == Constants::VIDEO_SIGNAL_INDEX) {
-
-    }else if (this->OBJECT_RECOGNITION_FLAG_INDEX == Constants::AUDIO_SIGNAL_INDEX) {
-
-    }
-}
-
-void ItemWidget::saveButtonClicked() const {
-    /*
-     * Saves The media corresponding to Signal_Index.
-     */
-    if (this->OBJECT_RECOGNITION_FLAG_INDEX == Constants::TEXT_SIGNAL_INDEX) {
-        const QString text = this->image_Text_HolderLabel->text();
-        this->text_editor->receiveText(text, 0); // 0 -> save Action
-        this->text_editor->show();
-    }
-    else if (this->OBJECT_RECOGNITION_FLAG_INDEX == Constants::IMAGE_SIGNAL_INDEX) {
-        this->image_manager_interface->saveActionPerformed(this->image_item_Hash);
-    }
-}
-
-void ItemWidget::editButtonClicked() const {
-    if (this->OBJECT_RECOGNITION_FLAG_INDEX == Constants::TEXT_SIGNAL_INDEX) {
-        const QString text = this->image_Text_HolderLabel->text();
-        this->text_editor->receiveText(text, 1); // 1 -> edit operation
-        this->text_editor->show();
-    }
-}
-
-void ItemWidget::textEditedSignalReceivedAction(const QSharedPointer<QString>& editedText) {
-    /*
-     * Receives edited Text(AS a QSharedPointer) and send it to the Text manager interface.
-     */
-    size_t nextHash = qHash(*editedText);
-
     if (
-        this->text_manager_interface->receiveTextForSwapping(
-            editedText, this->text_item_hash, nextHash
+        this->textManagerInterface->removeItem(
+            this->textLabel->property(Constants::TEXT_HASH_KEY).toString()
         )
     ) {
-        this->textHashReplacementSignal(this->text_item_hash, nextHash);
-        this->text_item_hash = nextHash;
-        emit textItemClickedSignal(this->image_Text_HolderLabel->text());
-        this->update();
+        emit this->clipboardCleanSignal();
+        this->deleteLater();
+    }else qWarning()<<"Unable to delete this textItem";
+}
+
+void ItemWidget::saveButtonClicked() {
+    const QString fileName = QFileDialog::getSaveFileName(
+        this,Constants::SAVE_FILE_LABEL, QDir::homePath(),
+    "Text Files (*);;All Files (*)"
+    );
+
+    if (fileName.isEmpty())return;
+
+    QFile file = QFile(fileName);
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QTextStream stream = QTextStream(&file);
+        stream<<this->textLabel->text();//The content is dumped.
+        file.close();
     }
+}
+
+void ItemWidget::editButtonClicked() {
+    connect(
+        &*this->textManagerInterface, &TextManagerInterface::textEditedSignal,
+        this, &ItemWidget::editedTextReceivedAction
+    );
+
+    this->textManagerInterface->editOnText(this->textLabel->text());
+}
+
+void ItemWidget::editedTextReceivedAction(const QString& editedText) {
+    if (!editedText.isNull()) {
+        const QString oldHash = this->textLabel->property(Constants::TEXT_HASH_KEY).toString();
+        const QString newHash = HashGenerator::generateTextHash(editedText);
+        if (this->textManagerInterface->replaceHash(oldHash, newHash)) {
+            this->textLabel->setText(editedText);
+            this->textLabel->setProperty(Constants::TEXT_HASH_KEY, newHash);
+            emit textItemClickedSignal(this->textLabel->text());
+            this->update();
+        }
+    }
+
+    disconnect(
+        &*this->textManagerInterface, &TextManagerInterface::textEditedSignal,
+        this, &ItemWidget::editedTextReceivedAction
+    );
 }

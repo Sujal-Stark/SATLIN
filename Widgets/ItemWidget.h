@@ -12,26 +12,13 @@
 #include "../ManagerSources/ImageManagerInterface.h"
 #include "../Ui/TextEditor.h"
 #include "../ManagerSources/TextManagerInterface.h"
+#include "../Util/ItemRepository.h"
 
 using namespace std;
 
 class ItemWidget : public QWidget{
     Q_OBJECT
-
-    // these two help deducing which media is in use
-    vector<bool> OBJECT_RECOGNITION_FLAG_ARRAY = {false, false, false, false}; // stores Flag
-    int OBJECT_RECOGNITION_FLAG_INDEX = -1; // stores Flag Index
-    size_t text_item_hash = -1;
-
-    // image
-    QString image_item_Hash = nullptr;
-
-    // Text
-    TextEditor *text_editor = nullptr;
-
-    // Media Manager Interfaces
-    TextManagerInterface *text_manager_interface = nullptr;
-    ImageManagerInterface *image_manager_interface = nullptr;
+    shared_ptr<TextManagerInterface> textManagerInterface = nullptr;
 
     // QButtons
     QPushButton *deleteButton = new QPushButton();
@@ -39,7 +26,7 @@ class ItemWidget : public QWidget{
     QPushButton *saveButton = new QPushButton();
 
     // holder object declaration
-    QLabel* image_Text_HolderLabel = nullptr;
+    QLabel* textLabel = nullptr;
 
     // Layouts
     QVBoxLayout *masterLayout = new QVBoxLayout();
@@ -52,41 +39,86 @@ class ItemWidget : public QWidget{
     QFrame *mainFrame = new QFrame();
 
                                             // Methods
-    // General
     void stylizeButtons() const;
     void stylizeFrames() const;
+
+    /**
+     * Builds connections with UI elements with actionable methods.
+     */
     void establishConnections();
+
+    /**
+     * Removes Current Hash value.
+     * Sends a Signal to ClipBoardInterface to release clipboard content.
+     * Set this widget for deletion.
+     */
     void deleteButtonClicked();
-    void saveButtonClicked() const;
-    void editButtonClicked() const;
-    void textEditedSignalReceivedAction(const QSharedPointer<QString>& editedText);
+
+    /**
+     * Expects a valid filePath and text content. This method dump the content as Text
+     * into the file. and Saves it. If the file already exists then this method
+     * removes all the previous content.
+     */
+    void saveButtonClicked();
+
+    /**
+     * Sends the current text from text label to the TextManagerInterface.
+     * Establish connection with textEditedSignal of TextManagerInterface
+     * with editTextReceivedAction.
+     */
+    void editButtonClicked();
+
+    /**
+     * Receives edited Text from TextManagerInterface. Removes the old hash value
+     * that textLabel possess and stores the new hash value. A signal is sent to
+     * clipboard interface to set the edited text as clipboard content. disconnects
+     * signals from TextEditorInterface with this method.
+     */
+    void editedTextReceivedAction(const QString& editedText);
 
 signals:
-    // Text
+    /**
+     * Sends the TextLabel's content to the ClipBoardInterface when the
+     * widget is clicked.
+     */
     void textItemClickedSignal(QString text);
-    void text_Hash_Removal_Request_Signal(size_t text_Hash);
-    void textHashReplacementSignal(size_t currentHash, size_t nextHash);
 
-    // Images
-    void imageItemClickedSignal(QPixmap image); // returns Image item
-    void image_Hash_Removal_Request_Signal(QString &image_Hash);
-
-    // video signal
-    // audio signal
-
+    /**
+     * Sends a signal to clipboardInterface to release the Clipboard's
+     * content.
+     */
+    void clipboardCleanSignal();
 
 protected:
+    /**
+     * As the Widget is Clicked this method made changes in Widget's style.
+     * Sends a signal to ClipBoardInterface to set current item in clipBoard.
+     */
     void mousePressEvent(QMouseEvent *event) override;
+
+    /**
+     * Reverts the style to default as the press is released.
+     */
     void mouseReleaseEvent(QMouseEvent *event) override;
 
 public:
     explicit ItemWidget();
     void construct() const;
-    void assignText(const QString &text, size_t textHash); // holds text
-    void assignImage(const QImage &image, QString imageHash); // holds image
 
+    /**
+     * Creates a textLabel from the given Text and show the textLabel
+     * in the UI.
+     */
+    void assignText(const QString& text, const QString& textHash); // holds text
+
+    /**
+     * Accepts Drivers Like TextManagerInterface and ItemRepository.
+     * Saves TextManagersInterface's pointer and assign ItemRepository
+     * to the TextManagerInterface. Connect with TextManagerInterface's
+     * signal.
+     */
     void setTextManagerInterfaceInputs(
-        TextManagerInterface *interface, TextEditor *textEditor
+        const shared_ptr<TextManagerInterface>& interface,
+        const shared_ptr<ItemRepository>& repo
     );
-    void setImageManagerInterfaceInput(ImageManagerInterface *interface);
 };
