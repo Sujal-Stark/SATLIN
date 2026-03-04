@@ -3,86 +3,59 @@
 //
 
 #include "TextManagerInterface.h"
+
+#include <qpointer.h>
+
 #include "../Util/Constants.h"
 
 TextManagerInterface::TextManagerInterface() {
-    this->currentTextHash = -1;
-};
-
-void TextManagerInterface::setInputText(const QString &text, const size_t textHashValue){
-    /*
-     * Takes Input text int QString format (Not Null) from ItemWidget
-     */
-    this->copiedText = text;
-    this->currentTextHash = textHashValue;
-    this->addNewTextToTextMap();
+    this->establishConnections();
 }
 
-QLabel *TextManagerInterface::getCurrentCopiedText() {
-    /*
-     * Returns the QLabel holding currently copied text from ClipBoard
-     */
-    const size_t currentHash = this->currentTextHash;
-    this->currentTextHash = 0;
-    return !this->textMap.empty()? this->textMap[currentHash] : nullptr;
-}
-
-QLabel *TextManagerInterface::createTextLabel() const {
-    /*
-     * Creates The Label and stylize it and return the QLabel
-     */
-    auto *label = new QLabel(this->copiedText); // CAN LEAK. FIX LATER
-    label->setWordWrap(true);
-    label->setAlignment(Qt::AlignmentFlag::AlignLeft);
-    label->setFixedWidth(Constants::TEXT_CARD_WIDTH);
-    label->setStyleSheet(
+QPointer<QLabel> TextManagerInterface::generateNewTextLabel(
+    const QString &text, const QString& textHashValue
+){
+    QPointer ptr = QPointer(new QLabel(text));
+    ptr->setProperty(Constants::TEXT_HASH_KEY, textHashValue);
+    ptr->setWordWrap(true);
+    ptr->setAlignment(Qt::AlignmentFlag::AlignLeft);
+    ptr->setFixedWidth(Constants::TEXT_CARD_WIDTH);
+    ptr->setStyleSheet(
         "border: 1px solid white;"
         "border-radius: 5px;"
         "background-color: rgba(145, 191, 250, 0);"
     );
 
-    return label;
+    return ptr;
 }
 
-void TextManagerInterface::addNewTextToTextMap() {
-    /*
-     * If New Text Label Arrives, It takes it into Map
-     */
-    const auto textLabel = this->createTextLabel();
-    this->textMap[this->currentTextHash] = textLabel;
+void TextManagerInterface::establishConnections() {
+    connect(
+        &*this->textEditor, &TextEditor::textEditedSignal,
+        this, &TextManagerInterface::transferEditedText
+    );
 }
 
-bool TextManagerInterface::removeItem(const size_t textHash) {
-    /*
-     * Check's if a hash value already exists or not. If exists then
-     * we remove the hash and the label from the map and schedule it
-     * for deletion.
-     */
-    if (this->textMap.contains(textHash)) {
-        QLabel *currLabel = this->textMap[textHash];
-        this->textMap.erase(textHash);
-        currLabel->clear(); // clear's the content as well
-        currLabel->deleteLater();
-        return  true;
-    }
-    return  false;
+void TextManagerInterface::assignDrivers(const shared_ptr<ItemRepository>& repo) {
+    this->itemRepository = repo;
 }
 
-bool TextManagerInterface::receiveTextForSwapping(
-        const QSharedPointer<QString>&text, const size_t currentHash, const size_t nextHash
-    ) {
-    /*
-     * Removes old key value pair from the TextMap and set the new text in the same
-     * QLabel, store it in the TextMap. if succeed returns true.
-     */
-    if (this->textMap.contains(currentHash)) {
-        QLabel *currLabel = this->textMap[currentHash];
-        this->textMap.erase(currentHash);
-        currLabel->clear(); // QString is cleared.
-        currLabel->setText(*text);
-        this->textMap[nextHash] = currLabel;
-        return true;
+bool TextManagerInterface::removeItem(const QString& textHash) const {
+    return this->itemRepository->removeTextItemHash(textHash);
+}
+
+bool TextManagerInterface::replaceHash(const QString& oldHash, const QString& newHash) const {
+    if (itemRepository->containsTextHash(oldHash)&& !itemRepository->containsTextHash(newHash)) {
+        return itemRepository->removeTextItemHash(oldHash) && itemRepository->addNewTextItemHash(newHash);
     }
     return false;
 }
 
+void TextManagerInterface::editOnText(const QString& currentText) const {
+    textEditor->receiveText(currentText);
+    textEditor->show();
+}
+
+void TextManagerInterface::transferEditedText(const QString &text) {
+    this->textEditedSignal(text);
+}
