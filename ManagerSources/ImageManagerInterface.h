@@ -7,129 +7,87 @@
 #include  <QLabel>
 #include <stdexcept>
 
+#include "../Util/ItemRepository.h"
+
 using namespace std;
 
 class ImageManagerInterface : public QWidget{
-    // For Object based tracking
-    unordered_map<QString, QPointer<QLabel>>thumbnailContainer;
-    unordered_map<QString, unique_ptr<QImage>> qImageHashSet;
-
-    // For File path based tracking
-    unordered_map<size_t, QPointer<QLabel> >pathBasedThumbnailCollector;
-    unordered_map<size_t, unique_ptr<QString>> imagePathSet;
+    shared_ptr<ItemRepository> itemRepository;
+    /**
+     * @brief Generates a thumbnail(cheap copy) for the image and creates
+     * a QLabel for it.
+     * @param pixmap Thumbnail(Cheap Copy) of Original Image
+     * @param imageHash Hexadecimal hash value of image File.
+     * @param mode expresses Save Status. Either saved by Satlin
+     */
+    [[nodiscard]] static QPointer<QLabel> createPixmapLabel(
+        const QPixmap& pixmap, const QString& imageHash, int mode
+    );
 
     /**
-     * Generates a thumbnail for the image(cheap copy of the content) and creates
-     *  a label for it. Also stores the original QImage(Original Content)
-     *  as a unique_ptr<QImage>.
+     * @brief This method Generates a QPixmap Object with given ImageFile. The dimensions
+     * are reduced to imageWidget's required size, and returns the reduced one.
+     * @param filePath address of Image File.
      */
-    [[nodiscard]] QPointer<QLabel> createPixmapLabel(const QString& hash, const QImage& image);
-
-    /**
-     * Generates a thumbnail(cheap copy) for the image and creates a label for it.
-     * Also stores the original Path(File path) as a unique_ptr<QString>.
-     */
-    [[nodiscard]] QPointer<QLabel> createPixmapLabel(const QString& path, const QPixmap& pixmap);
-
-    /**
-     * Creates The ImageLabel, sets pixmap object to it and manages Label's Styles.
-     */
-    [[nodiscard]] static QPointer<QLabel> createLabel(const QPixmap& pixmap);
-
-
-    /**
-     * Given a const QImage, This method reduces the size to imageWidget's
-     * required size, and returns the reduced one.
-     */
-    [[nodiscard]]static QPixmap generateThumbnail(const QImage &qImage);
-
-    /**
-     * Given a const QPixmap, This method reduces the size to imageWidget's
-     * required size, and returns the reduced one.
-     */
-    [[nodiscard]]static QPixmap generateThumbnail(const QPixmap& pixmap);
-
-    /**
-     * Check's if the hash corresponding to pixmap already exists or not.
-     * If not then stores the QImage File.
-     */
-    void storeImageObject(const QImage& image, const QString& hash);
-
-    /**
-     * Check's if the hash corresponding to filePath already exists or not.
-     * If not then stores the File Path.
-     */
-    void storeFilePath(const QString& path);
-
-    void addThumbnailToMap(const QPointer<QLabel> & pixmapLabel, const QString& currentHash);
-    void addThumbnailToMap(const QPointer<QLabel> & pixmapLabel, size_t currentHash);
+    [[nodiscard]]static QPixmap generateThumbnail(const QString& filePath);
 
 public:
-    static constexpr int IMAGE_ACCESS_VIA_COPY = 0;
-    static constexpr int IMAGE_ACCESS_VIA_PATH = 1;
+    static constexpr int SAVE_STATUS_TRUE = 1;
+    static constexpr int SAVE_STATUS_FALSE = 0;
 
     explicit ImageManagerInterface();
 
     /**
-     * Accepts a valid QImage(const reference) and store it's thumbnail
-     * as QLabel object in Thumbnail container. This single method is
-     * responsible for all necessary operations to access a new QLabel object
-     * which can be directly used in UI. Throws invalid_argument exception if
-     * const QImage& qImage or const QString& currentHash is null.
+     * @brief This method accepts a ItemRepository Object from
+     * ClipBoardInterface. This class uses this object to manipulate
+     * saved data so that ImageWidget Interface do not have to worry
+     * about Image metadata and hash storing. Throws invalid_argument
+     * error if given instance is nullptr.
+     * @param repo a const shared pointer of ItemRepository Class
      */
-    void setInputImage(const QImage &qImage, const QString& currentHash);
+    void assignDrivers(const shared_ptr<ItemRepository>& repo);
 
     /**
-     * Accepts a valid file path(const reference) and store it's thumbnail
-     * as QLabel object in Thumbnail container. This single method is
-     * responsible for all necessary operations to access a new QLabel object
-     *  which can be directly used in UI. Throws invalid_argument exception
-     *  if const string& path is null.
+     * This single method is responsible for all necessary operations to access
+     * a new QLabel object which can be directly used in UI. Throws
+     * invalid_argument exception if const string& path is null.
+     * @param path address of Image File.
+     * @param currentHash Hexadecimal hash value of Image File.
+     * @param  mode expresses Save Status. Either saved by Satlin
+     * or already before.
      */
-    void setInputImage(const QString& path);
+    static QPointer<QLabel> getImageLabel(
+        const QString& path, const QString& currentHash, int mode
+    );
 
     /**
-     * Deletes pointers from thumbnailContainer & qImageHashSet with the given key.
-     * QPointer removes QLabel's reference, unique_ptr removes qImage object safely.
+     * @brief Calls ItemRepository associated methods to remove the
+     * image hash and it's metadata. This method doesn't check Hash authenticity
+     * it's ItemRepository's decision.
+     * @param imageHash Hexadecimal hash value of Image File.
      */
-    void removeCopyItem(const QString &imageHash);
+    [[nodiscard]] bool removeImageItem(const QString& imageHash) const;
 
     /**
-     * Deletes pointers from pathBasedThumbnailCollector & imagePathSet with the given key.
-     * QPointer removes QLabel's reference, unique_ptr removes path object safely.
-     */
-    void removePathItem(size_t imageHash);
-
-    /**
-     * given a valid hash code (const QString&) this method provides
-     * corresponding QPointer<QLabel> Object. If given hash value is a null ptr then
-     * an invalid_argument exception is thrown.
-     */
-    [[nodiscard]] QPointer<QLabel> getPixmapLabel(const QString& imageHash); // sends output
-
-    /**
-     * given a valid hash code (const size_t&) this method provides The QLabel* Object.
-     * User can use the label after dereferencing the pointer.
-     */
-    [[nodiscard]] QPointer<QLabel> getPixmapLabel(size_t imageHash);
-
-    /**
-     * After checking validity of hash value this method returns a raw pointer of
+     * @brief After checking validity of hash value this method returns a raw pointer of
      * QImage object corresponding to the QImage. For invalid hashes this method
      * raises invalid argument error.
+     * @param imageHash Hexadecimal hash value of Image File.
      */
     [[nodiscard]] QImage releaseImageData(const QString& imageHash) const;
 
     /**
-     * Check's for validity of hash value. After validation this method creates a
-     * raw QImage Object from File's address and sends by value. If no hash value
-     * is present then it returns an empty QImage
+     * @brief Selects directory, file name for the image to be saved.
+     * and saved using QPixmap save method. If the image is already saved
+     * in system then save operation isn't performed, Even if request comes.
+     * @param imageHash Hexadecimal hash value of Image File.
+     * @param mode expresses Save Status. Either saved by Satlin
      */
-    [[nodiscard]] QImage releaseImageData(size_t imageHash) const;
+    void saveActionPerformed(const QString& imageHash, int mode);
 
     /**
-     * Selects directory, file name for the image to be saved.
-     * and saved using QPixmap save method.
+     * @brief Return's the file address associated with imageHash.
+     * @param imageHash hexadecimal hash value of ImageObject.
      */
-    void saveActionPerformed(const QString& imageHash);
+    [[nodiscard]] const QString& getImageFileName(const QString& imageHash) const;
 };
