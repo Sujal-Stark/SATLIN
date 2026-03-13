@@ -55,7 +55,7 @@ namespace  Constants {
 
     // General
     inline const char* MODE = "Mode";
-    inline const char* TEXT_HASH_KEY = "TextHashKey";
+    inline const char* SHA_STRING_KEY = "TextHashKey";
     inline const char* OBJECT_HASH_KEY = "ObjectHashKey";
     inline const QString HTTP = "http";
     inline const QString HTTPS = "https";

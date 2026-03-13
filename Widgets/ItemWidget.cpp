@@ -119,7 +119,7 @@ void ItemWidget::mouseReleaseEvent(QMouseEvent *event) {
 void ItemWidget::deleteButtonClicked() {
     if (
         this->textManagerInterface->removeItem(
-            this->textLabel->property(Constants::TEXT_HASH_KEY).toString()
+            this->textLabel->property(Constants::SHA_STRING_KEY).toString()
         )
     ) {
         emit this->clipboardCleanSignal();
@@ -154,11 +154,11 @@ void ItemWidget::editButtonClicked() {
 
 void ItemWidget::editedTextReceivedAction(const QString& editedText) {
     if (!editedText.isNull()) {
-        const QString oldHash = this->textLabel->property(Constants::TEXT_HASH_KEY).toString();
+        const QString oldHash = this->textLabel->property(Constants::SHA_STRING_KEY).toString();
         const QString newHash = HashGenerator::generateTextHash(editedText);
         if (this->textManagerInterface->replaceHash(oldHash, newHash)) {
             this->textLabel->setText(editedText);
-            this->textLabel->setProperty(Constants::TEXT_HASH_KEY, newHash);
+            this->textLabel->setProperty(Constants::SHA_STRING_KEY, newHash);
             emit textItemClickedSignal(this->textLabel->text());
             this->update();
         }

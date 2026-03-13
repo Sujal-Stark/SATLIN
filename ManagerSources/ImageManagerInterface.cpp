@@ -43,7 +43,7 @@ QPointer<QLabel> ImageManagerInterface::createPixmapLabel(
     imageLabel->setPixmap(pixmap);
 
     // Assigning properties
-    imageLabel->setProperty(Constants::TEXT_HASH_KEY, imageHash);
+    imageLabel->setProperty(Constants::SHA_STRING_KEY, imageHash);
     imageLabel->setProperty(Constants::MODE, mode);
 
     return imageLabel;

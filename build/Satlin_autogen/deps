@@ -1,10 +1,10 @@
 Satlin_autogen/timestamp: \
 	/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/CMakeLists.txt \
 	/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/ClipBoardUI.cpp \
-	/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/ClipBoardUI.h \
+	/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/ClipBoardInterface.h \
 	/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/Constants.h \
 	/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/EmojiBoardUI.cpp \
-	/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/EmojiBoardUI.h \
+	/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/EmojiPanelInterface.h \
 	/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/EmojiGenerator.cpp \
 	/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/EmojiGenerator.h \
 	/home/sujal-stark/ProgrammingFiles/PersonalProjects/SATLIN/ImageManagerInterface.cpp \

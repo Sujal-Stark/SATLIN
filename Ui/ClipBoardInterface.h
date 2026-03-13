@@ -4,22 +4,17 @@
 
 #pragma once
 
-#include <QApplication>
-#include <QVBoxLayout>
 #include <QTabWidget>
 #include <QScrollArea>
 #include <QFrame>
-
-#include <string>
 #include <queue>
-#include <set>
 
 // Custom Import
-#include "../Util/Constants.h"
 #include "../ManagerSources/ImageManagerInterface.h"
 #include "../Widgets/ItemWidget.h"
+#include "../Widgets/ImageWidget.h"
 #include "../ManagerSources/TextManagerInterface.h"
-#include "TextEditor.h"
+#include "../Util/ItemRepository.h"
 #include "../Util/MimeDataAnalyzer.h"
 
 
@@ -27,42 +22,66 @@ using namespace std;
 
 class ClipBoardInterface final : public QWidget{
     // General
+    shared_ptr<ItemRepository> itemRepository = make_shared<ItemRepository>();
     MimeDataAnalyzer *mimeDataAnalyzer = new MimeDataAnalyzer();
     void constructUI() const;
     void widgetBehaviourSelection() const;
-    void setActions() const; // used to group all connections
     void setCustomStyle();
 
-    int ptr = 0;
+    /**
+     * @brief build Connections with UI components and Member Classes
+     * with actionable methods.
+     */
+    void setActions() const;
 
-    // Text Section Related
-    set<size_t> currentTextHash; //check's newly arrived string already present or not
-    TextManagerInterface *text_manager_interface = new TextManagerInterface();
-    TextEditor *text_editor = new TextEditor();
+    /**
+     * @brief Clears the Clipboard Content when it is called.
+     */
+    void cleanClipBoard() const;
+
+    // TEXT
+    shared_ptr<TextManagerInterface> text_manager_interface = make_shared<TextManagerInterface>();
+
+    /**
+     * @brief Receives and ItemWidget Pointer and set's the Object
+     * to UI. Latest at top manner is used.
+     */
     void showTextItemOnScreen(ItemWidget *item) const;
+
+    /**
+     * Receives a text item and sets it as current ClipBoard Item.
+     */
     void textItemClickedAction(const QString &content) const;
 
-    // Image Section Related
-    set<QString> currentImageHash;
-    ImageManagerInterface *image_manager_interface = new ImageManagerInterface();
-    void showImageOnScreen(ItemWidget *image) const;
-    void imageItemClickedAction(const QPixmap &content) const;
-    static QString getImageObjectHash(const QImage &qImage); // creates Hash for current image
+    void handleTextItem(const QString& text, const QString& hash);
+
+    // IMAGE
+    shared_ptr<ImageManagerInterface> imageManagerInterface = make_shared<ImageManagerInterface>();
+    void showImageOnScreen(ImageWidget *image) const;
+
+    /**
+     * Receives Signal as Const QImage& and int for mode of copy.
+     * For different copy mode it can perform different specific
+     * operations and finally loads QImage to the Clipboard.
+     */
+    void imageItemClickedAction(const QImage &image) const;
+
+    void handleImageItem(const QString& text, const QString& imageHash, int mode);
+    void imageRemovedConfirmationAction(
+        const QString &imageHash, const QString& filePath, int mode
+    ) const;
 
     // Signal Reception
+    /**
+     * Signal Receptor from System's clipboard. It generates current QMimeData
+     * Object and runs MimeDataAnalyzer to understand type of object copied.
+     */
     void handleIncomingItems() const; // get copied item from clip board
 
-    // Text
-    void handleTextItem(const QSharedPointer<QString>& textPtr);
-    void handleImageObjectItem(const QSharedPointer<QImage>& imagePtr);
-    void accept_Text_Hash_Removal(size_t textHash);
-    void acceptTextHashReplacement(size_t currentHash, size_t nextHash);
-
-    // Image
-    void accept_Image_Hash_Removal(const QString &imageHash);
 
     public:
     explicit ClipBoardInterface();
+    // ~ClipBoardInterface();
     QClipboard *clipBoard;
     queue<ItemWidget *> textQueue;
 

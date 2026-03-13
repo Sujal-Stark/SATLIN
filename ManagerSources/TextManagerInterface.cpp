@@ -16,7 +16,7 @@ QPointer<QLabel> TextManagerInterface::generateNewTextLabel(
     const QString &text, const QString& textHashValue
 ){
     QPointer ptr = QPointer(new QLabel(text));
-    ptr->setProperty(Constants::TEXT_HASH_KEY, textHashValue);
+    ptr->setProperty(Constants::SHA_STRING_KEY, textHashValue);
     ptr->setWordWrap(true);
     ptr->setAlignment(Qt::AlignmentFlag::AlignLeft);
     ptr->setFixedWidth(Constants::TEXT_CARD_WIDTH);

@@ -53,6 +53,7 @@ set(UTIL_SOURCES
         Util/HashGenerator.h
         Util/ItemRepository.cpp
         Util/ItemRepository.h
+        Util/DataModels.h
 )
 
 # Combine all sources
