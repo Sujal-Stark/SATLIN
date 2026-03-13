@@ -24,76 +24,89 @@ class MimeDataAnalyzer : public QWidget{
     const string TEMP_VIDEO_PATH = "/items/videos";
 
     /**
-     * All the necessary signals are bonded with their corresponding
+     * @brief All the necessary signals are bonded with their corresponding
      * methods in this createConnections method. Must be used inside
      * constructor to create necessary connections First.
      */
     void createConnections() const;
 
     /**
-     * Given a filesystem::path variable this method verifies the
+     * @brief Given a filesystem::path variable this method verifies the
      * existence of the given path in the system.
      */
     static bool isValidPath(const filesystem::path& address);
 
     /**
-     * Given a const string& variable this method verifies if
+     * @brief Given a const string& variable this method verifies if
      * the string is a Web URL or not.
      */
     static bool isValidURL(const string& text);
 
     /**
-     * This method returns the time stamp in microseconds
+     * @brief This method returns the time stamp in microseconds
      * at which the item is copied and processed as a long - long
      * number.
      */
     static long long timeStamp();
 
     /**
-     * This method creates folders to store incoming items as files
+     * @brief Returns the time stamp in readable format. The Time is presented
+     * as HH/MM/SS/DATE format.
+     */
+    static QString timeStampReadable();
+
+    /**
+     * @brief This method creates folders to store incoming items as files
      * inside some specific folders created.
      */
     void createTemporaryFileLocation() const;
 
     /**
-     * Removes all The files from Temporary Locations to save memory.
+     * @brief Removes all The files from Temporary Locations to save memory.
      */
     void removeTemporaryFiles() const;
 
     // Text
     /**
-     * This method operates over text items coming from MimeData.
+     * @brief This method operates over text items coming from MimeData.
      * It checks for a text to contain different file's path, web
      * urls, and sends corresponding signals with meta-data to the
-     * required Class.
+     * responsible Class.
+     * @param text The Original Text copied with System's clipboard.
      */
-    [[nodiscard]]static bool analyzeText(const string& text);
+    [[nodiscard]] bool analyzeText(const string& text);
 
     // Image
-    const QString DEFAULT_IMAGE_EXTENSION = ".png";
     /**
-     * Given an QImage Object (nonempty) this method provides a unique
-     * name and tries to save the image object in specific folder.
-     * The output of the operation is returned.
+     * @brief Primarily used for Images which are copied as objects. Png Extension
+     * is given to avoid lossy conversion.
+     */
+    const QString DEFAULT_IMAGE_EXTENSION = ".png";
+
+    /**
+     * @brief this method provides a unique name and tries to save the
+     * image object in specific folder. The Full filepath of the Image is returned.
+     * Throws runtime_error if the image file is failed to be saved.
+     * @param imageData QImage File to store.
      */
     [[nodiscard]] QString saveImageFile(const QImage& imageData) const;
 
     /**
-     * Checks if the given string is a valid extension of supported
+     * @brief Checks if the given string is a valid extension of supported
      * image file extension or not. Irrespective of case.
      */
     [[nodiscard]] static bool isImageFile(string ext);
 
     // Video
     /**
-     * Checks if the given string is a valid extension of supported
+     * @brief Checks if the given string is a valid extension of supported
      * video file extension or not. Irrespective of case.
      */
     [[nodiscard]] static bool isVideoFile(string ext);
 
     // Audio
     /**
-     * Checks if the given string is a valid extension of supported
+     * @brief Checks if the given string is a valid extension of supported
      * audio file extension or not. Irrespective of case.
      */
     [[nodiscard]] static bool isAudioFile(string ext);
@@ -102,8 +115,7 @@ class MimeDataAnalyzer : public QWidget{
     void textReleaseSignal(QString text, QString hash);
 
     // image
-    void imageFilePathReleaseSignal(QString text, QString ext, int saveStatus);
-    void imageObjectReleaseSignal(QSharedPointer<QImage> qImage);
+    void imageFilePathReleaseSignal(QString filePath, QString imageHash, int saveStaus);
 
     // video
     void videoFilePathReleaseSignal(QString text, QString ext, int saveStatus);
@@ -120,15 +132,25 @@ public:
     void driverReceiver(const shared_ptr<ItemRepository>& repo);
 
     /**
-     * it receives a QMimeData Object and operate on it.
+     * @brief It's most initial method that runs to identify Media Type.
+     * And perform necessary operations to store temporary Files, create Logs
+     * And finally Send signals to further processing.
+     * @param mime Current instance of Mime Object.
      */
     void analyzeMimeObject(const QMimeData& mime);
 
     // Image
     /**
-     * Accepts the raw image data from the ClipBoard and
+     * @brief Accepts the raw image data from the ClipBoard and
      * tries to convert into QImageObject. If unable to convert
      * then it returns an empty QImage Object
      */
     static QImage convertToQImage(const QMimeData& mime_data);
+
+    /**
+     * @brief Check's if the file path is valid or not. Then removes
+     * the file from system. IF failed throws runtime_error exception.
+     * @param filePath complete address of image file.
+     */
+    [[nodiscard]] static bool deleteImageFile(const QString& filePath);
 };
