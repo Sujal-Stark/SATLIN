@@ -21,7 +21,11 @@ QString HashGenerator::generateTextHash(const string &text) {
     ).toHex();
 }
 
-QString HashGenerator::generateImageObjectHash(const QImage& imageObject) {
+QString HashGenerator::generateImageObjectHash(const QString& imagePath) {
+    return generateImageObjectHash(QImage(imagePath));
+}
+
+QString HashGenerator::generateImageObjectHash(const QImage &imageObject) {
     const char* bits = reinterpret_cast<const char*>(imageObject.bits());
     const qsizetype size = imageObject.sizeInBytes();
 
