@@ -65,29 +65,12 @@ void ImageWidget::construct() const {
     this->buttonHolder->addStretch();
     this->buttonHolder->addWidget(this->deleteButton, Qt::AlignmentFlag::AlignRight);
     this->buttonHolder->addWidget(this->editButton, Qt::AlignmentFlag::AlignRight);
-}
-
-// Widget Internal operations
-void ImageWidget::assignImage(const QImage &image, const QString& imageHash) {
-    this->image_item_Hash = imageHash;
-
-    this->imageManagerInterface->setInputImage(image, imageHash); // ref
-    this->imageLabel = this->imageManagerInterface->getPixmapLabel(imageHash);
-
-    if (this->imageLabel != nullptr) {
-        this->imageLabel->show();
-        this->contentHolder->addWidget(this->imageLabel, Qt::AlignmentFlag::AlignCenter);
-    }
-
-    // Object specific Widget customization.
     this->buttonHolder->addWidget(this->saveButton, Qt::AlignmentFlag::AlignRight);
 }
 
-void ImageWidget::assignImage(const QString &path) {
-    const size_t currentHash = qHash(path);
-
-    this->imageManagerInterface->setInputImage(path);
-    this->imageLabel = this->imageManagerInterface->getPixmapLabel(currentHash);
+// Widget Internal operations
+void ImageWidget::assignImage(const QString& path, const QString& imageHash, const int mode) {
+    this->imageLabel = ImageManagerInterface::getImageLabel(path, imageHash, mode);
 
     if (this->imageLabel != nullptr) {
         this->imageLabel->show();
@@ -97,24 +80,17 @@ void ImageWidget::assignImage(const QString &path) {
     }
 }
 
-void ImageWidget::setImageManagerInterfaceInput(ImageManagerInterface *interface) {
+void ImageWidget::assignDrivers(const shared_ptr<ImageManagerInterface>& interface) {
+    if (interface == nullptr)throw invalid_argument("Invalid Drivers.");
     this->imageManagerInterface = interface;
 }
 
 // Defining Actions
 void ImageWidget::mousePressEvent(QMouseEvent *event){
     if (event->button() == Qt::MouseButton::LeftButton) {
-        QImage img = QImage();
-        if (this->imageLabel->property(Constants::MODE) == ImageManagerInterface::IMAGE_ACCESS_VIA_COPY) {
-            img = this->imageManagerInterface->releaseImageData(
-                this->imageLabel->property(Constants::OBJECT_HASH_KEY).toString()
-            );
-        }else if(this->imageLabel->property(Constants::MODE) == ImageManagerInterface::IMAGE_ACCESS_VIA_PATH) {
-            img = this->imageManagerInterface->releaseImageData(
-                this->imageLabel->property(Constants::TEXT_HASH_KEY).value<size_t>()
-            );
-        }
-
+        const QImage img = this->imageManagerInterface->releaseImageData(
+            this->imageLabel->property(Constants::SHA_STRING_KEY).toString()
+        );
         if (!img.isNull())emit this->imageItemClickedSignal(img);
     }
 
@@ -135,23 +111,22 @@ void ImageWidget::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void ImageWidget::deleteButtonClicked() {
-    if(this->imageLabel->property(Constants::MODE)== ImageManagerInterface::IMAGE_ACCESS_VIA_COPY) {
-        const QString hash = this->imageLabel->property(Constants::OBJECT_HASH_KEY).toString();
-        this->imageManagerInterface->removeCopyItem(hash);
-        emit this->imageObjectRemovalRequestSignal(hash);
-    }
-    else if(this->imageLabel->property(Constants::MODE) ==ImageManagerInterface::IMAGE_ACCESS_VIA_PATH) {
-        const size_t hash = this->imageLabel->property(Constants::OBJECT_HASH_KEY).value<size_t>();
-        this->imageManagerInterface->removePathItem(hash);
-        emit this->imagePathRemovalRequestSignal(hash);
-    }
+    const QString hash = this->imageLabel->property(Constants::SHA_STRING_KEY).toString();
+    if (
+        const QString filePath = this->imageManagerInterface->getImageFileName(hash);
+        this->imageManagerInterface->removeImageItem(hash) && !filePath.isEmpty()
+    )emit this->imageRemovedConfirmation(
+        hash, filePath, this->imageLabel->property(Constants::MODE).toInt()
+    );
+    else qWarning()<<"Image Deletion failed";
 
     this->deleteLater(); // self-destruction of widget
 }
 
 void ImageWidget::saveButtonClicked() const {
     this->imageManagerInterface->saveActionPerformed(
-        this->imageLabel->property(Constants::OBJECT_HASH_KEY).toString()
+        this->imageLabel->property(Constants::SHA_STRING_KEY).toString(),
+        this->imageLabel->property(Constants::MODE).toInt()
     );
 }
 

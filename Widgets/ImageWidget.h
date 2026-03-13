@@ -13,10 +13,8 @@
 
 class ImageWidget : public QWidget {
     Q_OBJECT
-    QString image_item_Hash = nullptr;
-
     // Manager Interface
-    ImageManagerInterface *imageManagerInterface = nullptr;
+    shared_ptr<ImageManagerInterface> imageManagerInterface = nullptr;
 
     // QButtons
     QPushButton *deleteButton = new QPushButton();
@@ -41,20 +39,20 @@ class ImageWidget : public QWidget {
     void stylizeFrames() const;
 
     /**
-     * All signals from Ui components to internal methods are
-     * bonded here.
+     * @brief All signals from Ui components to internal methods are
+     * Connected here.
      */
     void establishConnections();
 
     /**
-     * Performs the deletion of this Widget. Once clicked it emits
-     * a signal based on type of copied image and removes their
-     * hash values from clipboard's track system.
+     * @brief Performs the deletion of this Widget. Once clicked it emits
+     * a signal of File's path save status and hash values for further
+     * clean up by ClipBoardInterface.
      */
     void deleteButtonClicked();
 
     /**
-     * Saves The media corresponding to Current Hash Value. Works only for
+     * @brief Saves Image corresponding to Current Hash Value. Works only for
      * Image Objects, Image paths present in system are not needed
      * to be redownloaded. No need to check for hash validity as valid
      * hashes are provided to imageLabel.
@@ -65,20 +63,21 @@ class ImageWidget : public QWidget {
 
 protected:
     /**
-     * Depends upon the type of Image widget is clicked this method extracts
-     * QImage, and sends a signal imageItemClickedSignal(QImage image)
+     * @brief This method extracts QImage with it's HashValue, and sends a
+     * signal to ClipBoardInterface with QImage Object. It also performs some
+     * UI change while it's clicked.
      */
     void mousePressEvent(QMouseEvent *event) override;
 
     /**
-     * Once Mouse Button is released this method reverts Widget's style to default
-     * from Clicked Duration style.
+     * @brief Once Mouse Button is released this method reverts Widget's style
+     * to default from Clicked Duration style.
      */
     void mouseReleaseEvent(QMouseEvent *event) override;
 
 public:
     /**
-     * Default properties related to this widget is set.
+     * @brief Default properties related to this widget is set.
      * All components for this widget are constructed. Signals
      * are bonded and styles added.
      */
@@ -86,30 +85,37 @@ public:
     void construct() const;
 
     /**
-    * Given a const QImage(image data), const QString& (hash value) this method
-    * runs ImageManagerInterface to store info about the image and create
-    * imageLabel from it. In the end store the label in the parent Widget. Only
-    * copy images are allowed to download.
-    */
-    void assignImage(const QImage &image, const QString& imageHash);// holds image
+     * @param path FilePath of the Image
+     * @param imageHash Hexadecimal Hash value of the image entry.
+     * @param mode expresses Save status of Image.
+     * @brief This method runs ImageManagerInterface to store info about
+     * the image and create imageLabel from it. At the end assign the
+     * label in parent Widget.
+     */
+    void assignImage(const QString& path, const QString& imageHash, int mode);
 
     /**
-     * Given a const string(image path) this method runs ImageManagerInterface
-     * to store info about the image and create imageLabel from it. In the end
-     * store the label in the parent Widget. Images got from file path are
-     * unnecessary to download.
+     * @brief Receives Drivers (ImageManagerInterface) from ClipBoardInterface.
+     * Throws invalid_argument() error if the pointer to the object is nullptr.
+     * @param interface Shared Pointer Reference of ImageManagerInterface.
      */
-    void assignImage(const QString& path);
-
-    /**
-     * This method is responsible for catching up all interfaces or managers
-     * to work with images.
-     */
-    void setImageManagerInterfaceInput(ImageManagerInterface *interface);
+    void assignDrivers(const shared_ptr<ImageManagerInterface>& interface);
 
 
     signals:
+    /**
+     * @brief Once this widget is clicked this signal is sent so that
+     * the QImage instance can be loaded to system's clip board.
+     */
     void imageItemClickedSignal(QImage image);
-    void imageObjectRemovalRequestSignal(const QString &image_Hash);
-    void imagePathRemovalRequestSignal(size_t imageHash);
+
+    /**
+     * @brief This signal is released when a ImageWidget is removed from UI.
+     * The parameters are given to ensure total removal of temporary files and
+     * hash values from Application's Log.
+     * @param imageHash Hexadecimal hash value of Image File.
+     * @param filePath File's Address.
+     * @param mode expresses either a file is temporarily saved or permanently.
+     */
+    void imageRemovedConfirmation(const QString& imageHash, const QString& filePath, int mode);
 };
