@@ -43,3 +43,27 @@ QIcon IconManager::clipboardIcon() {
 QIcon IconManager::emojiPanelIcon() {
     return QIcon(":/EmojiPanel");
 }
+
+QIcon IconManager::playButtonIcon() {
+    return QIcon(":/PlayButton");
+}
+
+QIcon IconManager::pauseButtonIcon() {
+    return QIcon(":/PauseButton");
+}
+
+QIcon IconManager::leftJumpIcon() {
+    return QIcon(":/LeftJump");
+}
+
+QIcon IconManager::rightJumpIcon() {
+    return QIcon(":/RightJump");
+}
+
+QIcon IconManager::volumeUpIcon() {
+    return QIcon(":/Vol_Up");
+}
+
+QIcon IconManager::volumeDownIcon() {
+    return QIcon(":/Vol_Down");
+}

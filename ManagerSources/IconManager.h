@@ -21,4 +21,11 @@ public:
     [[nodiscard]] static QIcon audioIcon();
     [[nodiscard]] static QIcon clipboardIcon();
     [[nodiscard]] static QIcon emojiPanelIcon();
+
+    [[nodiscard]] static QIcon playButtonIcon();
+    [[nodiscard]] static QIcon pauseButtonIcon();
+    [[nodiscard]] static QIcon leftJumpIcon();
+    [[nodiscard]] static QIcon rightJumpIcon();
+    [[nodiscard]] static QIcon volumeUpIcon();
+    [[nodiscard]] static QIcon volumeDownIcon();
 };
