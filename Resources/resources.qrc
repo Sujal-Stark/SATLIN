@@ -11,5 +11,12 @@
         <file alias = "Audio">images/AudioIcon.svg</file>
         <file alias = "Clipboard">images/ClipboardIcon.svg</file>
         <file alias = "EmojiPanel">images/EmojiPanelIcon.svg</file>
+        <file alias = "PlayButton">images/PlayIcon.svg</file>
+        <file alias = "PauseButton">images/PauseIcon.svg</file>
+        <file alias = "LeftJump">images/LeftJump.svg</file>
+        <file alias = "RightJump">images/RightJump.svg</file>
+        <file alias = "Music_Note">images/Music_Note.png</file>
+        <file alias = "Vol_Up">images/VolumeUp.svg</file>
+        <file alias = "Vol_Down">images/volumeDown.svg</file>
     </qresource>
 </RCC>
