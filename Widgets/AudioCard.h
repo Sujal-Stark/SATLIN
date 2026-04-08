@@ -31,6 +31,7 @@ class AudioCard : public QWidget{
     QAudioOutput* output = new QAudioOutput();
     QMediaDevices* device = new QMediaDevices();
     QString filePath = nullptr;
+    QString hashValue = nullptr;
     int mode;
 
     // Layouts
@@ -126,5 +127,27 @@ class AudioCard : public QWidget{
     void getRunTime(qint64 duration) const;
 
 public:
-    AudioCard(const QString& filePath, int mode);
+    AudioCard(const QString& filePath, const QString& hash, int mode);
+
+    /**
+     * @brief This method the hexadecimal hash value assigned to it.
+     * @return QString
+     */
+    [[nodiscard]] QString getAudioObjectHash();
+
+    /**
+     * @brief This method returns the absolute file path of audio file.
+     * in QUrl Wrapping
+     * @return QUrl
+     */
+    [[nodiscard]] QUrl getAudioFileName() const;
+
+    /**
+     * @brief This method returns an integer that shows either this
+     * audio file is already saved in the system or copied by Satlin.
+     * 0 -> Just copied
+     * 1 -> Saved in system
+     * @return int
+     */
+    [[nodiscard]] int getMode() const;
 };

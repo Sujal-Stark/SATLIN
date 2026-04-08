@@ -13,7 +13,7 @@
 
 using namespace std;
 
-AudioCard::AudioCard(const QString& filePath, const int mode) {
+AudioCard::AudioCard(const QString& filePath, const QString& hash, const int mode) {
     if (!QFile::exists(filePath)) {
         this->deleteLater();
         return;
@@ -23,6 +23,7 @@ AudioCard::AudioCard(const QString& filePath, const int mode) {
     this->setLayout(this->mainLayout);
 
     // audio Object creation
+    this->hashValue = hash;
     this->filePath = filePath;
     this->mode = mode;
     this->player->setAudioOutput(this->output);
@@ -226,4 +227,16 @@ void AudioCard::volumeDownAction() const {
     if (player->playbackState() != QMediaPlayer::PlayingState)return;
     this->changeButtonUIWhenClicked(qobject_cast<QPushButton* >(sender()));
     this->output->setVolume(clamp(this->output->volume() - 0.1f, 0.0f, 1.0f));
+}
+
+QString AudioCard::getAudioObjectHash() {
+    return this->hashValue;
+}
+
+QUrl AudioCard::getAudioFileName() const {
+    return QUrl::fromLocalFile(this->filePath);
+}
+
+int AudioCard::getMode() const {
+    return this->mode;
 }
