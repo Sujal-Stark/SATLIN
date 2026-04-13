@@ -5,15 +5,12 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Enable Qt's automatic features
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-# Find required Qt6 modules
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Multimedia)
 
-# Group source files by category
 set(UI_SOURCES
         Ui/MasterWindow.cpp
         Ui/MasterWindow.h
@@ -54,9 +51,14 @@ set(UTIL_SOURCES
         Util/ItemRepository.cpp
         Util/ItemRepository.h
         Util/DataModels.h
+        ManagerSources/AudioManagerInterface.cpp
+        ManagerSources/AudioManagerInterface.h
+        Widgets/AudioWidget.cpp
+        Widgets/AudioWidget.h
+        Widgets/AudioCard.cpp
+        Widgets/AudioCard.h
 )
 
-# Combine all sources
 add_executable(Satlin
         main.cpp
         ${UI_SOURCES}
@@ -66,14 +68,13 @@ add_executable(Satlin
         Resources/resources.qrc
 )
 
-# Link against Qt modules
 target_link_libraries(Satlin PRIVATE
         Qt6::Core
         Qt6::Gui
         Qt6::Widgets
+        Qt6::Multimedia
 )
 
-# Optional: Organize files in IDE (Visual Studio, Xcode, etc.)
 source_group("UI" FILES ${UI_SOURCES})
 source_group("Widgets" FILES ${WIDGET_SOURCES})
 source_group("Managers" FILES ${MANAGER_SOURCES})

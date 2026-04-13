@@ -10,12 +10,14 @@
 #include <queue>
 
 // Custom Import
+#include "../ManagerSources/AudioManagerInterface.h"
 #include "../ManagerSources/ImageManagerInterface.h"
 #include "../Widgets/ItemWidget.h"
 #include "../Widgets/ImageWidget.h"
 #include "../ManagerSources/TextManagerInterface.h"
 #include "../Util/ItemRepository.h"
 #include "../Util/MimeDataAnalyzer.h"
+#include "../Widgets/AudioWidget.h"
 
 
 using namespace std;
@@ -71,6 +73,17 @@ class ClipBoardInterface final : public QWidget{
         const QString &imageHash, const QString& filePath, int mode
     ) const;
 
+    // AUDIO
+    shared_ptr<AudioManagerInterface>audioManagerInterface = make_shared<AudioManagerInterface>();
+    void handleAudioItem(
+        int saveStatus, qint32 fileSize, const QString &filePath,
+        const QString &ext, const QString &timeStamp, const QString &hash
+    ) const;
+    void showAudioItemOnScreen(AudioWidget* audio) const;
+    void audioItemClickedAction(const QString &filePath) const;
+    void audioRemovedConfirmationAction(
+        const QString& hashValue, const QString& filePath, int mode
+    ) const;
     // Signal Reception
     /**
      * Signal Receptor from System's clipboard. It generates current QMimeData

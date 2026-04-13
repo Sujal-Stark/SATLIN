@@ -10,6 +10,9 @@
 #include "../Util/Constants.h"
 #include "ClipBoardInterface.h"
 
+#include <QFile>
+
+#include "../Widgets/AudioWidget.h"
 #include "../Widgets/ImageWidget.h"
 #include "../Widgets/ItemWidget.h"
 
@@ -24,6 +27,7 @@ ClipBoardInterface::ClipBoardInterface() {
     this->setCustomStyle();
     this->mimeDataAnalyzer->driverReceiver(this->itemRepository);
     this->imageManagerInterface->assignDrivers(this->itemRepository);
+    this->audioManagerInterface->assignDrivers(this->itemRepository);
 }
 
 void ClipBoardInterface::constructUI() const {
@@ -151,6 +155,30 @@ void ClipBoardInterface::handleImageItem(const QString& text, const QString& ima
     this->showImageOnScreen(imageWidget);
 }
 
+void ClipBoardInterface::handleAudioItem(
+    const int saveStatus, const qint32 fileSize, const QString &filePath,
+    const QString &ext, const QString &timeStamp, const QString &hash
+) const {
+    auto* widget = new AudioWidget();
+
+    widget->assignDrivers(this->audioManagerInterface);
+    widget->assignAudio(
+        saveStatus, fileSize, filePath, ext, timeStamp, hash
+    );
+
+    connect(
+        widget, &AudioWidget::audioItemClickedSignal,
+        this, &ClipBoardInterface::audioItemClickedAction
+    );
+
+    connect(
+        widget, &AudioWidget::audioRemovedConfirmation,
+        this, &ClipBoardInterface::audioRemovedConfirmationAction
+    );
+
+    this->showAudioItemOnScreen(widget);
+}
+
 void ClipBoardInterface::handleIncomingItems() const {
     const QMimeData *currentMime_data = this->clipBoard->mimeData(QClipboard::Clipboard);
     this->mimeDataAnalyzer->analyzeMimeObject(*currentMime_data);
@@ -172,6 +200,11 @@ void ClipBoardInterface::setActions() const {
         this->mimeDataAnalyzer, &MimeDataAnalyzer::imageFilePathReleaseSignal,
         this, &ClipBoardInterface::handleImageItem
     );
+
+    connect(
+        this->mimeDataAnalyzer, &MimeDataAnalyzer::audioFilePathReleaseSignal,
+        this, &ClipBoardInterface::handleAudioItem
+    );
 }
 
 void ClipBoardInterface::showTextItemOnScreen(ItemWidget *item) const {
@@ -182,6 +215,10 @@ void ClipBoardInterface::showImageOnScreen(ImageWidget *image) const {
     this->imageScrollAreaInnerLayout->insertWidget(0, image);
 }
 
+void ClipBoardInterface::showAudioItemOnScreen(AudioWidget *audio) const {
+    this->audioScrollAreaInnerLayout->insertWidget(0, audio);
+}
+
 
 void ClipBoardInterface::textItemClickedAction(const QString &content) const {
     this->clipBoard->setText(content.toStdString().data());
@@ -190,6 +227,16 @@ void ClipBoardInterface::textItemClickedAction(const QString &content) const {
 void ClipBoardInterface::imageItemClickedAction(const QImage &image) const {
     if (!image.isNull()) {
         this->clipBoard->setImage(image);
+    }
+}
+
+void ClipBoardInterface::audioItemClickedAction(const QString &filePath) const {
+    if (!filePath.isEmpty()) {
+        const QPointer mime = new QMimeData();
+        QList<QUrl> fileList;
+        fileList.append(QUrl::fromLocalFile(filePath));
+        mime->setUrls(fileList);
+        this->clipBoard->setMimeData(mime);
     }
 }
 
@@ -207,13 +254,24 @@ void ClipBoardInterface::setCustomStyle() {
 void ClipBoardInterface::imageRemovedConfirmationAction(
     const QString &imageHash, const QString& filePath, const int mode
 ) const {
-    this->clipBoard->clear();
+    cleanClipBoard();
 
     if (
         mode == ImageManagerInterface::SAVE_STATUS_TRUE
         && !MimeDataAnalyzer::deleteImageFile(filePath)
-    )qWarning()<<"Unable to delete File";
+    )qWarning()<<"Unable to delete Item";
 
+}
+
+void ClipBoardInterface::audioRemovedConfirmationAction(
+    const QString &hashValue, const QString &filePath, int mode
+) const {
+    cleanClipBoard();
+
+    if (
+        mode == AudioManagerInterface::SAVE_STATUS_TRUE
+        && !MimeDataAnalyzer::deleteAudioFile(filePath)
+    )qWarning()<<"Unable to Delete Item";
 }
 
 void ClipBoardInterface::cleanClipBoard() const {
