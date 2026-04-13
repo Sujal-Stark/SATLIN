@@ -9,6 +9,7 @@
 #include "Constants.h"
 #include <QStandardPaths>
 #include <chrono>
+#include <QFileInfo>
 #include <sstream>
 #include <stdexcept>
 
@@ -106,6 +107,15 @@ bool MimeDataAnalyzer::deleteImageFile(const QString &filePath) {
     }
 }
 
+bool MimeDataAnalyzer::deleteAudioFile(const QString &filePath) {
+    try {
+        return filesystem::remove(filePath.toStdString());
+    }catch (filesystem::filesystem_error& e) {
+        qWarning()<<"Failed to remove Audio File."<<e.what();
+        return false;
+    }
+}
+
 bool MimeDataAnalyzer::isVideoFile(string ext) {
     ranges::transform(ext, ext.begin(), ::tolower);
     return ext == Constants::MP4 || ext == Constants::MKV
@@ -148,9 +158,17 @@ bool MimeDataAnalyzer::analyzeText(const string &text) {
             }
 
             else if (isAudioFile(ext)) {
-                // emit audioFilePathReleaseSignal(
-                //     filePath, ext.data(), 0
-                // );
+                QString audioHash = HashGenerator::generateAudioObjectHash(filePath);
+                const qint32 fileSize = static_cast<qint32>(QFileInfo(filePath).size());
+                QString timeStamp = timeStampReadable();
+                if (
+                    QString extension = ext.data();
+                    this->itemRepository->addNewAudioItem(
+                        0, fileSize, filePath, extension, timeStamp, audioHash
+                    )
+                )emit audioFilePathReleaseSignal(
+                    0, fileSize, filePath, extension, timeStamp, audioHash
+                );
             }
 
             else qWarning()<<"Different File detected";

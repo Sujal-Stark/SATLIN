@@ -121,7 +121,19 @@ class MimeDataAnalyzer : public QWidget{
     void videoFilePathReleaseSignal(QString text, QString ext, int saveStatus);
 
     // audio
-    void audioFilePathReleaseSignal(QString text, QString ext, int saveStatus);
+    /**
+     * @brief Sends The metadata related to the audio file to the caller class.
+     * @param saveStatus Represents if a audio File is already saved or just copied.
+     * @param fileSize KiloByte size of the audio file.
+     * @param filePath Absolute file path of the audio File.
+     * @param ext Extension type
+     * @param timeStamp The time at which this audio file is copied to the system
+     * @param hash Hexadecimal hash value assigned to the audio file.
+     */
+    void audioFilePathReleaseSignal(
+        int saveStatus, qint32 fileSize, QString filePath,
+        QString ext, QString timeStamp, QString hash
+    );
 
 public:
     MimeDataAnalyzer();
@@ -153,4 +165,11 @@ public:
      * @param filePath complete address of image file.
      */
     [[nodiscard]] static bool deleteImageFile(const QString& filePath);
+
+    /**
+     * Removes The audio file from system using its File path.
+     * @param filePath Absolute file path of Audio File.
+     * @return Returns True for success of this operation
+     */
+    [[nodiscard]] static bool deleteAudioFile(const QString& filePath);
 };
