@@ -80,9 +80,9 @@ class ClipBoardInterface final : public QWidget{
         const QString &ext, const QString &timeStamp, const QString &hash
     ) const;
     void showAudioItemOnScreen(AudioWidget* audio) const;
-    void audioItemClickedAction(const QString &filePath) const;
+    void audioItemClickedAction(const QUrl &filePath) const;
     void audioRemovedConfirmationAction(
-        const QString& hashValue, const QString& filePath, int mode
+        const QString& hashValue, const QUrl& filePath, int mode
     ) const;
     // Signal Reception
     /**

@@ -230,11 +230,11 @@ void ClipBoardInterface::imageItemClickedAction(const QImage &image) const {
     }
 }
 
-void ClipBoardInterface::audioItemClickedAction(const QString &filePath) const {
+void ClipBoardInterface::audioItemClickedAction(const QUrl &filePath) const {
     if (!filePath.isEmpty()) {
         const QPointer mime = new QMimeData();
         QList<QUrl> fileList;
-        fileList.append(QUrl::fromLocalFile(filePath));
+        fileList.append(QUrl::fromLocalFile(filePath.toLocalFile()));
         mime->setUrls(fileList);
         this->clipBoard->setMimeData(mime);
     }
@@ -264,13 +264,13 @@ void ClipBoardInterface::imageRemovedConfirmationAction(
 }
 
 void ClipBoardInterface::audioRemovedConfirmationAction(
-    const QString &hashValue, const QString &filePath, int mode
+    const QString &hashValue, const QUrl &filePath, const int mode
 ) const {
     cleanClipBoard();
 
     if (
         mode == AudioManagerInterface::SAVE_STATUS_TRUE
-        && !MimeDataAnalyzer::deleteAudioFile(filePath)
+        && !MimeDataAnalyzer::deleteAudioFile(filePath.toLocalFile())
     )qWarning()<<"Unable to Delete Item";
 }
 
