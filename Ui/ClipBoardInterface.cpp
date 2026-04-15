@@ -117,19 +117,19 @@ void ClipBoardInterface::widgetBehaviourSelection() const {
 void ClipBoardInterface::handleTextItem(const QString& text, const QString& hash) {
     if (text.isEmpty())return;
 
-    auto* textWidget = new ItemWidget();
+    auto* textWidget = new TextWidget();
     textWidget->setTextManagerInterfaceInputs(
         this->text_manager_interface, this->itemRepository
     );
     textWidget->assignText(text, hash); // issue
 
     connect(
-        textWidget, &ItemWidget::textItemClickedSignal,
+        textWidget, &TextWidget::textItemClickedSignal,
         this, &ClipBoardInterface::textItemClickedAction
     );
 
     connect(
-        textWidget, &ItemWidget::clipboardCleanSignal,
+        textWidget, &TextWidget::clipboardCleanSignal,
         this, &ClipBoardInterface::cleanClipBoard
     );
 
@@ -207,8 +207,8 @@ void ClipBoardInterface::setActions() const {
     );
 }
 
-void ClipBoardInterface::showTextItemOnScreen(ItemWidget *item) const {
-    this->textScrollAreaInnerLayout->insertWidget(0, item);
+void ClipBoardInterface::showTextItemOnScreen(TextWidget *text) const {
+    this->textScrollAreaInnerLayout->insertWidget(0, text);
 }
 
 void ClipBoardInterface::showImageOnScreen(ImageWidget *image) const {

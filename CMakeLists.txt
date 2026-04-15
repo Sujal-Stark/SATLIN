@@ -57,6 +57,8 @@ set(UTIL_SOURCES
         Widgets/AudioWidget.h
         Widgets/AudioCard.cpp
         Widgets/AudioCard.h
+        Widgets/TextWidget.cpp
+        Widgets/TextWidget.h
 )
 
 add_executable(Satlin

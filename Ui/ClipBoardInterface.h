@@ -12,12 +12,12 @@
 // Custom Import
 #include "../ManagerSources/AudioManagerInterface.h"
 #include "../ManagerSources/ImageManagerInterface.h"
-#include "../Widgets/ItemWidget.h"
 #include "../Widgets/ImageWidget.h"
 #include "../ManagerSources/TextManagerInterface.h"
 #include "../Util/ItemRepository.h"
 #include "../Util/MimeDataAnalyzer.h"
 #include "../Widgets/AudioWidget.h"
+#include "../Widgets/TextWidget.h"
 
 
 using namespace std;
@@ -48,7 +48,7 @@ class ClipBoardInterface final : public QWidget{
      * @brief Receives and ItemWidget Pointer and set's the Object
      * to UI. Latest at top manner is used.
      */
-    void showTextItemOnScreen(ItemWidget *item) const;
+    void showTextItemOnScreen(TextWidget *text) const;
 
     /**
      * Receives a text item and sets it as current ClipBoard Item.
