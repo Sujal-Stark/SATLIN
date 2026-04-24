@@ -9,63 +9,7 @@
 #include "../Util/Constants.h"
 #include "../ManagerSources/IconManager.h"
 
-AudioWidget::AudioWidget() {
-    this->setLayout(this->masterLayout);
-    this->setFixedWidth(Constants::ITEM_WIDGET_WIDTH);
-    this->stylizeButtons();
-    this->construct();
-    this->establishConnections();
-    this->stylize();
-}
-
-void AudioWidget::establishConnections() {
-    connect(
-        this->editButton, &QPushButton::clicked,
-        this, &AudioWidget::editButtonClicked
-    );
-
-    connect(
-        this->deleteButton, &QPushButton::clicked,
-        this, &AudioWidget::deleteButtonClicked
-    );
-
-    connect(
-        this->saveButton, &QPushButton::clicked,
-        this, &AudioWidget::saveButtonClicked
-    );
-}
-
-void AudioWidget::construct() const {
-    this->masterLayout->addWidget(this->mainFrame, Qt::AlignmentFlag::AlignCenter);
-    this->mainFrame->setLayout(this->masterInnerLayout);
-
-    this->masterInnerLayout->addLayout(this->contentHolder);
-    this->contentHolder->addStretch();
-
-    this->masterInnerLayout->addLayout(this->buttonHolder);
-    this->buttonHolder->setSpacing(10);
-    this->buttonHolder->addStretch();
-    this->buttonHolder->addWidget(this->deleteButton, Qt::AlignmentFlag::AlignRight);
-    this->buttonHolder->addWidget(this->editButton, Qt::AlignmentFlag::AlignRight);
-    this->buttonHolder->addWidget(this->saveButton, Qt::AlignmentFlag::AlignRight);
-}
-
-void AudioWidget::stylizeButtons() const {
-    this->editButton->setFixedSize(
-        Constants::ITEM_WIDGET_EDIT_BUTTON_WIDTH, Constants::ITEM_WIDGET_EDIT_BUTTON_HEIGHT
-    );
-    this->editButton->setIcon(IconManager::editIcon());
-
-    this->deleteButton->setFixedSize(
-        Constants::ITEM_WIDGET_EDIT_BUTTON_WIDTH, Constants::ITEM_WIDGET_EDIT_BUTTON_HEIGHT
-    );
-    this->deleteButton->setIcon(IconManager::cancelIcon());
-
-    this->saveButton->setFixedSize(
-        Constants::ITEM_WIDGET_EDIT_BUTTON_WIDTH, Constants::ITEM_WIDGET_EDIT_BUTTON_HEIGHT
-    );
-    this->saveButton->setIcon(IconManager::saveIcon());
-}
+AudioWidget::AudioWidget() = default;
 
 // Widget Internal Operations
 void AudioWidget::assignDrivers(const shared_ptr<AudioManagerInterface> &interface) {
@@ -88,7 +32,7 @@ void AudioWidget::assignAudio(
     }
 }
 
-void AudioWidget::editButtonClicked() const {
+void AudioWidget::editButtonClicked() {
     /*Audio Editing Will be introduced Later*/
 
     qDebug()<<this->audioLabel->getAudioObjectHash();
@@ -104,7 +48,7 @@ void AudioWidget::deleteButtonClicked() {
     this->deleteLater();
 }
 
-void AudioWidget::saveButtonClicked() const {
+void AudioWidget::saveButtonClicked() {
     /*Audio Saving Will be introduced Later*/
 
     qDebug()<<this->audioLabel->getAudioObjectHash();
@@ -127,10 +71,6 @@ void AudioWidget::mousePressEvent(QMouseEvent *event) {
 }
 
 void AudioWidget::mouseReleaseEvent(QMouseEvent *event) {
-    this->stylize();
-}
-
-void AudioWidget::stylize() {
     this->setStyleSheet(
         "border: 0px solid white;"
         "border-radius: 5px;"

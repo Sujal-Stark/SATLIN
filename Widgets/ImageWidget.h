@@ -53,7 +53,6 @@ public:
      * are bonded and styles added.
      */
     explicit ImageWidget();
-    void construct() const;
 
     /**
      * @param path FilePath of the Image

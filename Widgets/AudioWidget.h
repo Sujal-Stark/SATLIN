@@ -3,17 +3,12 @@
 //
 
 #pragma once
-#include <QLabel>
 #include <qpointer.h>
-#include <QPushButton>
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QFrame>
 
+#include "ItemWidget.h"
 #include "../ManagerSources/AudioManagerInterface.h"
 
-class AudioWidget : public QWidget{
+class AudioWidget : public ItemWidget{
     Q_OBJECT
     // Manager Interfaces
     /**
@@ -22,32 +17,10 @@ class AudioWidget : public QWidget{
      */
     std::shared_ptr<AudioManagerInterface> audioManagerInterface = nullptr;
 
-    // QButtons
-    QPushButton *deleteButton = new QPushButton();
-    QPushButton *editButton = new QPushButton();
-    QPushButton *saveButton = new QPushButton();
-
     // QLabels
     QPointer<AudioCard> audioLabel = nullptr;
 
-    // Layouts
-    QVBoxLayout *masterLayout = new QVBoxLayout();
-    QVBoxLayout *masterInnerLayout = new QVBoxLayout();
-
-    QHBoxLayout *contentHolder = new QHBoxLayout();
-    QHBoxLayout *buttonHolder = new QHBoxLayout();
-
-    // Frames
-    QFrame *mainFrame = new QFrame();
-
-    // General
-    void stylizeButtons() const;
-
-    /**
-     * @brief All signals from Ui components to internal methods are
-     * Connected here.
-     */
-    void establishConnections();
+protected:
 
     /**
      * @brief Performs the deletion of this Widget. Once clicked it emits
@@ -55,7 +28,7 @@ class AudioWidget : public QWidget{
      * clean up by ClipBoardInterface. And this Q Object is scheduled
      * to be deleted.
      */
-    void deleteButtonClicked();
+    void deleteButtonClicked() override;
 
     /**
      * @brief Saves Audio corresponding to Current Hash Value.
@@ -63,11 +36,9 @@ class AudioWidget : public QWidget{
      * No need to check for hash validity as valid
      * hashes are provided to AudioLabel.
      */
-    void saveButtonClicked() const;
-    void editButtonClicked() const;
-    void stylize();
+    void saveButtonClicked() override;
+    void editButtonClicked() override;
 
-protected:
     /**
      * @brief This method extracts audio file path with it's HashValue, and sends a
      * signal to ClipBoardInterface with QUrl Object. It also performs some
@@ -88,12 +59,6 @@ public:
      * are bonded and styles added.
      */
     explicit AudioWidget();
-
-    /**
-     * @brief All Ui components are attached with each other in this
-     * method.
-     */
-    void construct() const;
 
     /**
      * @brief Creates A AudioCard Widget With the given information and
