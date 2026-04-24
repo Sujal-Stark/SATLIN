@@ -4,52 +4,25 @@
 
 #pragma once
 
-#include <QPushButton>
-#include <QHBoxLayout>
-#include <QMouseEvent>
-
+#include "ItemWidget.h"
 #include "../ManagerSources/ImageManagerInterface.h"
-#include "../ManagerSources/IconManager.h"
 
-class ImageWidget : public QWidget {
+class ImageWidget : public ItemWidget {
     Q_OBJECT
     // Manager Interface
     shared_ptr<ImageManagerInterface> imageManagerInterface = nullptr;
 
-    // QButtons
-    QPushButton *deleteButton = new QPushButton();
-    QPushButton *editButton = new QPushButton();
-    QPushButton *saveButton = new QPushButton();
-
     // QLabel
     QPointer<QLabel> imageLabel = nullptr;
 
-    // Layouts
-    QVBoxLayout *masterLayout = new QVBoxLayout();
-    QVBoxLayout *masterInnerLayout = new QVBoxLayout();
-
-    QHBoxLayout *contentHolder = new QHBoxLayout();
-    QHBoxLayout *buttonHolder = new QHBoxLayout();
-
-    // Frames
-    QFrame *mainFrame = new QFrame();
-
-    // General
-    void stylizeButtons() const;
-    void stylizeFrames() const;
-
-    /**
-     * @brief All signals from Ui components to internal methods are
-     * Connected here.
-     */
-    void establishConnections();
+protected:
 
     /**
      * @brief Performs the deletion of this Widget. Once clicked it emits
      * a signal of File's path save status and hash values for further
      * clean up by ClipBoardInterface.
      */
-    void deleteButtonClicked();
+    void deleteButtonClicked() override;
 
     /**
      * @brief Saves Image corresponding to Current Hash Value. Works only for
@@ -57,11 +30,9 @@ class ImageWidget : public QWidget {
      * to be redownloaded. No need to check for hash validity as valid
      * hashes are provided to imageLabel.
      */
-    void saveButtonClicked() const;
-    void editButtonClicked() const;
-    void stylize();
+    void saveButtonClicked() override;
+    void editButtonClicked() override;
 
-protected:
     /**
      * @brief This method extracts QImage with it's HashValue, and sends a
      * signal to ClipBoardInterface with QImage Object. It also performs some

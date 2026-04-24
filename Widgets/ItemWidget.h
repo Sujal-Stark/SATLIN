@@ -23,9 +23,6 @@ protected:
     QPushButton *editButton = new QPushButton();
     QPushButton *saveButton = new QPushButton();
 
-    // holder object declaration
-    QLabel* textLabel = nullptr;
-
     // Layouts
     QVBoxLayout *masterLayout = new QVBoxLayout();
     QVBoxLayout *masterInnerLayout = new QVBoxLayout();

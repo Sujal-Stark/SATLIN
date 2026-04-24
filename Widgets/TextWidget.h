@@ -14,6 +14,8 @@ class TextWidget : public ItemWidget {
     Q_OBJECT
     shared_ptr<TextManagerInterface> textManagerInterface = nullptr;
 
+    QPointer<QLabel>textLabel = nullptr;
+
 protected:
                                             // Methods
 
