@@ -5,20 +5,14 @@
 #pragma once
 #include <QLabel>
 
+#include "ItemManagerInterface.h"
 #include "../Ui/TextEditor.h"
 #include "../Util/ItemRepository.h"
 
 using namespace std;
 
-class TextManagerInterface : public QObject {
+class TextManagerInterface : public ItemManagerInterface {
     Q_OBJECT
-    /**
-     * This Class stores all the hash values for text Item.
-     * Performs CRUD like operations on stored hash values.
-     * Hash Data type : QString.
-     */
-    shared_ptr<ItemRepository> itemRepository = nullptr;
-
     /**
      * TextEditor Interface is used to make changes in texts.
      */
@@ -28,7 +22,7 @@ class TextManagerInterface : public QObject {
      * Creates Connections with MemberClass's signal to for handling
      * their output.
      */
-    void establishConnections();
+    void establishConnections() override;
 
     /**
      * Sends a signal to itemWidget to Transfer the edited text.
@@ -59,14 +53,14 @@ public:
      * Given a TextHash(const QString&) this method removes the textHash from
      * Item Repository.
      */
-    [[nodiscard]] bool removeItem(const QString& textHash) const;
+    [[nodiscard]] bool removeItem(const QString& textHash) const override;
 
     /**
      * It checks if the old hash is present and the new hash is absent in
      * ItemRepository. If Both conditions are met then it erase old hash and
      * add new Hash to the Repository.
      */
-    [[nodiscard]] bool replaceHash(const QString& oldHash, const QString& newHash) const;
+    [[nodiscard]] bool replaceHash(const QString& oldHash, const QString& newHash) const override;
 
     /**
      * Receives a valid QString from ItemWidget, sends it to TextEditor and
