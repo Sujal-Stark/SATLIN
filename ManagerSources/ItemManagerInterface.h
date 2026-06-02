@@ -9,7 +9,7 @@
 #include "../Ui/TextEditor.h"
 #include "../Util/ItemRepository.h"
 
-class ItemManagerInterface : public QObject{
+class ItemManagerInterface : public QWidget{
     Q_OBJECT
     /**
      * This Class stores all the hash values for text Item.
@@ -34,13 +34,13 @@ public:
      * Drivers:
      * ItemRepository :- Class that stores all text related hash values.
      */
-    void assignDrivers(const shared_ptr<ItemRepository>& repo);
+    virtual void assignDrivers(const shared_ptr<ItemRepository>& repo);
 
     /**
      * Given a TextHash(const QString&) this method removes the textHash from
      * Item Repository.
      */
-    [[nodiscard]] virtual bool removeItem(const QString& textHash) const = 0;
+    [[nodiscard]] virtual bool removeItem(const QString& hash) const = 0;
 
     /**
      * It checks if the old hash is present and the new hash is absent in

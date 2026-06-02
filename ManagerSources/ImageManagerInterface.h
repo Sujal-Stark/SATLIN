@@ -7,12 +7,12 @@
 #include  <QLabel>
 #include <stdexcept>
 
+#include "ItemManagerInterface.h"
 #include "../Util/ItemRepository.h"
 
 using namespace std;
 
-class ImageManagerInterface : public QWidget{
-    shared_ptr<ItemRepository> itemRepository;
+class ImageManagerInterface : public ItemManagerInterface{
     /**
      * @brief Generates a thumbnail(cheap copy) for the image and creates
      * a QLabel for it.
@@ -31,21 +31,15 @@ class ImageManagerInterface : public QWidget{
      */
     [[nodiscard]]static QPixmap generateThumbnail(const QString& filePath);
 
+protected:
+    void establishConnections() override;
+
 public:
     static constexpr int SAVE_STATUS_TRUE = 1;
     static constexpr int SAVE_STATUS_FALSE = 0;
 
     explicit ImageManagerInterface();
 
-    /**
-     * @brief This method accepts a ItemRepository Object from
-     * ClipBoardInterface. This class uses this object to manipulate
-     * saved data so that ImageWidget Interface do not have to worry
-     * about Image metadata and hash storing. Throws invalid_argument
-     * error if given instance is nullptr.
-     * @param repo a const shared pointer of ItemRepository Class
-     */
-    void assignDrivers(const shared_ptr<ItemRepository>& repo);
 
     /**
      * This single method is responsible for all necessary operations to access
@@ -64,9 +58,11 @@ public:
      * @brief Calls ItemRepository associated methods to remove the
      * image hash and it's metadata. This method doesn't check Hash authenticity
      * it's ItemRepository's decision.
-     * @param imageHash Hexadecimal hash value of Image File.
+     * @param hash Hexadecimal hash value of Image File.
      */
-    [[nodiscard]] bool removeImageItem(const QString& imageHash) const;
+    [[nodiscard]] bool removeItem(const QString& hash) const override;
+
+    [[nodiscard]] bool replaceHash(const QString &oldHash, const QString &newHash) const override;
 
     /**
      * @brief After checking validity of hash value this method returns a raw pointer of

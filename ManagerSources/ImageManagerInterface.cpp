@@ -11,9 +11,8 @@
 
 ImageManagerInterface::ImageManagerInterface() = default;
 
-void ImageManagerInterface::assignDrivers(const shared_ptr<ItemRepository> &repo) {
-    if (repo == nullptr)throw invalid_argument("ItemRepository Pointer points to null");
-    this->itemRepository = repo;
+void ImageManagerInterface::establishConnections() {
+    // This method is not used for now.
 }
 
 QPointer<QLabel> ImageManagerInterface::getImageLabel(
@@ -56,16 +55,16 @@ QPixmap ImageManagerInterface::generateThumbnail(const QString& filePath) {
     );
 }
 
-bool ImageManagerInterface::removeImageItem(const QString& imageHash) const {
-    return this->itemRepository->removeImageItemHash(imageHash);
+bool ImageManagerInterface::removeItem(const QString& hash) const {
+    return this->itemRepository->removeImageItemHash(hash);
 }
 
 void ImageManagerInterface::saveActionPerformed(const QString &imageHash, const int mode) {
     if (mode == SAVE_STATUS_FALSE)return; // why remove when already exists
 
     const QString fileName = QFileDialog::getSaveFileName(
-            this, Constants::SAVE_FILE_LABEL,QDir::homePath(),
-            "Images (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*)"
+        this, Constants::SAVE_FILE_LABEL,QDir::homePath(),
+        "Images (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*)"
         );
 
     if (fileName.isNull())return; // User cancels saving.
@@ -92,4 +91,9 @@ const QString &ImageManagerInterface::getImageFileName(const QString &imageHash)
     const ImageContainer* ctr = this->itemRepository->getImageContainer(imageHash);
     if (ctr == nullptr)return {};
     return ctr->filePath;
+}
+
+bool ImageManagerInterface::replaceHash(const QString &oldHash, const QString &newHash) const {
+    // This method is not required for now.
+    return true;
 }

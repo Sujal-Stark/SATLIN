@@ -53,7 +53,7 @@ void ImageWidget::deleteButtonClicked() {
     const QString hash = this->imageLabel->property(Constants::SHA_STRING_KEY).toString();
     if (
         const QString filePath = this->imageManagerInterface->getImageFileName(hash);
-        this->imageManagerInterface->removeImageItem(hash) && !filePath.isEmpty()
+        this->imageManagerInterface->removeItem(hash) && !filePath.isEmpty()
     )emit this->imageRemovedConfirmation(
         hash, filePath, this->imageLabel->property(Constants::MODE).toInt()
     );
@@ -62,7 +62,7 @@ void ImageWidget::deleteButtonClicked() {
     this->deleteLater(); // self-destruction of widget
 }
 
-void ImageWidget::saveButtonClicked() {
+void ImageWidget::saveButtonClicked() {;
     this->imageManagerInterface->saveActionPerformed(
         this->imageLabel->property(Constants::SHA_STRING_KEY).toString(),
         this->imageLabel->property(Constants::MODE).toInt()
