@@ -8,9 +8,8 @@
 
 AudioManagerInterface::AudioManagerInterface() = default;
 
-void AudioManagerInterface::assignDrivers(const shared_ptr<ItemRepository> &repo) {
-    if (repo == nullptr)throw invalid_argument("ItemRepository Pointer points to null");
-    this->itemRepository = repo;
+void AudioManagerInterface::establishConnections() {
+    // Not required Now.
 }
 
 QPointer<AudioCard> AudioManagerInterface::createAudioLabel(
@@ -29,6 +28,11 @@ QString AudioManagerInterface::releaseAudioData(const QString &audioHash) const 
     return container->filePath;
 }
 
-bool AudioManagerInterface::removeAudioItem(const QString &hashValue) const {
-    return this->itemRepository->removeAudioItemHash(hashValue);
+bool AudioManagerInterface::removeItem(const QString &hash) const {
+    return this->itemRepository->removeAudioItemHash(hash);
+}
+
+bool AudioManagerInterface::replaceHash(const QString &oldHash, const QString &newHash) const {
+    // not required now.
+    return true;
 }

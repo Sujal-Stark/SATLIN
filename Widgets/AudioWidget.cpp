@@ -39,7 +39,7 @@ void AudioWidget::editButtonClicked() {
 }
 
 void AudioWidget::deleteButtonClicked() {
-    if (this->audioManagerInterface->removeAudioItem(this->audioLabel->getAudioObjectHash())) {
+    if (this->audioManagerInterface->removeItem(this->audioLabel->getAudioObjectHash())) {
         emit this->audioRemovedConfirmation(
             this->audioLabel->getAudioObjectHash(), this->audioLabel->getAudioFileName(),
             this->audioLabel->getMode()

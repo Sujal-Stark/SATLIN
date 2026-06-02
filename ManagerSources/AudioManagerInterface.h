@@ -5,28 +5,19 @@
 #pragma once
 #include <qpointer.h>
 
+#include "ItemManagerInterface.h"
 #include "../Util/ItemRepository.h"
 #include "../Widgets/AudioCard.h"
 
-class AudioManagerInterface {
-    /**
-     * Stores All Entries of Audio File by their hash value
-     * and Other metadata.
-     */
-    shared_ptr<ItemRepository> itemRepository;
+class AudioManagerInterface  : public ItemManagerInterface{
+protected:
+    void establishConnections() override;
 
 public:
     static constexpr int SAVE_STATUS_TRUE = 1;
     static constexpr int SAVE_STATUS_FALSE = 0;
 
     explicit AudioManagerInterface();
-
-    /**
-     * @brief Receives necessary drivers(instance of classes) to perform
-     * different operations on AudioFile.
-     * @param repo ItemRepository Instance Provided By ClipBoardInterface
-     */
-    void assignDrivers(const shared_ptr<ItemRepository>& repo);
 
     /**
      * @brief This method accepts necessary parameters and create
@@ -43,10 +34,10 @@ public:
     /**
      * @brief This Method removes the entry of given hash value and
      * corresponding AudioContainer from ItemRepository
-     * @param hashValue Hexadecimal hash value assigned to audioFile
+     * @param hash Hexadecimal hash value assigned to audioFile
      * @return a boolean output representing success or failure
      */
-    [[nodiscard]] bool removeAudioItem(const QString& hashValue) const;
+    [[nodiscard]] bool removeItem(const QString& hash) const override;
 
     /**
      * @brief With given hash value this method returns the absolute file
@@ -55,4 +46,6 @@ public:
      * @return QString of Absolute file Path of AudioFile
      */
     [[nodiscard]] QString releaseAudioData(const QString& audioHash) const;
+
+    [[nodiscard]] bool replaceHash(const QString &oldHash, const QString &newHash) const override;
 };
