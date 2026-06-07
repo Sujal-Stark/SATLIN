@@ -12,29 +12,25 @@
 
 ItemWidget::ItemWidget() {
     this->setLayout(this->masterLayout);
-    this->setFixedWidth(Constants::ITEM_WIDGET_WIDTH); // for constant width
     this->stylizeButtons();
     this->stylizeFrames();
-    this->construct();
-    this->establishConnections();
-    this->setStyleSheet(
-        "border: 0px solid white;"
-        "border-radius: 5px;"
-        "background-color: rgba(15, 14, 14, 150);"
-    );
+    this->createStyle();
 };
 
-void ItemWidget::stylizeButtons() const {
+void ItemWidget::stylizeButtons() {
+    this->editButton->setObjectName("editButton");
     this->editButton->setFixedSize(
         Constants::ITEM_WIDGET_EDIT_BUTTON_WIDTH, Constants::ITEM_WIDGET_EDIT_BUTTON_HEIGHT
     );
     this->editButton->setIcon(IconManager::editIcon());
 
+    this->deleteButton->setObjectName("deleteButton");
     this->deleteButton->setFixedSize(
         Constants::ITEM_WIDGET_EDIT_BUTTON_WIDTH, Constants::ITEM_WIDGET_EDIT_BUTTON_HEIGHT
     );
     this->deleteButton->setIcon(IconManager::cancelIcon());
 
+    this->saveButton->setObjectName("saveButton");
     this->saveButton->setFixedSize(
         Constants::ITEM_WIDGET_EDIT_BUTTON_WIDTH, Constants::ITEM_WIDGET_EDIT_BUTTON_HEIGHT
     );
@@ -47,7 +43,7 @@ void ItemWidget::stylizeFrames() const {
     );
 }
 
-void ItemWidget::construct() const {
+void ItemWidget::construct() {
     this->masterLayout->addWidget(this->mainFrame, Qt::AlignmentFlag::AlignCenter);
     this->mainFrame->setLayout(this->masterInnerLayout);
 
@@ -74,5 +70,25 @@ void ItemWidget::establishConnections() {
     connect(
         this->editButton, &QPushButton::clicked,
         this, &ItemWidget::editButtonClicked
+    );
+}
+
+void ItemWidget::createStyle() {
+    this->setStyleSheet(
+        R"(
+            QWidget{
+                border: 1px solid white;
+                border-radius: 5px;
+                background-color: #033a82
+            }
+
+            QPushButton{
+                border : 0px;
+            }
+
+            QPushButton:hover{
+                border : 2px solid #ffffff;
+            }
+        )"
     );
 }

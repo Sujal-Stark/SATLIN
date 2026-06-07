@@ -34,13 +34,14 @@ protected:
     QFrame *mainFrame = new QFrame();
 
                                             // Methods
-    void stylizeButtons() const;
+    virtual void stylizeButtons();
     void stylizeFrames() const;
+    void createStyle();
 
     /**
      * Builds connections with UI elements with actionable methods.
      */
-    void establishConnections();
+    virtual void establishConnections();
 
     /**
      * Removes Current Hash value.
@@ -65,5 +66,5 @@ protected:
 
 public:
     ItemWidget();
-    void construct() const;
+    virtual void construct();
 };
