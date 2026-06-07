@@ -13,7 +13,9 @@ public:
     [[nodiscard]] static QIcon saveIcon() ;
     [[nodiscard]] static QIcon confirmIcon();
     [[nodiscard]] static QIcon cancelIcon();
-    [[nodiscard]] static QIcon editIcon() ;
+    [[nodiscard]] static QIcon editIcon();
+    [[nodiscard]] static QIcon expandIcon();
+    [[nodiscard]] static QIcon collapseButton();
 
     [[nodiscard]] static QIcon textIcon() ;
     [[nodiscard]] static QIcon photoIcon();

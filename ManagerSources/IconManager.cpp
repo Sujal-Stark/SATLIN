@@ -20,6 +20,14 @@ QIcon IconManager::editIcon() {
     return QIcon(":/Edit");
 }
 
+QIcon IconManager::expandIcon() {
+    return QIcon(":/expand");
+}
+
+QIcon IconManager::collapseButton() {
+    return QIcon(":/collapse");
+}
+
 QIcon IconManager::textIcon() {
     return QIcon(":/Text");
 }

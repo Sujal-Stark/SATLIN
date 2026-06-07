@@ -18,5 +18,7 @@
         <file alias = "Music_Note">images/Music_Note.png</file>
         <file alias = "Vol_Up">images/VolumeUp.svg</file>
         <file alias = "Vol_Down">images/volumeDown.svg</file>
+        <file alias = "expand">images/expand.svg</file>
+        <file alias = "collapse">images/collapse.svg</file>
     </qresource>
 </RCC>
