@@ -5,7 +5,12 @@
 #include "ImageWidget.h"
 #include "../Util/Constants.h"
 
-ImageWidget::ImageWidget() = default;
+ImageWidget::ImageWidget() {
+    this->setFixedWidth(Constants::ITEM_WIDGET_WIDTH);
+    this->setFixedHeight(Constants::ITEM_WIDGET_MAX_HEIGHT);
+    this->construct();
+    this->establishConnections();
+}
 
 // Widget Internal operations
 void ImageWidget::assignImage(const QString& path, const QString& imageHash, const int mode) {

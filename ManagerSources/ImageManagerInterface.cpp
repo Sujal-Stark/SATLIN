@@ -33,7 +33,8 @@ QPointer<QLabel> ImageManagerInterface::createPixmapLabel(
 
     imageLabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
     imageLabel->setContentsMargins(2, 2, 2, 2);
-    imageLabel->setFixedSize(Constants::TEXT_CARD_WIDTH, pixmap.height() + 5);
+    imageLabel->setFixedSize(Constants::TEXT_CARD_WIDTH, Constants::IMAGE_CARD_HEIGHT);
+
     imageLabel->setStyleSheet(
         "border: 1px solid white;"
         "border-radius: 5px;"
@@ -50,7 +51,7 @@ QPointer<QLabel> ImageManagerInterface::createPixmapLabel(
 
 QPixmap ImageManagerInterface::generateThumbnail(const QString& filePath) {
     return QPixmap(filePath).scaled(
-        Constants::IMAGE_THUMBNAIL_WIDTH, Constants::IMAGE_THUMBNAIL_HEIGHT,
+        Constants::TEXT_CARD_WIDTH - 20, Constants::IMAGE_CARD_HEIGHT - 20,
         Qt::AspectRatioMode::KeepAspectRatio
     );
 }
