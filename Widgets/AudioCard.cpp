@@ -35,6 +35,7 @@ AudioCard::AudioCard(const QString& filePath, const QString& hash, const int mod
     this->customizeButtons();
     this->construct();
     this->manageConnections();
+    this->addStyle();
 }
 
 void AudioCard::manageConnections() {
@@ -239,4 +240,18 @@ QUrl AudioCard::getAudioFileName() const {
 
 int AudioCard::getMode() const {
     return this->mode;
+}
+
+void AudioCard::addStyle() {
+    this->setStyleSheet(
+        R"(
+            QPushButton {
+                border : 0px;
+            }
+
+            QSlider {
+                border : 0px;
+            }
+        )"
+    );
 }

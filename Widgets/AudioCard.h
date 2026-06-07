@@ -72,6 +72,8 @@ class AudioCard : public QWidget{
      */
     void customizeButtons() const;
 
+    void addStyle();
+
     /**
      * @brief When called, this method changes the default Ui of the sender
      * button for a small fraction to emulate a sense that button is clicked.
