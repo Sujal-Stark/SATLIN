@@ -33,12 +33,13 @@ namespace  Constants {
     inline constexpr int AUDIO_SIGNAL_INDEX = 3;
 
     inline constexpr int WINDOW_WIDTH = 600;
-    inline constexpr int WINDOW_HEIGHT = 400;
+    inline constexpr int WINDOW_HEIGHT = 600;
 
     inline constexpr int MIN_WINDOW_WIDTH = 400;
     inline constexpr int MIN_WINDOW_HEIGHT = 300;
 
     inline constexpr int TEXT_CARD_WIDTH = 490; // width of text copied Item
+    inline constexpr int TEXT_CARD_HEIGHT = 200;
     inline constexpr int WIDGET_MARGIN = 10;
 
     inline const QString RECENT = "Recent";
@@ -77,29 +78,35 @@ namespace  Constants {
     inline const string PNG = ".png";
     inline const string WEBP = ".webp";
     inline const string TIFF = ".tiff";
-    inline constexpr int IMAGE_THUMBNAIL_WIDTH = 200;
-    inline constexpr int IMAGE_THUMBNAIL_HEIGHT = 200;
 
     // Audio
     inline const string MP3 = ".mp3";
-    inline const string WAV = ".wav";
-    inline const string AAC = ".aac";
-    inline const string FLAC = ".flac";
-    inline const string OGG = ".ogg";
-    inline const string WMA = ".wma";
-    inline const string M4A = ".m4a";
+    inline constexpr string WAV = ".wav";
+    inline constexpr string AAC = ".aac";
+    inline constexpr string FLAC = ".flac";
+    inline constexpr string OGG = ".ogg";
+    inline constexpr string WMA = ".wma";
+    inline constexpr string M4A = ".m4a";
 
     // Video
-    inline const string MP4 = ".mp4";
-    inline const string MKV = ".mkv";
-    inline const string AVI = ".avi";
-    inline const string WEBM = ".webm";
+    inline constexpr string MP4 = ".mp4";
+    inline constexpr string MKV = ".mkv";
+    inline constexpr string AVI = ".avi";
+    inline constexpr string WEBM = ".webm";
 
     // ClipBoard UI
 
     // ItemWidget
     inline constexpr int ITEM_WIDGET_WIDTH = 530;
+    inline constexpr int ITEM_WIDGET_MAX_HEIGHT = 280;
+    inline constexpr int ITEM_WIDGET_MIN_HEIGHT = 100;
     inline constexpr int ITEM_MAIN_FRAME_WIDTH = ITEM_WIDGET_WIDTH - 20;
-    inline constexpr int ITEM_WIDGET_EDIT_BUTTON_WIDTH = 60;
+    inline constexpr int ITEM_WIDGET_EDIT_BUTTON_WIDTH = 30;
     inline constexpr int ITEM_WIDGET_EDIT_BUTTON_HEIGHT = 25;
+
+    // Image Widget
+    inline constexpr int IMAGE_CARD_HEIGHT = 200;
+
+    // Audio Widget
+    inline constexpr int AUDIO_WIDGET_FIXED_HEIGHT = 200;
 };
