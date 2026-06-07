@@ -16,8 +16,28 @@ class TextWidget : public ItemWidget {
 
     QPointer<QLabel>textLabel = nullptr;
 
+    bool isExpanded = false;
+
+    // Push Buttons
+    QPushButton *expandContractToggleButton = new QPushButton();
+
+    /***
+     * Works as Toggle Button. If Text card is in collapsed condition this feature
+     * expanded the card to it's full view and vice versa.
+     ****/
+    void expendCollapseAction();
+
 protected:
                                             // Methods
+    /**
+     * Provides dimensions and other features to the Push Buttons.
+     */
+    void stylizeButtons() override;
+
+    /**
+     * Connects Signals of Widget Components or other classes to Actions slots.
+     */
+    void establishConnections() override;
 
     /**
      * Removes Current Hash value.
@@ -75,6 +95,11 @@ protected:
 
 public:
     explicit TextWidget();
+
+    /**
+     * Builds the UI for this Widget.
+     */
+    void construct() override;
 
     /**
      * Creates a textLabel from the given Text and show the textLabel

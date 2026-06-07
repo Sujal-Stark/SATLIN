@@ -13,7 +13,41 @@
 
 using namespace std;
 
-TextWidget::TextWidget() = default;
+TextWidget::TextWidget() {
+    this->setFixedWidth(Constants::ITEM_WIDGET_WIDTH);
+    this->setMaximumHeight(Constants::ITEM_WIDGET_MAX_HEIGHT);
+
+    this->stylizeButtons();
+    this->construct();
+    this->establishConnections();
+}
+
+void TextWidget::construct() {
+    ItemWidget::construct();
+
+    buttonHolder->addWidget(
+        this->expandContractToggleButton,Qt::AlignmentFlag::AlignRight
+    );
+}
+
+void TextWidget::stylizeButtons() {
+    ItemWidget::stylizeButtons();
+
+    this->expandContractToggleButton->setObjectName("expandToggle");
+    this->expandContractToggleButton->setFixedSize(
+        Constants::ITEM_WIDGET_EDIT_BUTTON_WIDTH, Constants::ITEM_WIDGET_EDIT_BUTTON_HEIGHT
+    );
+    this->expandContractToggleButton->setIcon(IconManager::expandIcon());
+}
+
+void TextWidget::establishConnections() {
+    ItemWidget::establishConnections();
+
+    connect(
+        this->expandContractToggleButton, &QPushButton::clicked,
+        this, &TextWidget::expendCollapseAction
+    );
+}
 
 void TextWidget::setTextManagerInterfaceInputs(
     const shared_ptr<TextManagerInterface>& interface,
@@ -104,4 +138,22 @@ void TextWidget::editedTextReceivedAction(const QString& editedText) {
         &*this->textManagerInterface, &TextManagerInterface::textEditedSignal,
         this, &TextWidget::editedTextReceivedAction
     );
+}
+
+void TextWidget::expendCollapseAction() {
+    if (this->isExpanded) {
+        this->textLabel->setFixedHeight(Constants::TEXT_CARD_HEIGHT);
+        this->setFixedHeight(Constants::ITEM_WIDGET_MAX_HEIGHT);
+        this->isExpanded = false;
+        this->expandContractToggleButton->setIcon(IconManager::expandIcon());
+    }else {
+        this->textLabel->setFixedHeight(this->textLabel->sizeHint().height());
+        this->setFixedHeight(
+            this->textLabel->sizeHint().height() + (
+                Constants::ITEM_WIDGET_MAX_HEIGHT - Constants::TEXT_CARD_HEIGHT
+            )
+        );
+        this->isExpanded = true;
+        this->expandContractToggleButton->setIcon(IconManager::collapseButton());
+    }
 }
