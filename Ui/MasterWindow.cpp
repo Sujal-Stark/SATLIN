@@ -9,15 +9,18 @@
 
 MasterWindow::MasterWindow(QWidget *parent)
     : QMainWindow(parent) {
-    setWindowTitle(Constants::APPLICATION_NAME);
+    this->setWindowTitle(Constants::APPLICATION_NAME);
     resize(Constants::WINDOW_WIDTH, Constants::WINDOW_HEIGHT);
-    setMinimumSize(Constants::MIN_WINDOW_WIDTH, Constants::MIN_WINDOW_HEIGHT);
-    setCentralWidget(mainWidget);
-    constructUI();
-    setCustomStyle();
+    this->setMinimumSize(Constants::MIN_WINDOW_WIDTH, Constants::MIN_WINDOW_HEIGHT);
+    this->setCentralWidget(mainWidget);
+    this->setWindowIcon(
+        IconManager::applicationIcon()
+    );
+    this->constructUI();
+    this->setCustomStyle();
 }
 
-void MasterWindow::constructUI() {
+void MasterWindow::constructUI() const {
     mainWidget->setLayout(masterLayout);
 
     masterLayout->addWidget(this->outerTabWidget);
@@ -33,7 +36,7 @@ void MasterWindow::constructUI() {
 }
 
 void MasterWindow::setCustomStyle() {
-    this->setStyleSheet(
+    /*this->setStyleSheet(
         "background-color: rgba(28, 27, 28, 255);"
     );
     outerTabWidget->setStyleSheet(
@@ -42,7 +45,7 @@ void MasterWindow::setCustomStyle() {
             "font-size: 16px;"
             "width: 300px;"
         "}"
-    );
+    );*/
 }
 
 

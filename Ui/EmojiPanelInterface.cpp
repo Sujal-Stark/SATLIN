@@ -172,14 +172,14 @@ void EmojiPanelInterface::tabWidgetChangedAction(const int tabIndex) {
 }
 
 void EmojiPanelInterface::setCustomStyle() {
-    this->setStyleSheet(
+    /*this->setStyleSheet(
         "background-color: rgba(43, 43, 43, 100);"
     );
     this->emojiPanel->setStyleSheet(
         "QTabBar::tab { "
             "width: 160px; "  // Fixed width for each tab
         "}"
-    );
+    );*/
 }
 
 

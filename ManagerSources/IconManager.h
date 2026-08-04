@@ -10,6 +10,8 @@
 
 class IconManager : public  QWidget{
 public:
+    [[nodiscard]] static QIcon applicationIcon();
+
     [[nodiscard]] static QIcon saveIcon() ;
     [[nodiscard]] static QIcon confirmIcon();
     [[nodiscard]] static QIcon cancelIcon();

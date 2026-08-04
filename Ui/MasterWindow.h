@@ -13,9 +13,8 @@
 
 class MasterWindow final : public QMainWindow {
     Q_OBJECT
-    private:
-                                    // Method Declaration
-    void constructUI();
+    // Method Declaration
+    void constructUI() const;
 
     void setCustomStyle();
 

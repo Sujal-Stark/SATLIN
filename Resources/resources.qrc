@@ -20,5 +20,6 @@
         <file alias = "Vol_Down">images/volumeDown.svg</file>
         <file alias = "expand">images/expand.svg</file>
         <file alias = "collapse">images/collapse.svg</file>
+        <file alias = "appIcon">images/satlinProjectIcon.ico</file>
     </qresource>
 </RCC>

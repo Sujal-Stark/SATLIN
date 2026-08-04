@@ -4,6 +4,10 @@
 
 #include "IconManager.h"
 
+QIcon IconManager::applicationIcon() {
+    return QIcon(":/appIcon");
+}
+
 QIcon IconManager::saveIcon() {
     return QIcon(":/Download");
 }

@@ -242,12 +242,26 @@ void ClipBoardInterface::audioItemClickedAction(const QUrl &filePath) const {
 
 void ClipBoardInterface::setCustomStyle() {
     this->setStyleSheet(
-        "background-color: rgba(43, 43, 43, 100);"
-    );
-    this->clipTabWidget->setStyleSheet(
-        "QTabBar::tab { "
-            "width: 139px; "
-        "}"
+        R"(
+            QWidget{
+                background-color : #01204a;
+            }
+
+            QTabBar::tab {
+                min-width : 140px;
+                max-width : 140px;
+            }
+
+            QTabBar {
+                background-color : #012d66;
+                border-radius : 5px;
+            }
+
+            QFrame {
+                background-color : #012d66;
+                border-radius : 5px;
+            }
+        )"
     );
 }
 
