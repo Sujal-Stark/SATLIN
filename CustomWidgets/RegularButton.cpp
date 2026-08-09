@@ -50,7 +50,7 @@ void RegularButton::setResizeHoverAnimationParameters(
     if (
         maxWidth < 0 || maxHeight < 0 ||
         minWidth < 0 || minHeight < 0 ||
-        minWidth <= maxWidth || minHeight <= maxHeight
+        minWidth > maxWidth || minHeight > maxHeight
     )throw std::invalid_argument("invalid size given");
 
     this->MAX_SIZE = QSize(maxWidth, maxHeight);
