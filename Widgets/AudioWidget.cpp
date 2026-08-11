@@ -10,10 +10,8 @@
 #include "../ManagerSources/IconManager.h"
 
 AudioWidget::AudioWidget() {
-    this->setFixedWidth(Constants::ITEM_WIDGET_WIDTH);
-    this->setFixedHeight(Constants::AUDIO_WIDGET_FIXED_HEIGHT);
-    this->construct();
-    this->establishConnections();
+    ItemWidget::construct();
+    ItemWidget::establishConnections();
 }
 
 // Widget Internal Operations

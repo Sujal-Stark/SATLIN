@@ -6,10 +6,8 @@
 #include "../Util/Constants.h"
 
 ImageWidget::ImageWidget() {
-    this->setFixedWidth(Constants::ITEM_WIDGET_WIDTH);
-    this->setFixedHeight(Constants::ITEM_WIDGET_MAX_HEIGHT);
-    this->construct();
-    this->establishConnections();
+    ItemWidget::construct();
+    ItemWidget::establishConnections();
 }
 
 // Widget Internal operations

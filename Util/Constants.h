@@ -98,8 +98,8 @@ namespace  Constants {
 
     // ItemWidget
     inline constexpr int ITEM_WIDGET_WIDTH = 530;
-    inline constexpr int ITEM_WIDGET_MAX_HEIGHT = 280;
-    inline constexpr int ITEM_WIDGET_MIN_HEIGHT = 100;
+    inline constexpr int ITEM_WIDGET_HEIGHT = 320;
+
     inline constexpr int ITEM_MAIN_FRAME_WIDTH = ITEM_WIDGET_WIDTH - 20;
     inline constexpr int ITEM_WIDGET_EDIT_BUTTON_WIDTH = 30;
     inline constexpr int ITEM_WIDGET_EDIT_BUTTON_HEIGHT = 25;

@@ -209,14 +209,23 @@ void ClipBoardInterface::setActions() const {
 
 void ClipBoardInterface::showTextItemOnScreen(TextWidget *text) const {
     this->textScrollAreaInnerLayout->insertWidget(0, text);
+    text->popUpAnimation(
+        Constants::ITEM_WIDGET_WIDTH, Constants::ITEM_WIDGET_HEIGHT
+    );
 }
 
 void ClipBoardInterface::showImageOnScreen(ImageWidget *image) const {
     this->imageScrollAreaInnerLayout->insertWidget(0, image);
+    image->popUpAnimation(
+        Constants::ITEM_WIDGET_WIDTH, Constants::ITEM_WIDGET_HEIGHT
+    );
 }
 
 void ClipBoardInterface::showAudioItemOnScreen(AudioWidget *audio) const {
     this->audioScrollAreaInnerLayout->insertWidget(0, audio);
+    audio->popUpAnimation(
+        Constants::ITEM_WIDGET_WIDTH, Constants::AUDIO_WIDGET_FIXED_HEIGHT
+    );
 }
 
 

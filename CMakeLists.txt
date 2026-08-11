@@ -61,6 +61,8 @@ set(UTIL_SOURCES
         Widgets/TextWidget.h
         ManagerSources/ItemManagerInterface.cpp
         ManagerSources/ItemManagerInterface.h
+        CustomWidgets/RegularButton.cpp
+        CustomWidgets/RegularButton.h
 )
 
 add_executable(Satlin

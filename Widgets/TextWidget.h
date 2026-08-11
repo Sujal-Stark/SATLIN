@@ -21,6 +21,9 @@ class TextWidget : public ItemWidget {
     // Push Buttons
     QPushButton *expandContractToggleButton = new QPushButton();
 
+    // Animations
+    QPropertyAnimation* textLabelExpansionAnimation = new QPropertyAnimation(this->textLabel, "size");
+
     /***
      * Works as Toggle Button. If Text card is in collapsed condition this feature
      * expanded the card to it's full view and vice versa.
@@ -30,19 +33,29 @@ class TextWidget : public ItemWidget {
 protected:
                                             // Methods
     /**
-     * Provides dimensions and other features to the Push Buttons.
+     * @brief Reimplemented version from its parent class mainly
+     * used to provide properties for the QPushButtons or its
+     * child class objects declared inside this class.
      */
     void stylizeButtons() override;
 
     /**
-     * Connects Signals of Widget Components or other classes to Actions slots.
+     * @brief Reimplemented version from its parent class mainly
+     * used to provide properties for the Animation classes or its
+     * child class objects declared inside this class.
+     */
+    void customizeAnimationBehaviors() override;
+
+    /**
+     * @brief Reimplemented version from its parent class mainly
+     * used to connect signals with respective method slots.
      */
     void establishConnections() override;
 
     /**
-     * Removes Current Hash value.
-     * Sends a Signal to ClipBoardInterface to release clipboard content.
-     * Set this widget for deletion.
+     * @brief Removes Current Hash value.
+     * Sends a Signal to ClipBoardInterface to release clipboard
+     * content. Set this widget for deletion.
      */
     void deleteButtonClicked() override;
 
@@ -54,24 +67,27 @@ protected:
     void saveButtonClicked() override;
 
     /**
-     * Sends the current text from text label to the TextManagerInterface.
+     * @brief Sends the current text from text label to the
+     * TextManagerInterface.
      * Establish connection with textEditedSignal of TextManagerInterface
      * with editTextReceivedAction.
      */
     void editButtonClicked() override;
 
     /**
-     * Receives edited Text from TextManagerInterface. Removes the old hash value
-     * that textLabel possess and stores the new hash value. A signal is sent to
-     * clipboard interface to set the edited text as clipboard content. disconnects
-     * signals from TextEditorInterface with this method.
+     * @param editedText modified text
+     * @brief Receives edited Text from TextManagerInterface. Removes
+     * the old hash value that textLabel possess and stores the new
+     * hash  value. A signal is sent to clipboard interface to set
+     * the  edited text as clipboard content. disconnects signals
+     * from TextEditorInterface with this method.
      */
     void editedTextReceivedAction(const QString& editedText);
 
 signals:
     /**
-     * Sends the TextLabel's content to the ClipBoardInterface when the
-     * widget is clicked.
+     * Sends the TextLabel's content to the ClipBoardInterface when
+     * the widget is clicked.
      */
     void textItemClickedSignal(QString text);
 
@@ -83,8 +99,9 @@ signals:
 
 protected:
     /**
-     * As the Widget is Clicked this method made changes in Widget's style.
-     * Sends a signal to ClipBoardInterface to set current item in clipBoard.
+     * As the Widget is Clicked this method made changes in Widget's
+     * style. Sends a signal to ClipBoardInterface to set current
+     * item in clipBoard.
      */
     void mousePressEvent(QMouseEvent *event) override;
 
@@ -93,13 +110,14 @@ protected:
      */
     void mouseReleaseEvent(QMouseEvent *event) override;
 
-public:
-    explicit TextWidget();
-
     /**
-     * Builds the UI for this Widget.
+     * @brief Reimplemented version from its parent class. Builds the
+     * UI for this Widget.
      */
     void construct() override;
+
+public:
+    explicit TextWidget();
 
     /**
      * Creates a textLabel from the given Text and show the textLabel
@@ -117,4 +135,11 @@ public:
         const shared_ptr<TextManagerInterface>& interface,
         const shared_ptr<ItemRepository>& repo
     );
+
+    /**
+     * @brief Reimplemented version from its parent class provides
+     * pop up animation depending upon a texts size hint and maximum
+     * height.
+     */
+    void popUpAnimation(int fWidth, int fHeight) override;
 };

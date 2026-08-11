@@ -14,12 +14,10 @@
 using namespace std;
 
 TextWidget::TextWidget() {
-    this->setFixedWidth(Constants::ITEM_WIDGET_WIDTH);
-    this->setMaximumHeight(Constants::ITEM_WIDGET_MAX_HEIGHT);
-
-    this->stylizeButtons();
-    this->construct();
-    this->establishConnections();
+    TextWidget::stylizeButtons();
+    TextWidget::construct();
+    TextWidget::establishConnections();
+    TextWidget::customizeAnimationBehaviors();
 }
 
 void TextWidget::construct() {
@@ -37,7 +35,15 @@ void TextWidget::stylizeButtons() {
     this->expandContractToggleButton->setFixedSize(
         Constants::ITEM_WIDGET_EDIT_BUTTON_WIDTH, Constants::ITEM_WIDGET_EDIT_BUTTON_HEIGHT
     );
-    this->expandContractToggleButton->setIcon(IconManager::expandIcon());
+    this->expandContractToggleButton->setIcon(
+        IconManager::expandIcon()
+    );
+}
+
+void TextWidget::customizeAnimationBehaviors() {
+    ItemWidget::customizeAnimationBehaviors();
+
+    this->textLabelExpansionAnimation->setDuration(500);
 }
 
 void TextWidget::establishConnections() {
@@ -60,7 +66,7 @@ void TextWidget::setTextManagerInterfaceInputs(
 void TextWidget::assignText(const QString &text, const QString& textHash) {
     this->textLabel = TextManagerInterface::generateNewTextLabel(text, textHash);
 
-    if (this->textLabel != nullptr) {
+    if (!this->textLabel.isNull()) {
         this->textLabel->show();
         this->contentHolder->addWidget(this->textLabel, Qt::AlignmentFlag::AlignCenter);
     }
@@ -71,19 +77,19 @@ void TextWidget::mousePressEvent(QMouseEvent *event){
         emit this->textItemClickedSignal(this->textLabel->text());
     }
 
-    this->setStyleSheet(
+    /*this->setStyleSheet(
         "border: 1px solid white;"
         "border-radius: 5px;"
         "background-color: rgba(54, 54, 54, 150);"
-    );
+    );*/
 }
 
 void TextWidget::mouseReleaseEvent(QMouseEvent *event) {
-    this->setStyleSheet(
+    /*this->setStyleSheet(
         "border: 0px solid white;"
         "border-radius: 5px;"
         "background-color: rgba(15, 14, 14, 150);"
-    );
+    );*/
 }
 
 void TextWidget::deleteButtonClicked() {
@@ -141,19 +147,103 @@ void TextWidget::editedTextReceivedAction(const QString& editedText) {
 }
 
 void TextWidget::expendCollapseAction() {
+    if (this->textLabel.isNull()) {
+        throw std::runtime_error("Can't animate if text field is empty");
+    }
+
+    if (this->sizeHint().height() <= Constants::ITEM_WIDGET_HEIGHT)return;
+
+    constexpr QSize collapsedTextCardParameters = QSize(
+        Constants::TEXT_CARD_WIDTH, Constants::TEXT_CARD_HEIGHT
+    );
+    constexpr QSize collapsedTextWidgetParameters = QSize(
+        Constants::ITEM_WIDGET_WIDTH, Constants::ITEM_WIDGET_HEIGHT
+    );
+
+    const QSize expandedTextCardParameters = QSize(
+        Constants::TEXT_CARD_WIDTH,
+        this->textLabel->sizeHint().height()
+    );
+
+    const QSize expandedTextWidgetParameters = QSize(
+        Constants::ITEM_WIDGET_WIDTH, (
+            this->textLabel->sizeHint().height() +
+            Constants::ITEM_WIDGET_HEIGHT -
+            Constants::TEXT_CARD_HEIGHT
+        )
+    );
+
     if (this->isExpanded) {
-        this->textLabel->setFixedHeight(Constants::TEXT_CARD_HEIGHT);
-        this->setFixedHeight(Constants::ITEM_WIDGET_MAX_HEIGHT);
+        this->textLabelExpansionAnimation->setStartValue(
+            expandedTextCardParameters
+        );
+
+        this->expandContractAnimation->setStartValue(
+            expandedTextWidgetParameters
+        );
+
+        this->textLabelExpansionAnimation->setEndValue(
+            collapsedTextCardParameters
+        );
+        this->expandContractAnimation->setEndValue(
+            collapsedTextWidgetParameters
+        );
+
+        this->textLabelExpansionAnimation->start();
+        this->expandContractAnimation->start();
+
         this->isExpanded = false;
         this->expandContractToggleButton->setIcon(IconManager::expandIcon());
     }else {
-        this->textLabel->setFixedHeight(this->textLabel->sizeHint().height());
-        this->setFixedHeight(
-            this->textLabel->sizeHint().height() + (
-                Constants::ITEM_WIDGET_MAX_HEIGHT - Constants::TEXT_CARD_HEIGHT
-            )
+
+        this->textLabelExpansionAnimation->setStartValue(
+            collapsedTextCardParameters
         );
+
+        this->expandContractAnimation->setStartValue(
+            collapsedTextWidgetParameters
+        );
+
+        this->textLabelExpansionAnimation->setEndValue(
+            expandedTextCardParameters
+        );
+        this->expandContractAnimation->setEndValue(
+            expandedTextWidgetParameters
+        );
+
+        this->textLabelExpansionAnimation->start();
+        this->expandContractAnimation->start();
+
         this->isExpanded = true;
         this->expandContractToggleButton->setIcon(IconManager::collapseButton());
     }
+}
+
+void TextWidget::popUpAnimation(const int fWidth, const int fHeight) {
+    if (this->textLabel.isNull()) {
+        throw std::runtime_error("Can't animate as fext field is empty");
+    }
+
+    this->expandContractAnimation->setStartValue(QSize(0, 0));
+    this->textLabelExpansionAnimation->setStartValue(
+        QSize(0, 0)
+    );
+
+    this->expandContractAnimation->setEndValue(
+        QSize(
+            fWidth, min(
+                fHeight, this->sizeHint().height()
+            )
+        )
+    );
+    this->textLabelExpansionAnimation->setEndValue(
+        QSize(
+            Constants::TEXT_CARD_WIDTH, min(
+                Constants::TEXT_CARD_HEIGHT, this->textLabel->sizeHint().height()
+            )
+        )
+    );
+
+    this->expandContractAnimation->start();
+    this->textLabelExpansionAnimation->start();
 }
