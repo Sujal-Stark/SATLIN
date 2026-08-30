@@ -3,7 +3,11 @@
 //
 
 #include "ItemRepository.h"
+
+#include <iostream>
 #include <QDebug>
+
+#include "ToolKit.h"
 
 ItemRepository::ItemRepository() = default;
 
@@ -20,10 +24,18 @@ ItemRepository::~ItemRepository() {
     this->audioHashCollector.clear();
 }
 
-bool ItemRepository::addNewTextItemHash(const QString &textHash) {
+bool ItemRepository::addNewTextItemHash(
+    const QString& text, const int saveStatus, const qint32 size,
+    const QString& ext, const QString& timeStamp, const QString& textHash
+) {
     if (textHash.isNull())return  false;
     if (this->textHashCollector.contains(textHash)) return false;
-    this->textHashCollector.insert(textHash);
+
+    this->textHashCollector.insert(
+        textHash, new TextContainer(
+            text, saveStatus, size, ext, timeStamp
+        )
+    );
     return true;
 }
 
@@ -33,6 +45,37 @@ bool ItemRepository::containsTextHash(const QString &textHash) const {
 
 bool ItemRepository::removeTextItemHash(const QString &textHash) {
     return this->textHashCollector.remove(textHash);
+}
+
+bool ItemRepository::replaceTextHash(
+    const QString &newTextHash, const QString &oldTextHash, const QString& text
+) {
+    if (this->textHashCollector.contains(newTextHash))return false;
+
+    TextContainer* container = this->textHashCollector.find(oldTextHash).value();
+
+    container->text = text;
+    container->textSize = text.length() * sizeof(char);
+
+    if (this->textHashCollector.remove(oldTextHash)) {
+        this->textHashCollector.insert(
+            newTextHash, container
+        );
+
+        return true;
+    }
+
+    return false;
+}
+
+std::optional<TextContainer*> ItemRepository::getTextContainer(const QString &textHash) {
+    if (textHash.isNull())return {nullptr};
+
+    const QMap<QString, TextContainer*>::iterator it = this->textHashCollector.find(textHash);
+
+    if (it == this->textHashCollector.end())return {nullptr};
+
+    return {it.value()};
 }
 
 void ItemRepository::showTextContainer() const {
@@ -53,9 +96,11 @@ bool ItemRepository::addNewImageItem(
 
     if (this->imageHashExists(imageHash))return false;
 
+    const qint32 sizeOfImage = ToolKit::getFileSize(filePath);
+    
     this->imageHashCollector.insert(
         imageHash, new ImageContainer(
-            saveStatus, filePath, extension, timeStamp
+            saveStatus, sizeOfImage, filePath, extension, timeStamp
         )
     );
 
@@ -75,13 +120,13 @@ bool ItemRepository::removeImageItemHash(const QString &imageHash) {
     return true;
 }
 
-const ImageContainer* ItemRepository::getImageContainer(const QString& imageHash) {
-    if (imageHash.isEmpty())return nullptr;
+std::optional<ImageContainer*> ItemRepository::getImageContainer(const QString& imageHash) {
+    if (imageHash.isEmpty())return {nullptr};
 
     const QMap<QString, ImageContainer*>::iterator it = this->imageHashCollector.find(imageHash);
-    if (it == this->imageHashCollector.end())return nullptr;
+    if (it == this->imageHashCollector.end())return {nullptr};
 
-    return it.value();
+    return {it.value()};
 }
 
 void ItemRepository::showImageContainer() const {

@@ -9,9 +9,10 @@
 #include "Constants.h"
 #include <QStandardPaths>
 #include <chrono>
-#include <QFileInfo>
 #include <sstream>
 #include <stdexcept>
+
+#include "ToolKit.h"
 
 using namespace std;
 
@@ -34,13 +35,18 @@ void MimeDataAnalyzer::driverReceiver(const shared_ptr<ItemRepository>& repo) {
 void MimeDataAnalyzer::analyzeMimeObject(const QMimeData& mime) {
     if (mime.hasText()) {
         if(
-            const string text = mime.text().toStdString();
+            const QString text = mime.text();
             !this->analyzeText(text)
         ) {
+            const QString currHash = HashGenerator::generateTextHash(text);
+
             if (
-                const QString currHash = HashGenerator::generateTextHash(text);
-                this->itemRepository->addNewTextItemHash(currHash)
-            )emit textReleaseSignal(mime.text(), currHash);
+                const qint32 size = text.size() * sizeof(char);
+                this->itemRepository->addNewTextItemHash(
+                    text, 1, size, Constants::TXT,
+                    timeStampReadable(),  currHash
+                ) // 0 -> saved 1 -> unsaved.
+            )emit textReleaseSignal(text, currHash);
         }
     }
 
@@ -129,7 +135,9 @@ bool MimeDataAnalyzer::isAudioFile(string ext) {
     || ext == Constants::WMA || ext == Constants::M4A;
 }
 
-bool MimeDataAnalyzer::analyzeText(const string &text) {
+bool MimeDataAnalyzer::analyzeText(const QString &textInput) {
+    std::string text = textInput.toStdString();
+
     stringstream stream = stringstream(text);
     string line;
     bool flag = true;
@@ -159,7 +167,7 @@ bool MimeDataAnalyzer::analyzeText(const string &text) {
 
             else if (isAudioFile(ext)) {
                 QString audioHash = HashGenerator::generateAudioObjectHash(filePath);
-                const qint32 fileSize = static_cast<qint32>(QFileInfo(filePath).size());
+                const qint32 fileSize = ToolKit::getFileSize(filePath);
                 QString timeStamp = timeStampReadable();
                 if (
                     QString extension = ext.data();
@@ -217,7 +225,7 @@ QString MimeDataAnalyzer::timeStampReadable() {
 
     ostringstream oss;
     const tm *stamp = localtime(&currentTime);
-    oss<<put_time(stamp, "%H%M%S%D");
+    oss<<put_time(stamp, "%H:%M:%S %D");
 
     return QString::fromStdString(oss.str());
 }

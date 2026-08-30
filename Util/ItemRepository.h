@@ -17,7 +17,7 @@ class ItemRepository {
     /**
      * Stores The TextItem's Hash value for redundancy checking.
      */
-    QSet<QString> textHashCollector;
+    QMap<QString, TextContainer*> textHashCollector;
 
     /**
      * @brief Stores metadata Corresponding to image items via it's hash value.
@@ -47,9 +47,17 @@ public:
      * @brief Adds the Hash values of text item into the CollectorSet only if
      * the Hash Value is valid and not empty. Other-wise it returns False
      * as Failed in adding.
+     * @param text Actual text copied into the system
+     * @param saveStatus stores either the text is temporarily saved or permanently.
+     * @param size Size of the Text in Byte.
+     * @param ext Stores text extension [available in Constants]
+     * @param timeStamp The time at which the text is copied into the clipboard.
      * @param textHash Hexadecimal Hash value to uniquely identify a Text.
      */
-    [[nodiscard]] bool addNewTextItemHash(const QString& textHash);
+    [[nodiscard]] bool addNewTextItemHash(
+        const QString& text, int saveStatus, qint32 size,
+        const QString& ext, const QString& timeStamp, const QString& textHash
+    );
 
     /**
      * @brief Given a textHash (const QString&) this method checks if repository
@@ -62,6 +70,10 @@ public:
      * value from the repository if it is found.
      */
     [[nodiscard]] bool removeTextItemHash(const QString& textHash);
+
+    [[nodiscard]] bool replaceTextHash(const QString& newTextHash, const QString& oldTextHash, const QString& text);
+
+    [[nodiscard]] std::optional<TextContainer*> getTextContainer(const QString &textHash);
 
     /**
      * @brief Primarily used for debugging. It prints how many hash values are present
@@ -105,7 +117,7 @@ public:
      * @brief Checks validity of ImageHash. If valid then returns the container pointer.
      * @param imageHash Hexadecimal hash value of Image Object.
      */
-    [[nodiscard]] const ImageContainer* getImageContainer(const QString& imageHash);
+    [[nodiscard]] std::optional<ImageContainer*> getImageContainer(const QString& imageHash);
 
     /**
      * @brief primarily used for debugging. It prints how many hash values are present

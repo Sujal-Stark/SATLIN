@@ -70,11 +70,11 @@ class MimeDataAnalyzer : public QWidget{
     /**
      * @brief This method operates over text items coming from MimeData.
      * It checks for a text to contain different file's path, web
-     * urls, and sends corresponding signals with meta-data to the
+     * urls, and sends corresponding signals with metadata to the
      * responsible Class.
-     * @param text The Original Text copied with System's clipboard.
+     * @param textInput The Original Text copied from System's clipboard.
      */
-    [[nodiscard]] bool analyzeText(const string& text);
+    [[nodiscard]] bool analyzeText(const QString &textInput);
 
     // Image
     /**
