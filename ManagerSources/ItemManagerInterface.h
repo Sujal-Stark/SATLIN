@@ -8,6 +8,7 @@
 
 #include "../Ui/TextEditor.h"
 #include "../Util/ItemRepository.h"
+#include "../CustomWidgets/RegularButton.h"
 
 class ItemManagerInterface : public QWidget{
     Q_OBJECT
@@ -37,16 +38,24 @@ public:
     virtual void assignDrivers(const shared_ptr<ItemRepository>& repo);
 
     /**
-     * Given a TextHash(const QString&) this method removes the textHash from
+     * @brief Given a TextHash(const QString&) this method removes the textHash from
      * Item Repository.
      */
     [[nodiscard]] virtual bool removeItem(const QString& hash) const = 0;
 
     /**
-     * It checks if the old hash is present and the new hash is absent in
-     * ItemRepository. If Both conditions are met then it erase old hash and
-     * add new Hash to the Repository.
+     * @param hash hexadecimal hash value assigned to each item.
+     * @param extCard QLabel used to store extension value of an item.
+     * @param fileSizeCard QLabel used to store the file size of an item.
+     * @param timeStampCard QLabel used to store the time at which item is stored.
+     * @param saveButton RegularButton that is used to save the item permanently.
+     *
+     * @brief Use this abstract method to update information of an item into the
+     * related widgets.
      */
-    [[nodiscard]] virtual bool replaceHash(const QString& oldHash, const QString& newHash) const = 0;
+    virtual void populateInfoLabels(
+        const QString &hash, QLabel* extCard, QLabel* fileSizeCard,
+        QLabel* timeStampCard, RegularButton* saveButton
+    )const = 0;
 };
 
