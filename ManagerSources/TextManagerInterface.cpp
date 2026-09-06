@@ -16,10 +16,12 @@ QPointer<QLabel> TextManagerInterface::generateNewTextLabel(
     const QString &text, const QString& textHashValue
 ){
     QPointer ptr = QPointer(new QLabel(text));
+
     ptr->setProperty(Constants::SHA_STRING_KEY, textHashValue);
     ptr->setWordWrap(true);
     ptr->setAlignment(Qt::AlignmentFlag::AlignLeft);
     ptr->setFixedWidth(Constants::TEXT_CARD_WIDTH);
+
     ptr->setStyleSheet(
         "border: 1px solid white;"
         "border-radius: 5px;"
@@ -44,16 +46,49 @@ bool TextManagerInterface::removeItem(const QString& textHash) const {
     return this->itemRepository->removeTextItemHash(textHash);
 }
 
-bool TextManagerInterface::replaceHash(const QString& oldHash, const QString& newHash) const {
-    if (itemRepository->containsTextHash(oldHash)&& !itemRepository->containsTextHash(newHash)) {
-        return itemRepository->removeTextItemHash(oldHash) && itemRepository->addNewTextItemHash(newHash);
-    }
-    return false;
+bool TextManagerInterface::replaceHash(
+    const QString& oldHash, const QString& newHash, const QString& editedText
+)const {
+    return this->itemRepository->replaceTextHash(newHash, oldHash, editedText);
 }
 
 void TextManagerInterface::editOnText(const QString& currentText) const {
     textEditor->receiveText(currentText);
     textEditor->show();
+}
+
+void TextManagerInterface::populateInfoLabels(
+    const QString &textHash, QLabel *extCard, QLabel *fileSizeCard,
+    QLabel *timeStampCard, RegularButton *saveButton
+) const {
+    const std::optional<TextContainer*> obj = this->itemRepository->getTextContainer(textHash);
+
+    if (!obj.has_value())throw std::runtime_error(
+        "Unable to retrieve data from repository"
+    );
+
+    const TextContainer* const container = obj.value();
+
+    extCard->setText(container->extension);
+    fileSizeCard->setText(QString::fromStdString(std::to_string(container->textSize) + " kb"));
+    timeStampCard->setText(container->timeStamp);
+
+    if (container->saveStatus == 0) {
+        saveButton->setIcon(IconManager::confirmIcon());
+    }
+}
+
+bool TextManagerInterface::updateSaveStatus(
+    const QString &textHash, const int saveStatus, RegularButton *saveButton
+) const {
+    const std::optional<TextContainer*> container = this->itemRepository->getTextContainer(textHash);
+
+    if (!container.has_value())return false;
+
+    container.value()->saveStatus = saveStatus;
+    if (saveStatus == 0)saveButton->setIcon(IconManager::confirmIcon());
+
+    return true;
 }
 
 void TextManagerInterface::transferEditedText(const QString &text) {

@@ -8,26 +8,25 @@
 #include "ItemManagerInterface.h"
 #include "../Ui/TextEditor.h"
 #include "../Util/ItemRepository.h"
+#include "../CustomWidgets/RegularButton.h"
 
 using namespace std;
 
 class TextManagerInterface : public ItemManagerInterface {
     Q_OBJECT
-    /**
-     * TextEditor Interface is used to make changes in texts.
-     */
+    /** TextEditor Interface is used to make changes in texts.*/
     unique_ptr<TextEditor> textEditor = make_unique<TextEditor>();
 
+    /** Sends a signal to ItemWidget to Transfer the edited text.*/
+    void transferEditedText(const QString &text);
+
+protected:
     /**
      * Creates Connections with MemberClass's signal to for handling
      * their output.
      */
     void establishConnections() override;
 
-    /**
-     * Sends a signal to itemWidget to Transfer the edited text.
-     */
-    void transferEditedText(const QString &text);
 
 public:
     explicit TextManagerInterface();
@@ -47,7 +46,7 @@ public:
      * Drivers:
      * ItemRepository :- Class that stores all text related hash values.
      */
-    void assignDrivers(const shared_ptr<ItemRepository>& repo);
+    void assignDrivers(const shared_ptr<ItemRepository>& repo) override;
 
     /**
      * Given a TextHash(const QString&) this method removes the textHash from
@@ -60,7 +59,9 @@ public:
      * ItemRepository. If Both conditions are met then it erase old hash and
      * add new Hash to the Repository.
      */
-    [[nodiscard]] bool replaceHash(const QString& oldHash, const QString& newHash) const override;
+    [[nodiscard]] bool replaceHash(
+        const QString& oldHash, const QString& newHash, const QString& editedText
+    ) const;
 
     /**
      * Receives a valid QString from ItemWidget, sends it to TextEditor and
@@ -68,9 +69,24 @@ public:
      */
     void editOnText(const QString& currentText) const;
 
-    signals:
+    void populateInfoLabels(
+        const QString &textHash, QLabel* extCard, QLabel* fileSizeCard,
+        QLabel* timeStampCard, RegularButton* saveButton
+    )const override;
+
     /**
-     * Sends the edited Text to the Caller ItemWidget.
+     *
+     * @param textHash hexadecimal hash value for text items.
+     * @param saveStatus flag to show saved or unsaved state of that item.
+     * @param saveButton RegularButton instance of a text item.
+     * @return a boolean result confirming success -> true or failure - false of that operation.
+     * @brief This method updates the state of UI when a text is saved.
      */
+    [[nodiscard]] bool updateSaveStatus(
+        const QString& textHash, int saveStatus, RegularButton* saveButton
+    ) const;
+
+    signals:
+    /** Sends the edited Text to the Caller ItemWidget.*/
     void textEditedSignal(QString editedText);
 };

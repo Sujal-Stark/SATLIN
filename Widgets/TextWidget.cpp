@@ -69,6 +69,11 @@ void TextWidget::assignText(const QString &text, const QString& textHash) {
     if (!this->textLabel.isNull()) {
         this->textLabel->show();
         this->contentHolder->addWidget(this->textLabel, Qt::AlignmentFlag::AlignCenter);
+
+        this->textManagerInterface->populateInfoLabels(
+            textHash, this->extensionCard, this->sizeCard,
+            this->timeStampCard, this->saveButton
+        );
     }
 }
 
@@ -115,6 +120,17 @@ void TextWidget::saveButtonClicked() {
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QTextStream stream = QTextStream(&file);
         stream<<this->textLabel->text();//The content is dumped.
+
+        if (
+            !this->textManagerInterface->updateSaveStatus(
+                qvariant_cast<QString>(
+                    this->textLabel->property(Constants::SHA_STRING_KEY)
+                ), 0, this->saveButton
+            )
+        )throw std::runtime_error(
+            "Unable to update changes in repository"
+        );
+
         file.close();
     }
 }
@@ -132,9 +148,13 @@ void TextWidget::editedTextReceivedAction(const QString& editedText) {
     if (!editedText.isNull()) {
         const QString oldHash = this->textLabel->property(Constants::SHA_STRING_KEY).toString();
         const QString newHash = HashGenerator::generateTextHash(editedText);
-        if (this->textManagerInterface->replaceHash(oldHash, newHash)) {
+        if (this->textManagerInterface->replaceHash(oldHash, newHash, editedText)) {
             this->textLabel->setText(editedText);
             this->textLabel->setProperty(Constants::SHA_STRING_KEY, newHash);
+            this->textManagerInterface->populateInfoLabels(
+                newHash, this->extensionCard, this->sizeCard,
+                this->timeStampCard, this->saveButton
+            );
             emit textItemClickedSignal(this->textLabel->text());
             this->update();
         }
