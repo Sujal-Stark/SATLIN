@@ -63,11 +63,20 @@ void ItemWidget::stylizeButtons() {
 }
 
 void ItemWidget::stylizeLabels() {
-    this->savePropertyCard->setFixedSize(40, 20);
+    this->sizeCard->setFixedHeight(20);
+    QSizePolicy pol1 = this->sizeCard->sizePolicy();
+    pol1.setHorizontalPolicy(QSizePolicy::Maximum);
+    this->sizeCard->setSizePolicy(pol1);
 
-    this->extensionCard->setFixedSize(40, 20);
+    this->extensionCard->setFixedHeight(20);
+    QSizePolicy pol2 = this->extensionCard->sizePolicy();
+    pol2.setHorizontalPolicy(QSizePolicy::Maximum);
+    this->extensionCard->setSizePolicy(pol2);
 
-    this->timeStampCard->setFixedSize(40, 20);
+    this->timeStampCard->setFixedHeight(20);
+    QSizePolicy pol3 = this->timeStampCard->sizePolicy();
+    pol3.setHorizontalPolicy(QSizePolicy::Maximum);
+    this->timeStampCard->setSizePolicy(pol3);
 }
 
 void ItemWidget::stylizeFrames() const {
@@ -86,7 +95,7 @@ void ItemWidget::construct() {
 
     this->masterInnerLayout->addLayout(this->metaInfoHolder);
     this->metaInfoHolder->addWidget(
-        this->savePropertyCard, Qt::AlignmentFlag::AlignLeft
+        this->sizeCard, Qt::AlignmentFlag::AlignLeft
     );
     this->metaInfoHolder->addWidget(
         this->extensionCard, Qt::AlignmentFlag::AlignLeft

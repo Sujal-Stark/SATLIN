@@ -20,7 +20,7 @@ class ItemWidget : public QWidget{
 
 protected:
     // QLabels
-    QLabel* savePropertyCard = new QLabel();
+    QLabel* sizeCard = new QLabel();
     QLabel* extensionCard = new QLabel();
     QLabel* timeStampCard = new QLabel();
 
