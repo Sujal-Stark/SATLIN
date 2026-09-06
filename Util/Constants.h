@@ -72,6 +72,9 @@ namespace  Constants {
     inline constexpr int TEXT_EDITOR_WIDTH = 500;
     inline constexpr int TEXT_EDITOR_HEIGHT = 500;
 
+    // Text Like
+    inline const QString TXT = ".txt";
+
     // Image
     inline const string JPG = ".jpg";
     inline const string JPEG = ".jpeg";

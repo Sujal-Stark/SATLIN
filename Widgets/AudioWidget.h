@@ -64,16 +64,10 @@ public:
      * @brief Creates A AudioCard Widget With the given information and
      * Attach it with the UI. This AudioWidget is now able to use in ClipBoardInterface
      * @param saveStat Represents Either the file is saved or copied Temporarily.
-     * @param fileSize Size of the Audio File in mb
      * @param filePath The absolute file Path of AudioFile.
-     * @param ext Current Extension of Audio File
-     * @param stamp Time at which The audio File is copied.
      * @param hash Hexadecimal Hash Value assigned to the audioFile.
      */
-    void assignAudio(
-        int saveStat, qint32 fileSize, const QString& filePath, const QString& ext,
-        const QString& stamp, const QString& hash
-    );
+    void assignAudio(int saveStat, const QString& filePath, const QString& hash);
 
     /**
      * @brief Receives Drivers (AudioManagerInterface) from ClipBoardInterface.

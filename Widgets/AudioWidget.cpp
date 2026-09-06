@@ -20,10 +20,7 @@ void AudioWidget::assignDrivers(const shared_ptr<AudioManagerInterface> &interfa
     this->audioManagerInterface = interface;
 }
 
-void AudioWidget::assignAudio(
-    const int saveStat, qint32 fileSize, const QString& filePath, const QString& ext,
-    const QString& stamp, const QString& hash
-) {
+void AudioWidget::assignAudio(const int saveStat, const QString& filePath, const QString& hash) {
     this->audioLabel = AudioManagerInterface::createAudioLabel(
         filePath, hash, saveStat
     );
@@ -33,6 +30,10 @@ void AudioWidget::assignAudio(
             this->audioLabel, Qt::AlignmentFlag::AlignCenter
         );
     }
+
+    this->audioManagerInterface->populateInfoLabels(
+        hash, this->extensionCard, this->sizeCard, this->timeStampCard, this->saveButton
+    );
 }
 
 void AudioWidget::editButtonClicked() {

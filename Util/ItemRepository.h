@@ -160,7 +160,7 @@ public:
      * @brief Checks validity of AudioHash. If valid then returns the container pointer.
      * @param audioHash Hexadecimal hash value of Audio Object.
      */
-    [[nodiscard]] const AudioContainer* getAudioContainer(const QString& audioHash);
+    [[nodiscard]] std::optional<AudioContainer*> getAudioContainer(const QString& audioHash);
 
     /**
      * @brief primarily used for debugging. It prints how many hash values are present

@@ -162,9 +162,7 @@ void ClipBoardInterface::handleAudioItem(
     auto* widget = new AudioWidget();
 
     widget->assignDrivers(this->audioManagerInterface);
-    widget->assignAudio(
-        saveStatus, fileSize, filePath, ext, timeStamp, hash
-    );
+    widget->assignAudio(saveStatus, filePath, hash);
 
     connect(
         widget, &AudioWidget::audioItemClickedSignal,

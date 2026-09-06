@@ -170,12 +170,12 @@ bool ItemRepository::removeAudioItemHash(const QString &hash) {
     return true;
 }
 
-const AudioContainer *ItemRepository::getAudioContainer(const QString &audioHash) {
+std::optional<AudioContainer *> ItemRepository::getAudioContainer(const QString &audioHash) {
     if (audioHash.isEmpty())throw invalid_argument("Invalid hash");
 
     const QMap<QString, AudioContainer*>::iterator it = this->audioHashCollector.find(audioHash);
-    if (it == this->audioHashCollector.end())return  nullptr;
-    return it.value();
+    if (it == this->audioHashCollector.end())return  {nullptr};
+    return {it.value()};
 }
 
 void ItemRepository::showAudioContainers() const {

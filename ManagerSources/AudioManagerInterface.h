@@ -6,6 +6,7 @@
 #include <qpointer.h>
 
 #include "ItemManagerInterface.h"
+#include "../CustomWidgets/RegularButton.h"
 #include "../Util/ItemRepository.h"
 #include "../Widgets/AudioCard.h"
 
@@ -47,5 +48,10 @@ public:
      */
     [[nodiscard]] QString releaseAudioData(const QString& audioHash) const;
 
-    [[nodiscard]] bool replaceHash(const QString &oldHash, const QString &newHash) const override;
+    [[nodiscard]] bool replaceHash(const QString &oldHash, const QString &newHash) const;
+
+    void populateInfoLabels(
+        const QString& audioHash, QLabel* extCard, QLabel* fileSizeCard,
+        QLabel* timeStampCard, RegularButton* saveButton
+    ) const override;
 };
