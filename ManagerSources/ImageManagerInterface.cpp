@@ -5,9 +5,11 @@
 #include <utility>
 #include <QFileDialog>
 #include <qpointer.h>
+#include <ranges>
 
 #include "../Util/Constants.h"
 #include "ImageManagerInterface.h"
+#include "../Util/ToolKit.h"
 
 ImageManagerInterface::ImageManagerInterface() = default;
 
@@ -60,41 +62,80 @@ bool ImageManagerInterface::removeItem(const QString& hash) const {
     return this->itemRepository->removeImageItemHash(hash);
 }
 
-void ImageManagerInterface::saveActionPerformed(const QString &imageHash, const int mode) {
-    if (mode == SAVE_STATUS_FALSE)return; // why remove when already exists
+bool ImageManagerInterface::saveActionPerformed(const QString &imageHash) {
+    const std::optional<ImageContainer*> obj = this->itemRepository->getImageContainer(imageHash);
+    if (!obj.has_value())return false;
+
+    ImageContainer* container = obj.value();
 
     const QString fileName = QFileDialog::getSaveFileName(
-        this, Constants::SAVE_FILE_LABEL,QDir::homePath(),
+        this, Constants::SAVE_FILE_LABEL, QDir::homePath(),
         "Images (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*)"
         );
 
-    if (fileName.isNull())return; // User cancels saving.
+    if (fileName.isNull())return false; // User cancels saving.
 
-    const ImageContainer *container = this->itemRepository->getImageContainer(imageHash);
-    if (container == nullptr)return;
+    const std::string file = fileName.toStdString();
 
-    if(
-        const QPixmap pixmap = QPixmap(container->filePath);
-        !pixmap.save(fileName)
-    )qWarning()<<"Unable to save!!!";
+    const std::filesystem::path filePath(file);
+    const QString currentFilePath = container->filePath;
+
+    if (filePath.extension() == Constants::PNG) {
+        filesystem::rename(currentFilePath.toStdString(), file);
+    }else {
+        if (
+            const QPixmap pixmap = QPixmap(currentFilePath);
+            pixmap.isNull() || !pixmap.save(fileName)
+        )return false;
+    }
+
+    container->filePath = fileName;
+    container->saveStatus = SAVE_STATUS_TRUE;
+    container->fileSize = ToolKit::getFileSize(fileName);
+    return true;
 }
 
 QImage ImageManagerInterface::releaseImageData(const QString &imageHash) const {
     if (imageHash.isNull())throw invalid_argument("invalid hash value.");
 
-    const ImageContainer* container = this->itemRepository->getImageContainer(imageHash);
-    if (container == nullptr)return {};
+    const std::optional<ImageContainer*> container = this->itemRepository->getImageContainer(imageHash);
+    if (!container.has_value())return {};
 
-    return QImage(container->filePath);
+    return QImage(container.value()->filePath);
 }
 
 const QString &ImageManagerInterface::getImageFileName(const QString &imageHash) const {
-    const ImageContainer* ctr = this->itemRepository->getImageContainer(imageHash);
-    if (ctr == nullptr)return {};
-    return ctr->filePath;
+    const std::optional<ImageContainer*> ctr = this->itemRepository->getImageContainer(imageHash);
+    if (ctr.has_value())return ctr.value()->filePath;
+    return {};
 }
 
 bool ImageManagerInterface::replaceHash(const QString &oldHash, const QString &newHash) const {
     // This method is not required for now.
     return true;
+}
+
+void ImageManagerInterface::populateInfoLabels(
+    const QString &imageHash, QLabel * const extCard,
+    QLabel * const fileSizeCard, QLabel * const timeStampCard, RegularButton* const saveButton
+) const {
+    const std::optional<ImageContainer*> container = this->itemRepository->getImageContainer(imageHash);
+
+    if (!container.has_value())throw std::runtime_error(
+        "Unable to retrieve data from repository"
+    );
+
+    const ImageContainer* cont = container.value();
+
+    extCard->setText(cont->extension);
+
+    fileSizeCard->setText(QString::fromStdString(std::to_string(cont->fileSize) + " kb"));
+
+    timeStampCard->setText(cont->timeStamp);
+
+    if (cont->saveStatus == 0) {
+        saveButton->setIcon(
+            IconManager::confirmIcon()
+        );
+    }
 }

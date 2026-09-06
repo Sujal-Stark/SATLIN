@@ -20,6 +20,11 @@ void ImageWidget::assignImage(const QString& path, const QString& imageHash, con
             this->imageLabel, Qt::AlignmentFlag::AlignCenter
         );
     }
+
+    this->imageManagerInterface->populateInfoLabels(
+        imageHash, this->extensionCard, this->sizeCard,
+        this->timeStampCard, this->saveButton
+    );
 }
 
 void ImageWidget::assignDrivers(const shared_ptr<ImageManagerInterface>& interface) {
@@ -37,19 +42,19 @@ void ImageWidget::mousePressEvent(QMouseEvent *event){
     }
 
     // changes the label color
-    this->setStyleSheet(
+    /*this->setStyleSheet(
         "border: 1px solid white;"
         "border-radius: 5px;"
         "background-color: rgba(54, 54, 54, 150);"
-    );
+    );*/
 }
 
 void ImageWidget::mouseReleaseEvent(QMouseEvent *event) {
-    this->setStyleSheet(
+    /*this->setStyleSheet(
         "border: 0px solid white;"
         "border-radius: 5px;"
         "background-color: rgba(15, 14, 14, 150);"
-    );
+    );*/
 }
 
 void ImageWidget::deleteButtonClicked() {
@@ -65,11 +70,17 @@ void ImageWidget::deleteButtonClicked() {
     this->deleteLater(); // self-destruction of widget
 }
 
-void ImageWidget::saveButtonClicked() {;
-    this->imageManagerInterface->saveActionPerformed(
-        this->imageLabel->property(Constants::SHA_STRING_KEY).toString(),
-        this->imageLabel->property(Constants::MODE).toInt()
-    );
+void ImageWidget::saveButtonClicked() {
+    if (imageLabel->property(Constants::MODE) == 0) return;
+
+    if(
+        QString hash = this->imageLabel->property(Constants::SHA_STRING_KEY).toString(); this->imageManagerInterface->saveActionPerformed(hash)
+    ) {
+        this->imageLabel->setProperty(Constants::MODE, 0);
+        this->imageManagerInterface->populateInfoLabels(
+            hash, this->extensionCard, this->sizeCard, this->timeStampCard, this->saveButton
+        );
+    }
 }
 
 void ImageWidget::editButtonClicked() {

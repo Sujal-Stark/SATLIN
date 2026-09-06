@@ -8,6 +8,7 @@
 #include <stdexcept>
 
 #include "ItemManagerInterface.h"
+#include "../CustomWidgets/RegularButton.h"
 #include "../Util/ItemRepository.h"
 
 using namespace std;
@@ -62,7 +63,7 @@ public:
      */
     [[nodiscard]] bool removeItem(const QString& hash) const override;
 
-    [[nodiscard]] bool replaceHash(const QString &oldHash, const QString &newHash) const override;
+    [[nodiscard]] bool replaceHash(const QString &oldHash, const QString &newHash) const;
 
     /**
      * @brief After checking validity of hash value this method returns a raw pointer of
@@ -77,13 +78,18 @@ public:
      * and saved using QPixmap save method. If the image is already saved
      * in system then save operation isn't performed, Even if request comes.
      * @param imageHash Hexadecimal hash value of Image File.
-     * @param mode expresses Save Status. Either saved by Satlin
      */
-    void saveActionPerformed(const QString& imageHash, int mode);
+    bool saveActionPerformed(const QString& imageHash);
 
     /**
      * @brief Return's the file address associated with imageHash.
      * @param imageHash hexadecimal hash value of ImageObject.
      */
     [[nodiscard]] const QString& getImageFileName(const QString& imageHash) const;
+
+    void populateInfoLabels(
+        const QString &imageHash, QLabel* extCard,
+        QLabel* fileSizeCard, QLabel* timeStampCard,
+        RegularButton* saveButton
+    ) const override;
 };
