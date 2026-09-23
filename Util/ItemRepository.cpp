@@ -6,10 +6,33 @@
 
 #include <iostream>
 #include <QDebug>
+#include <QStandardPaths>
 
 #include "ToolKit.h"
 
-ItemRepository::ItemRepository() = default;
+
+#define SQLITE_USE 0
+
+ItemRepository::ItemRepository() {
+    this->dbFilePath = new std::string(
+        QStandardPaths::writableLocation(QStandardPaths::AppDataLocation).toStdString() + "/ItemDatabase.db"
+    );
+
+    this->checker = new DatabaseConnectivityCheckerThread();
+
+    this->checker->set(
+        this->dbFilePath, this->textTblName, this->imageTblName,
+        this->videoTblName, this->audioTblName
+    );
+
+
+    connect(
+        this->checker, &DatabaseConnectivityCheckerThread::executionCompleted,
+        this, &ItemRepository::checkExecutionCompletion
+    );
+
+    this->checker->start();
+}
 
 ItemRepository::~ItemRepository() {
     // TEXT
@@ -28,6 +51,7 @@ bool ItemRepository::addNewTextItemHash(
     const QString& text, const int saveStatus, const qint32 size,
     const QString& ext, const QString& timeStamp, const QString& textHash
 ) {
+
     if (textHash.isNull())return  false;
     if (this->textHashCollector.contains(textHash)) return false;
 
@@ -36,6 +60,7 @@ bool ItemRepository::addNewTextItemHash(
             text, saveStatus, size, ext, timeStamp
         )
     );
+
     return true;
 }
 
@@ -93,26 +118,31 @@ bool ItemRepository::addNewImageItem(
     if (imageHash.isEmpty() || filePath.isEmpty() || extension.isEmpty()) return false;
     if (saveStatus > 1 || saveStatus < 0)return  false;
     if (timeStamp.isEmpty())return false;
+    const qint32 sizeOfImage = ToolKit::getFileSize(filePath);
+
+    addItemToDatabase(*this->imageTblName, imageHash, filePath, sizeOfImage, saveStatus, extension, timeStamp);
 
     if (this->imageHashExists(imageHash))return false;
 
-    const qint32 sizeOfImage = ToolKit::getFileSize(filePath);
-    
     this->imageHashCollector.insert(
         imageHash, new ImageContainer(
-            saveStatus, sizeOfImage, filePath, extension, timeStamp
+            filePath, sizeOfImage, saveStatus, extension, timeStamp
         )
     );
 
+    std::optional<ImageContainer*> cont = getImageContainer(imageHash);
     return true;
 }
 
 bool ItemRepository::imageHashExists(const QString& imageHash) {
+    qDebug() << this->doesHashExists(*this->imageTblName, imageHash.toStdString());
     const QMap<QString, ImageContainer*>::iterator it = this->imageHashCollector.find(imageHash);
+
     return it != this->imageHashCollector.end();
 }
 
 bool ItemRepository::removeImageItemHash(const QString &imageHash) {
+
     const QMap<QString, ImageContainer*>::iterator it = this->imageHashCollector.find(imageHash);
     if (it == this->imageHashCollector.end())return false;
     delete it.value();
@@ -123,10 +153,30 @@ bool ItemRepository::removeImageItemHash(const QString &imageHash) {
 std::optional<ImageContainer*> ItemRepository::getImageContainer(const QString& imageHash) {
     if (imageHash.isEmpty())return {nullptr};
 
-    const QMap<QString, ImageContainer*>::iterator it = this->imageHashCollector.find(imageHash);
-    if (it == this->imageHashCollector.end())return {nullptr};
+    this->openDatabase(SQLITE_OPEN_READONLY);
 
-    return {it.value()};
+    const std::string query = "SELECT * FROM " + *this->imageTblName +
+        " WHERE Hash = '" + imageHash.toStdString()  + "';";
+
+    sqlite3_stmt* statement = nullptr;
+
+    if (sqlite3_prepare_v2(this->dbPointer, query.c_str(), -1, &statement, nullptr) != SQLITE_OK) {
+        return {nullptr};
+    }
+
+    if (sqlite3_step(statement) != SQLITE_ROW) return {nullptr};
+
+    ImageContainer* container = new ImageContainer(
+        QString(reinterpret_cast<const char *>(sqlite3_column_text(statement, 1))),
+        sqlite3_column_int(statement, 2),
+        sqlite3_column_int(statement, 3),
+        QString(reinterpret_cast<const char *>(sqlite3_column_text(statement, 4))),
+        QString(reinterpret_cast<const char *>(sqlite3_column_text(statement, 5)))
+    );
+
+    sqlite3_close(this->dbPointer);
+
+    return {container};
 }
 
 void ItemRepository::showImageContainer() const {
@@ -184,4 +234,90 @@ void ItemRepository::showAudioContainers() const {
     for (const QString& it : this->audioHashCollector.keys()) {
         qDebug()<<"Keys: "<<it;
     }
+}
+
+bool ItemRepository::openDatabase(const int flags) {
+    return sqlite3_open_v2(this->dbFilePath->c_str(), &this->dbPointer, flags, nullptr) == SQLITE_OK;
+}
+
+bool ItemRepository::addItemToDatabase(
+    const std::string &tblName, const QString &hash, const QString &path,
+    const qint32 size, const int status, const QString &ext, const QString &timeStamp
+) {
+    if (!this->openDatabase(SQLITE_OPEN_READWRITE))throw std::runtime_error(
+        std::string("Unable to open DB ") + sqlite3_errmsg(this->dbPointer)
+    );
+
+    const std::string query = "INSERT INTO " + tblName +
+        "(Hash, FilePath, FileSize, SaveStat, Ext, TimeStamp) " +
+            "VALUES( '" + hash.toStdString() + "', '" + path.toStdString() + "', " + std::to_string(size) + ", " +
+                std::to_string(status) +  ", '" + ext.toStdString() + "', '" + timeStamp.toStdString() + "' );";
+
+    char* errorMessage = nullptr;
+
+    if (
+        sqlite3_exec(this->dbPointer, query.c_str(), nullptr, nullptr, &errorMessage) != SQLITE_OK
+    ) throw std::runtime_error(
+        std::string("Unable to enter clipboard item ") + sqlite3_errmsg(this->dbPointer)
+    );
+
+    sqlite3_close(this->dbPointer);
+
+    return true;
+}
+
+bool ItemRepository::doesHashExists(const std::string &tblName, const std::string &hash) {
+    if (tblName.empty() || hash.empty())throw std::runtime_error("Invalid arguments!!");
+
+    if (!this->openDatabase(SQLITE_OPEN_READWRITE)) throw std::runtime_error(
+        std::string("Unable to open DB, ") + sqlite3_errmsg(this->dbPointer)
+    );
+
+    const std::string query = std::string("SELECT COUNT(*) FROM ") + tblName +
+        " WHERE Hash = '" + hash + "';";
+
+    sqlite3_stmt* statement;
+
+    if (
+        sqlite3_prepare_v2(this->dbPointer, query.c_str(), -1, &statement, nullptr) != SQLITE_OK
+    )throw std::runtime_error("Data retrieval process failed!!");
+
+    int count = 0;
+
+    if (sqlite3_step(statement) == SQLITE_ROW)count = sqlite3_value_int(sqlite3_column_value(statement, 0));
+    else throw std::runtime_error("Data retrieval process failed!!");
+
+    sqlite3_finalize(statement);
+    sqlite3_close(this->dbPointer);
+
+    return count == 1;
+}
+
+bool ItemRepository::removeItemFromDB(const std::string &tblName, const std::string &hash) {
+    if (hash.empty())throw std::runtime_error("Invalid Hash argument!!");
+
+    if (!this->openDatabase(SQLITE_OPEN_READWRITE)) throw std::runtime_error(
+        std::string("Unable to open Db ") + sqlite3_errmsg(this->dbPointer)
+    );
+
+    const std::string query = "DELETE FROM " + tblName + " WHERE Hash = '" + hash + "';";
+
+    char* errorMessage;
+
+    const bool out = sqlite3_exec(
+        this->dbPointer, query.c_str(), nullptr, nullptr, &errorMessage
+    ) == SQLITE_OK;
+
+    sqlite3_close(this->dbPointer);
+
+    return out;
+}
+
+void ItemRepository::checkExecutionCompletion(void *db) {
+    if (db == nullptr) throw std::runtime_error("Database is not created/found!!");
+    this->dbPointer = static_cast<sqlite3*>(db);
+
+    delete checker;
+
+    checker = nullptr;
 }

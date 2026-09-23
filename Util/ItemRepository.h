@@ -8,12 +8,26 @@
 #include <qscopedpointer.h>
 #include <QString>
 #include <QSet>
+#include <sqlite3.h>
 
+#include "DatabaseConnectivityCheckerThread.h"
 #include "DataModels.h"
 
 using namespace std;
 
-class ItemRepository {
+class ItemRepository : public QObject{
+    Q_OBJECT
+
+    sqlite3* dbPointer = nullptr;
+
+    std::string* dbFilePath = nullptr;
+    std::string* textTblName = new std::string("TextTable");
+    std::string* imageTblName = new std::string("ImageTable");
+    std::string* videoTblName = new std::string("VideoTable");
+    std::string* audioTblName = new std::string("AudioTable");
+
+    DatabaseConnectivityCheckerThread* checker = nullptr;
+
     /**
      * Stores The TextItem's Hash value for redundancy checking.
      */
@@ -32,6 +46,19 @@ class ItemRepository {
      * The metadata used: saveStatus, fileSize, filePath, extension, timeStamp.
      */
     QMap<QString, AudioContainer*> audioHashCollector;
+
+    void checkExecutionCompletion(void* db); // slot
+
+    bool openDatabase(int flags);
+
+    bool addItemToDatabase(
+        const std::string& tblName, const QString& hash, const QString& path,
+        qint32 size, int status, const QString& ext, const QString& timeStamp
+    );
+
+    bool doesHashExists(const std::string& tblName, const std::string& hash);
+
+    bool removeItemFromDB(const std::string& tblName, const std::string& hash);
 
 public:
     ItemRepository();

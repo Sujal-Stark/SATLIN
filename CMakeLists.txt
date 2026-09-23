@@ -10,6 +10,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Multimedia)
+find_package(SQLite3 REQUIRED)
 
 set(UI_SOURCES
         Ui/MasterWindow.cpp
@@ -27,6 +28,14 @@ set(WIDGET_SOURCES
         Widgets/ItemWidget.h
         Widgets/EmojiWidget.cpp
         Widgets/EmojiWidget.h
+        Widgets/ImageWidget.cpp
+        Widgets/ImageWidget.h
+        Widgets/AudioWidget.cpp
+        Widgets/AudioWidget.h
+        Widgets/AudioCard.cpp
+        Widgets/AudioCard.h
+        Widgets/TextWidget.cpp
+        Widgets/TextWidget.h
 )
 
 set(MANAGER_SOURCES
@@ -36,6 +45,10 @@ set(MANAGER_SOURCES
         ManagerSources/ImageManagerInterface.h
         ManagerSources/IconManager.cpp
         ManagerSources/IconManager.h
+        ManagerSources/AudioManagerInterface.cpp
+        ManagerSources/AudioManagerInterface.h
+        ManagerSources/ItemManagerInterface.cpp
+        ManagerSources/ItemManagerInterface.h
 )
 
 set(UTIL_SOURCES
@@ -44,26 +57,16 @@ set(UTIL_SOURCES
         Util/Constants.h
         Util/MimeDataAnalyzer.cpp
         Util/MimeDataAnalyzer.h
-        Widgets/ImageWidget.cpp
-        Widgets/ImageWidget.h
         Util/HashGenerator.cpp
         Util/HashGenerator.h
         Util/ItemRepository.cpp
         Util/ItemRepository.h
         Util/DataModels.h
-        ManagerSources/AudioManagerInterface.cpp
-        ManagerSources/AudioManagerInterface.h
-        Widgets/AudioWidget.cpp
-        Widgets/AudioWidget.h
-        Widgets/AudioCard.cpp
-        Widgets/AudioCard.h
-        Widgets/TextWidget.cpp
-        Widgets/TextWidget.h
-        ManagerSources/ItemManagerInterface.cpp
-        ManagerSources/ItemManagerInterface.h
         CustomWidgets/RegularButton.cpp
         CustomWidgets/RegularButton.h
         Util/ToolKit.h
+        Util/DatabaseConnectivityCheckerThread.cpp
+        Util/DatabaseConnectivityCheckerThread.h
 )
 
 add_executable(Satlin
@@ -80,7 +83,11 @@ target_link_libraries(Satlin PRIVATE
         Qt6::Gui
         Qt6::Widgets
         Qt6::Multimedia
+        SQLite::SQLite3
 )
+
+# Ensures include paths are correctly registered across all OS/package managers
+target_include_directories(Satlin PRIVATE ${SQLite3_INCLUDE_DIRS})
 
 source_group("UI" FILES ${UI_SOURCES})
 source_group("Widgets" FILES ${WIDGET_SOURCES})
