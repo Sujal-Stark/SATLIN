@@ -66,7 +66,9 @@ bool ImageManagerInterface::saveActionPerformed(const QString &imageHash) {
     const std::optional<ImageContainer*> obj = this->itemRepository->getImageContainer(imageHash);
     if (!obj.has_value())return false;
 
-    ImageContainer* container = obj.value();
+    const ImageContainer* container = obj.value();
+    const QString currentFilePath = QString(container->filePath);
+    delete container;
 
     const QString fileName = QFileDialog::getSaveFileName(
         this, Constants::SAVE_FILE_LABEL, QDir::homePath(),
@@ -78,7 +80,7 @@ bool ImageManagerInterface::saveActionPerformed(const QString &imageHash) {
     const std::string file = fileName.toStdString();
 
     const std::filesystem::path filePath(file);
-    const QString currentFilePath = container->filePath;
+
 
     if (filePath.extension() == Constants::PNG) {
         filesystem::rename(currentFilePath.toStdString(), file);
@@ -89,10 +91,12 @@ bool ImageManagerInterface::saveActionPerformed(const QString &imageHash) {
         )return false;
     }
 
-    container->filePath = fileName;
-    container->saveStatus = SAVE_STATUS_TRUE;
-    container->fileSize = ToolKit::getFileSize(fileName);
-    return true;
+    const bool output = this->itemRepository->updateImageMetaInfo(
+        imageHash, fileName, QString::fromStdString(filePath.extension()),
+        ToolKit::getFileSize(fileName), SAVE_STATUS_TRUE,  nullptr
+    );
+
+    return output;
 }
 
 QImage ImageManagerInterface::releaseImageData(const QString &imageHash) const {
@@ -101,12 +105,22 @@ QImage ImageManagerInterface::releaseImageData(const QString &imageHash) const {
     const std::optional<ImageContainer*> container = this->itemRepository->getImageContainer(imageHash);
     if (!container.has_value())return {};
 
-    return QImage(container.value()->filePath);
+    const ImageContainer* cont = container.value();
+    QImage img = QImage(cont->filePath);
+
+    delete cont;
+
+    return std::move(img);
 }
 
-const QString &ImageManagerInterface::getImageFileName(const QString &imageHash) const {
+const QString* ImageManagerInterface::getImageFileName(const QString &imageHash) const {
     const std::optional<ImageContainer*> ctr = this->itemRepository->getImageContainer(imageHash);
-    if (ctr.has_value())return ctr.value()->filePath;
+    if (ctr.has_value()) {
+        const ImageContainer* container = ctr.value();
+        const QString* output = new QString(container->filePath);
+        delete container;
+        return output;
+    }
     return {};
 }
 
@@ -119,13 +133,13 @@ void ImageManagerInterface::populateInfoLabels(
     const QString &imageHash, QLabel * const extCard,
     QLabel * const fileSizeCard, QLabel * const timeStampCard, RegularButton* const saveButton
 ) const {
-    const std::optional<ImageContainer*> container = this->itemRepository->getImageContainer(imageHash);
+    const std::optional<ImageContainer*> it = this->itemRepository->getImageContainer(imageHash);
 
-    if (!container.has_value())throw std::runtime_error(
+    if (!it.has_value())throw std::runtime_error(
         "Unable to retrieve data from repository"
     );
 
-    const ImageContainer* cont = container.value();
+    const ImageContainer* cont = it.value();
 
     extCard->setText(cont->extension);
 
@@ -133,9 +147,11 @@ void ImageManagerInterface::populateInfoLabels(
 
     timeStampCard->setText(cont->timeStamp);
 
-    if (cont->saveStatus == 0) {
+    if (cont->saveStatus == SAVE_STATUS_TRUE) {
         saveButton->setIcon(
             IconManager::confirmIcon()
         );
     }
+
+    delete cont;
 }

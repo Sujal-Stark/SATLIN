@@ -36,8 +36,8 @@ protected:
     void establishConnections() override;
 
 public:
-    static constexpr int SAVE_STATUS_TRUE = 1;
-    static constexpr int SAVE_STATUS_FALSE = 0;
+    static constexpr int SAVE_STATUS_TRUE = 0;
+    static constexpr int SAVE_STATUS_FALSE = 1;
 
     explicit ImageManagerInterface();
 
@@ -85,7 +85,7 @@ public:
      * @brief Return's the file address associated with imageHash.
      * @param imageHash hexadecimal hash value of ImageObject.
      */
-    [[nodiscard]] const QString& getImageFileName(const QString& imageHash) const;
+    [[nodiscard]] const QString* getImageFileName(const QString& imageHash) const;
 
     void populateInfoLabels(
         const QString &imageHash, QLabel* extCard,

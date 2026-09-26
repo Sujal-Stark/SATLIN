@@ -59,13 +59,15 @@ void ImageWidget::mouseReleaseEvent(QMouseEvent *event) {
 
 void ImageWidget::deleteButtonClicked() {
     const QString hash = this->imageLabel->property(Constants::SHA_STRING_KEY).toString();
+    const QString* filePath = this->imageManagerInterface->getImageFileName(hash);
     if (
-        const QString filePath = this->imageManagerInterface->getImageFileName(hash);
-        this->imageManagerInterface->removeItem(hash) && !filePath.isEmpty()
+        this->imageManagerInterface->removeItem(hash) && !filePath->isEmpty()
     )emit this->imageRemovedConfirmation(
-        hash, filePath, this->imageLabel->property(Constants::MODE).toInt()
+        hash, *filePath, this->imageLabel->property(Constants::MODE).toInt()
     );
     else qWarning()<<"Image Deletion failed";
+
+    delete filePath;
 
     this->deleteLater(); // self-destruction of widget
 }

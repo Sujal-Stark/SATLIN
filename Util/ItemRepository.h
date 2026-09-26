@@ -34,30 +34,67 @@ class ItemRepository : public QObject{
     QMap<QString, TextContainer*> textHashCollector;
 
     /**
-     * @brief Stores metadata Corresponding to image items via it's hash value.
-     * The meta used: file path(QString), extension(QString), saveStatus(int),
-     * timeStamp(QString). These metadata are wrapped inside ImageContainer
-     * data model.
-     */
-    QMap<QString, ImageContainer*> imageHashCollector;
-
-    /**
      * @brief Stores metadata corresponding to audio file via it's hash value.
      * The metadata used: saveStatus, fileSize, filePath, extension, timeStamp.
      */
     QMap<QString, AudioContainer*> audioHashCollector;
 
+    /**
+     * @brief Performs Clean up after database creation. Like Deleting the worker thread.
+     * transferring ownership of the database.
+     * @param db Pointer to sqlite3 structure.
+     */
     void checkExecutionCompletion(void* db); // slot
 
-    bool openDatabase(int flags);
+    /**
+     * @brief Open or create a sqlite3 database file in the given location, using
+     * user given modes called flags.
+     * @param flags Modes for operation defined under sqlite3.h
+     */
+    void openDatabase(int flags);
 
+    /**
+     * @brief Closes the database file in the given location. Throws a runtime error
+     * if unsuccessful.
+     */
+    void closeDB() const;
+
+    /**
+     * @brief Creates an entry in the database with the given parameters. If unsuccessful then
+     * throws runtime_error. Checking validity of external parameters isn't the responsibility of
+     * this method.
+     * @param tblName the table in which the entry will be going.
+     * @param hash the primary key of the table.
+     * @param path absolute file path of the item in system.
+     * @param size file size.
+     * @param status saved or not.
+     * @param ext the extension of the file.
+     * @param timeStamp Copy timestamp.
+     * @return on successful insertion, returns True.
+     */
     bool addItemToDatabase(
         const std::string& tblName, const QString& hash, const QString& path,
         qint32 size, int status, const QString& ext, const QString& timeStamp
     );
 
+    /**
+     * @brief For the given table name and hash value this method checks if that hash value
+     * exists in the database or not. Throws runtime_error if query fails. Checking validity
+     * of external parameters is not the responsibility of this method.
+     * @param tblName The table in which the hash will be checked
+     * @param hash the primary key for the table
+     * @return returns true if hash value is found.
+     */
     bool doesHashExists(const std::string& tblName, const std::string& hash);
 
+    /**
+     * @brief For the given table name and hash value this method removes the entry from the table.
+     * Throws runtime_error if query fails. Checking validity of the external parameter is not the
+     * responsibility of this method.
+     * @param tblName The table from which entry will be deleted.
+     * @param hash The primary key for the table
+     * @return On successful deletion returns true.
+     */
     bool removeItemFromDB(const std::string& tblName, const std::string& hash);
 
 public:
@@ -67,7 +104,7 @@ public:
      * @brief Removes All logged information about media when Application is closed.
      * to avoid temporary files after use.
      */
-    ~ItemRepository();
+    ~ItemRepository() override;
 
     // Text
     /**
@@ -126,6 +163,22 @@ public:
     );
 
     /**
+     * @brief Updates any or all the parameters that are listed. Throws Runtime arguments error
+     * if hash value is not found or empty. Pass nullptr for the fields which will remain same.
+     * @param imageHash Hexadecimal hash value of the image file
+     * @param filePath updated absolute file path of the image or nullptr
+     * @param ext updated extension of image file or nullptr
+     * @param fileSize updated file size of image file in Bytes or -1
+     * @param saveStatus updated save status of the image or -1
+     * @param timeStamp updated time stamp of the image or nullptr
+     * @return Returns true on the successful update on image file
+     */
+    [[nodiscard]] bool updateImageMetaInfo(
+        const QString& imageHash, const QString& filePath, const QString& ext,
+        int fileSize, int saveStatus, const QString& timeStamp
+    );
+
+    /**
      * @brief Check's validity of imageHash parameter. If found valid then
      * manually deletes the imageContainer(DataModels.h) structure and
      * removes the corresponding hash value.
@@ -147,10 +200,10 @@ public:
     [[nodiscard]] std::optional<ImageContainer*> getImageContainer(const QString& imageHash);
 
     /**
-     * @brief primarily used for debugging. It prints how many hash values are present
-     * inside QMap.
+     * @brief primarily used for debugging. It prints the data for all the Images that are copied
+     * by the user.
      */
-    void showImageContainer() const;
+    void showImageContainer();
 
     // AUDIO
     /**
