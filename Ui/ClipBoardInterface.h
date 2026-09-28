@@ -68,7 +68,7 @@ class ClipBoardInterface final : public QWidget{
      */
     void imageItemClickedAction(const QImage &image) const;
 
-    void handleImageItem(const QString& text, const QString& imageHash, int mode);
+    void handleImageItem(const std::string& text, const std::string& imageHash, int8_t mode);
     void imageRemovedConfirmationAction(
         const QString &imageHash, const QString& filePath, int mode
     ) const;

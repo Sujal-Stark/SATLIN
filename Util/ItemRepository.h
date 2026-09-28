@@ -73,8 +73,8 @@ class ItemRepository : public QObject{
      * @return on successful insertion, returns True.
      */
     bool addItemToDatabase(
-        const std::string& tblName, const QString& hash, const QString& path,
-        qint32 size, int status, const QString& ext, const QString& timeStamp
+        const std::string& tblName, const std::string& hash, const std::string& path,
+        int64_t size, int8_t status, const std::string& ext, const std::string& timeStamp
     );
 
     /**
@@ -158,8 +158,8 @@ public:
      * Format -> HH:MM:SS:DD:MM:YYYY
      */
     [[nodiscard]] bool addNewImageItem(
-        const QString& imageHash, const QString& filePath, const QString& extension,
-        int saveStatus, const QString& timeStamp
+        const std::string& imageHash, const std::string& filePath, const std::string& extension,
+        int8_t saveStatus, const std::string& timeStamp
     );
 
     /**
@@ -174,8 +174,8 @@ public:
      * @return Returns true on the successful update on image file
      */
     [[nodiscard]] bool updateImageMetaInfo(
-        const QString& imageHash, const QString& filePath, const QString& ext,
-        int fileSize, int saveStatus, const QString& timeStamp
+        const std::string& imageHash, const std::string& filePath, const std::string& ext,
+        int64_t fileSize, int8_t saveStatus, const std::string& timeStamp
     );
 
     /**
@@ -184,20 +184,20 @@ public:
      * removes the corresponding hash value.
      * @param imageHash Hexadecimal hash of the image file.
      */
-    [[nodiscard]] bool removeImageItemHash(const QString& imageHash);
+    [[nodiscard]] bool removeImageItemHash(const std::string& imageHash);
 
     /**
      * @brief Checks if the Given hash value exists or not in the Corresponding
      * Map Object.
      * @param imageHash Hexadecimal hash value of Image Object.
      */
-    [[nodiscard]] bool imageHashExists(const QString& imageHash);
+    [[nodiscard]] bool imageHashExists(const std::string& imageHash);
 
     /**
      * @brief Checks validity of ImageHash. If valid then returns the container pointer.
      * @param imageHash Hexadecimal hash value of Image Object.
      */
-    [[nodiscard]] std::optional<ImageContainer*> getImageContainer(const QString& imageHash);
+    [[nodiscard]] std::optional<ImageContainer*> getImageContainer(const std::string& imageHash);
 
     /**
      * @brief primarily used for debugging. It prints the data for all the Images that are copied

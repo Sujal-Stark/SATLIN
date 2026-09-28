@@ -25,7 +25,7 @@ public:
      * height as additional safety.
      * @param imagePath file path of the image.
      */
-    static QString generateImageObjectHash(const QString& imagePath);
+    static std::string generateImageObjectHash(const std::string& imagePath);
 
     /**
      * @brief generates a SHA256 hash value based some chunks from the
@@ -33,7 +33,7 @@ public:
      * height as additional safety.
      * @param imageObject Image Object.
      */
-    static QString generateImageObjectHash(const QImage& imageObject);
+    static std::string generateImageObjectHash(const QImage& imageObject);
 
     /**
      * @brief Generates a SHA256 hash value based on first mid and last chunks

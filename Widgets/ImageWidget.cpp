@@ -11,7 +11,7 @@ ImageWidget::ImageWidget() {
 }
 
 // Widget Internal operations
-void ImageWidget::assignImage(const QString& path, const QString& imageHash, const int mode) {
+void ImageWidget::assignImage(const std::string& path, const std::string& imageHash, const int8_t mode) {
     this->imageLabel = ImageManagerInterface::getImageLabel(path, imageHash, mode);
 
     if (this->imageLabel != nullptr) {
@@ -22,7 +22,7 @@ void ImageWidget::assignImage(const QString& path, const QString& imageHash, con
     }
 
     this->imageManagerInterface->populateInfoLabels(
-        imageHash, this->extensionCard, this->sizeCard,
+        imageHash.c_str(), this->extensionCard, this->sizeCard,
         this->timeStampCard, this->saveButton
     );
 }
@@ -36,7 +36,7 @@ void ImageWidget::assignDrivers(const shared_ptr<ImageManagerInterface>& interfa
 void ImageWidget::mousePressEvent(QMouseEvent *event){
     if (event->button() == Qt::MouseButton::LeftButton) {
         const QImage img = this->imageManagerInterface->releaseImageData(
-            this->imageLabel->property(Constants::SHA_STRING_KEY).toString()
+            this->imageLabel->property(Constants::SHA_STRING_KEY).toString().toStdString()
         );
         if (!img.isNull())emit this->imageItemClickedSignal(img);
     }
@@ -59,7 +59,7 @@ void ImageWidget::mouseReleaseEvent(QMouseEvent *event) {
 
 void ImageWidget::deleteButtonClicked() {
     const QString hash = this->imageLabel->property(Constants::SHA_STRING_KEY).toString();
-    const QString* filePath = this->imageManagerInterface->getImageFileName(hash);
+    const QString* filePath = this->imageManagerInterface->getImageFileName(hash.toStdString());
     if (
         this->imageManagerInterface->removeItem(hash) && !filePath->isEmpty()
     )emit this->imageRemovedConfirmation(
@@ -76,7 +76,8 @@ void ImageWidget::saveButtonClicked() {
     if (imageLabel->property(Constants::MODE) == 0) return;
 
     if(
-        QString hash = this->imageLabel->property(Constants::SHA_STRING_KEY).toString(); this->imageManagerInterface->saveActionPerformed(hash)
+        const QString hash = this->imageLabel->property(Constants::SHA_STRING_KEY).toString();
+        this->imageManagerInterface->saveActionPerformed(hash.toStdString())
     ) {
         this->imageLabel->setProperty(Constants::MODE, 0);
         this->imageManagerInterface->populateInfoLabels(

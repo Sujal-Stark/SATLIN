@@ -44,7 +44,7 @@ void MimeDataAnalyzer::analyzeMimeObject(const QMimeData& mime) {
                 const qint32 size = text.size() * sizeof(char);
                 this->itemRepository->addNewTextItemHash(
                     text, 1, size, Constants::TXT,
-                    timeStampReadable(),  currHash
+                    timeStampReadable().data(),  currHash
                 ) // 0 -> saved 1 -> unsaved.
             )emit textReleaseSignal(text, currHash);
         }
@@ -54,15 +54,15 @@ void MimeDataAnalyzer::analyzeMimeObject(const QMimeData& mime) {
         const QImage image = convertToQImage(mime);
         if(image.isNull())return;
 
-        const QString imageHash = HashGenerator::generateImageObjectHash(image);
+        const std::string imageHash = HashGenerator::generateImageObjectHash(image);
         if (this->itemRepository->imageHashExists(imageHash))return;
 
-        const QString fileName = saveImageFile(image);
-        if (fileName.isNull())return;
+        const std::string fileName = saveImageFile(image);
+        if (fileName.empty())return;
 
         if (
             this->itemRepository->addNewImageItem(
-                imageHash, fileName, QString::fromStdString(Constants::PNG),
+                imageHash, fileName, Constants::PNG,
                 1, timeStampReadable()
             )
         )emit imageFilePathReleaseSignal(fileName, imageHash, 1);
@@ -95,13 +95,11 @@ bool MimeDataAnalyzer::isImageFile(string ext) {
     || ext == Constants::PNG || ext == Constants::WEBP || ext == Constants::TIFF;
 }
 
-QString MimeDataAnalyzer::saveImageFile(const QImage& imageData) const {
-    QString fileName = QString::fromStdString(
-            QStandardPaths::writableLocation(QStandardPaths::AppDataLocation).toStdString()
-            + this->TEMP_IMAGE_PATH + "/IMAGE_" + to_string(timeStamp()) + Constants::PNG
-        );
-    if(!imageData.save(fileName))throw runtime_error("Unable to store Image");
-    return fileName;
+std::string MimeDataAnalyzer::saveImageFile(const QImage& imageData) const {
+    std::string fileName = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation).toStdString()
+    + this->TEMP_IMAGE_PATH + "/IMAGE_" + to_string(timeStamp()) + Constants::PNG;
+    if(!imageData.save(fileName.c_str()))throw runtime_error("Unable to store Image");
+    return std::move(fileName);
 }
 
 bool MimeDataAnalyzer::deleteImageFile(const QString &filePath) {
@@ -152,11 +150,11 @@ bool MimeDataAnalyzer::analyzeText(const QString &textInput) {
 
             if (isImageFile(ext)) {
                 if (
-                    QString imageHash = HashGenerator::generateImageObjectHash(filePath);
+                    const std::string imageHash = HashGenerator::generateImageObjectHash(line);
                     this->itemRepository->addNewImageItem(
-                        imageHash, filePath, ext.data(), 0, timeStampReadable()
+                        imageHash, line, ext.data(), 0, timeStampReadable()
                     )
-                )emit imageFilePathReleaseSignal(filePath, imageHash, 0);
+                )emit imageFilePathReleaseSignal(line, imageHash, 0);
             }
 
             else if (isVideoFile(ext)) {
@@ -168,14 +166,14 @@ bool MimeDataAnalyzer::analyzeText(const QString &textInput) {
             else if (isAudioFile(ext)) {
                 QString audioHash = HashGenerator::generateAudioObjectHash(filePath);
                 const qint32 fileSize = ToolKit::getFileSize(filePath);
-                QString timeStamp = timeStampReadable();
+                std::string timeStamp = timeStampReadable();
                 if (
                     QString extension = ext.data();
                     this->itemRepository->addNewAudioItem(
-                        0, fileSize, filePath, extension, timeStamp, audioHash
+                        0, fileSize, filePath, extension, timeStamp.c_str(), audioHash
                     )
                 )emit audioFilePathReleaseSignal(
-                    0, fileSize, filePath, extension, timeStamp, audioHash
+                    0, fileSize, filePath, extension, timeStamp.c_str(), audioHash
                 );
             }
 
@@ -218,7 +216,7 @@ long long MimeDataAnalyzer::timeStamp() {
     ).count();
 }
 
-QString MimeDataAnalyzer::timeStampReadable() {
+std::string MimeDataAnalyzer::timeStampReadable() {
     const time_t currentTime = chrono::system_clock::to_time_t(
         chrono::system_clock::now()
     );
@@ -227,5 +225,5 @@ QString MimeDataAnalyzer::timeStampReadable() {
     const tm *stamp = localtime(&currentTime);
     oss<<put_time(stamp, "%H:%M:%S %D");
 
-    return QString::fromStdString(oss.str());
+    return oss.str();
 }

@@ -6,6 +6,7 @@
 #include <QCryptographicHash>
 #include <QFile>
 #include <QFileInfo>
+#include <format>
 
 QString HashGenerator::generateTextHash(const QString &text) {
     if (text.isNull())return nullptr;
@@ -23,11 +24,11 @@ QString HashGenerator::generateTextHash(const string &text) {
     ).toHex();
 }
 
-QString HashGenerator::generateImageObjectHash(const QString& imagePath) {
-    return generateImageObjectHash(QImage(imagePath));
+std::string HashGenerator::generateImageObjectHash(const std::string& imagePath) {
+    return generateImageObjectHash(QImage(imagePath.c_str()));
 }
 
-QString HashGenerator::generateImageObjectHash(const QImage &imageObject) {
+std::string HashGenerator::generateImageObjectHash(const QImage &imageObject) {
     const char* bits = reinterpret_cast<const char*>(imageObject.bits());
     const qsizetype size = imageObject.sizeInBytes();
 
@@ -42,8 +43,9 @@ QString HashGenerator::generateImageObjectHash(const QImage &imageObject) {
         chunks, QCryptographicHash::Sha256
     ).toHex();
 
-    return QString("%1_%2_%3_%4").arg(imageObject.width())
-    .arg(imageObject.height()).arg(size).arg(partialHash);
+    return std::format(
+        "{}_{}_{}_{}", imageObject.width(), imageObject.height(), size, partialHash.toStdString()
+    );
 }
 
 

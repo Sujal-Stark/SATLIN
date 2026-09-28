@@ -62,7 +62,7 @@ public:
      * the image and create imageLabel from it. At the end assign the
      * label in parent Widget.
      */
-    void assignImage(const QString& path, const QString& imageHash, int mode);
+    void assignImage(const std::string& path, const std::string& imageHash, int8_t mode);
 
     /**
      * @brief Receives Drivers (ImageManagerInterface) from ClipBoardInterface.

@@ -136,7 +136,7 @@ void ClipBoardInterface::handleTextItem(const QString& text, const QString& hash
     this->showTextItemOnScreen(textWidget);
 }
 
-void ClipBoardInterface::handleImageItem(const QString& text, const QString& imageHash, const int mode) {
+void ClipBoardInterface::handleImageItem(const std::string& text, const std::string& imageHash, const int8_t mode) {
     auto *imageWidget = new ImageWidget();
     imageWidget->assignDrivers(this->imageManagerInterface);
 

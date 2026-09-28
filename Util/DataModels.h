@@ -37,11 +37,11 @@ inline QDebug operator<<(QDebug debug, const TextContainer* container) {
  * @param timeStamp Time it's copied.
  */
 struct ImageContainer {
-    QString filePath;
-    qint32 fileSize;
-    int saveStatus;
-    QString extension;
-    QString timeStamp;
+    std::string filePath;
+    long fileSize;
+    int8_t saveStatus;
+    std::string extension;
+    std::string timeStamp;
 };
 
 /**

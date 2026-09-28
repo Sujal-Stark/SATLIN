@@ -108,12 +108,12 @@ void ItemRepository::showTextContainer() const {
 
 // IMAGE
 bool ItemRepository::addNewImageItem(
-    const QString &imageHash, const QString &filePath, const QString &extension,
-    const int saveStatus, const QString &timeStamp
+    const std::string& imageHash, const std::string& filePath, const std::string& extension,
+    const int8_t saveStatus, const std::string& timeStamp
 ) {
-    if (imageHash.isEmpty() || filePath.isEmpty() || extension.isEmpty()) return false;
+    if (imageHash.empty() || filePath.empty() || extension.empty()) return false;
     if (saveStatus > 1 || saveStatus < 0)return  false;
-    if (timeStamp.isEmpty())return false;
+    if (timeStamp.empty())return false;
     const qint32 sizeOfImage = ToolKit::getFileSize(filePath);
 
     if (this->imageHashExists(imageHash))return false;
@@ -124,10 +124,10 @@ bool ItemRepository::addNewImageItem(
 }
 
 bool ItemRepository::updateImageMetaInfo(
-    const QString& imageHash, const QString& filePath, const QString& ext,
-    int fileSize, int saveStatus, const QString& timeStamp
+    const std::string& imageHash, const std::string& filePath, const std::string& ext,
+    int64_t fileSize, int8_t saveStatus, const std::string& timeStamp
 ) {
-    if (imageHash == nullptr)throw std::runtime_error("Invalid hash value is given!!!");
+    if (imageHash.empty())throw std::runtime_error("Invalid hash value is given!!!");
 
     const std::optional<ImageContainer*> it = this->getImageContainer(imageHash);
 
@@ -135,20 +135,18 @@ bool ItemRepository::updateImageMetaInfo(
 
     const ImageContainer* container = it.value();
 
-    QString path = nullptr, extension = nullptr, stamp = nullptr;
-
-    path = filePath != nullptr? filePath : container->filePath;
-    extension = ext != nullptr? ext : container->extension;
+    const std::string& path = filePath.empty()? filePath : container->filePath;
+    const std::string& extension = ext.empty()? ext : container->extension;
     if (fileSize == -1)fileSize = container->fileSize;
     if (saveStatus == -1) saveStatus = container->saveStatus;
-    stamp = timeStamp != nullptr? timeStamp : container->timeStamp;
+    const std::string& stamp = timeStamp.empty()? timeStamp : container->timeStamp;
 
     this->openDatabase(SQLITE_OPEN_READWRITE);
 
-    const std::string query = "UPDATE " + *this->imageTblName + " SET FilePath = '" + path.toStdString() + "', "
+    const std::string query = "UPDATE " + *this->imageTblName + " SET FilePath = '" + path + "', "
     + "FileSize = " + std::to_string(fileSize) + ", " + "saveStat = " + std::to_string(saveStatus) + ", "
-    + "Ext = '" + extension.toStdString() + "', " + "TimeStamp = '" + stamp.toStdString() + "' "
-    + "WHERE Hash = '" + imageHash.toStdString() + "';";
+    + "Ext = '" + extension + "', " + "TimeStamp = '" + stamp + "' "
+    + "WHERE Hash = '" + imageHash + "';";
 
     char* errorMessage = nullptr;
 
@@ -164,23 +162,23 @@ bool ItemRepository::updateImageMetaInfo(
     return true;
 }
 
-bool ItemRepository::imageHashExists(const QString& imageHash) {
-    if (imageHash.isNull()) throw std::runtime_error("Invalid Image hash!!");
-    return this->doesHashExists(*this->imageTblName, imageHash.toStdString());
+bool ItemRepository::imageHashExists(const std::string& imageHash) {
+    if (imageHash.empty()) throw std::runtime_error("Invalid Image hash!!");
+    return this->doesHashExists(*this->imageTblName, imageHash);
 }
 
-bool ItemRepository::removeImageItemHash(const QString &imageHash) {
-    if (imageHash.isNull()) throw std::runtime_error("Invalid Image Hash!!");
-    return this->removeItemFromDB(*this->imageTblName, imageHash.toStdString());
+bool ItemRepository::removeImageItemHash(const std::string& imageHash) {
+    if (imageHash.empty()) throw std::runtime_error("Invalid Image Hash!!");
+    return this->removeItemFromDB(*this->imageTblName, imageHash);
 }
 
-std::optional<ImageContainer*> ItemRepository::getImageContainer(const QString& imageHash) {
-    if (imageHash.isEmpty())return {nullptr};
+std::optional<ImageContainer*> ItemRepository::getImageContainer(const std::string& imageHash) {
+    if (imageHash.empty())return {nullptr};
 
     this->openDatabase(SQLITE_OPEN_READONLY);
 
     const std::string query = "SELECT * FROM " + *this->imageTblName +
-        " WHERE Hash = '" + imageHash.toStdString()  + "';";
+        " WHERE Hash = '" + imageHash  + "';";
 
     sqlite3_stmt* statement = nullptr;
 
@@ -191,11 +189,11 @@ std::optional<ImageContainer*> ItemRepository::getImageContainer(const QString& 
     if (sqlite3_step(statement) == SQLITE_DONE) return {nullptr};
 
     ImageContainer* container = new ImageContainer(
-        QString(reinterpret_cast<const char *>(sqlite3_column_text(statement, 1))),
+        std::string(reinterpret_cast<const char *>(sqlite3_column_text(statement, 1))),
         sqlite3_column_int(statement, 2),
-        sqlite3_column_int(statement, 3),
-        QString(reinterpret_cast<const char *>(sqlite3_column_text(statement, 4))),
-        QString(reinterpret_cast<const char *>(sqlite3_column_text(statement, 5)))
+        static_cast<int8_t>(sqlite3_column_int(statement, 3)),
+        std::string(reinterpret_cast<const char *>(sqlite3_column_text(statement, 4))),
+        std::string(reinterpret_cast<const char *>(sqlite3_column_text(statement, 5)))
     );
 
     sqlite3_finalize(statement);
@@ -303,15 +301,15 @@ void ItemRepository::closeDB() const {
 
 // Internal Methods
 bool ItemRepository::addItemToDatabase(
-    const std::string &tblName, const QString &hash, const QString &path,
-    const qint32 size, const int status, const QString &ext, const QString &timeStamp
+    const std::string& tblName, const std::string& hash, const std::string& path,
+    const int64_t size, const int8_t status, const std::string& ext, const std::string& timeStamp
 ) {
     this->openDatabase(SQLITE_OPEN_READWRITE);
 
     const std::string query = "INSERT INTO " + tblName +
         "(Hash, FilePath, FileSize, SaveStat, Ext, TimeStamp) " +
-            "VALUES( '" + hash.toStdString() + "', '" + path.toStdString() + "', " + std::to_string(size) + ", " +
-                std::to_string(status) +  ", '" + ext.toStdString() + "', '" + timeStamp.toStdString() + "' );";
+            "VALUES( '" + hash + "', '" + path + "', " + std::to_string(size) + ", " +
+                std::to_string(status) +  ", '" + ext + "', '" + timeStamp + "' );";
 
     char* errorMessage = nullptr;
 
@@ -329,7 +327,7 @@ bool ItemRepository::addItemToDatabase(
 }
 
 // Internal Methods
-bool ItemRepository::doesHashExists(const std::string &tblName, const std::string &hash) {
+bool ItemRepository::doesHashExists(const std::string& tblName, const std::string& hash) {
     this->openDatabase(SQLITE_OPEN_READONLY);
 
     const std::string query = std::string("SELECT * FROM ") + tblName + " WHERE Hash = '" + hash + "';";

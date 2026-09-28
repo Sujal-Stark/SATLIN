@@ -22,7 +22,7 @@ class ImageManagerInterface : public ItemManagerInterface{
      * @param mode expresses Save Status. Either saved by Satlin
      */
     [[nodiscard]] static QPointer<QLabel> createPixmapLabel(
-        const QPixmap& pixmap, const QString& imageHash, int mode
+        const QPixmap& pixmap, const std::string& imageHash, int mode
     );
 
     /**
@@ -30,7 +30,7 @@ class ImageManagerInterface : public ItemManagerInterface{
      * are reduced to imageWidget's required size, and returns the reduced one.
      * @param filePath address of Image File.
      */
-    [[nodiscard]]static QPixmap generateThumbnail(const QString& filePath);
+    [[nodiscard]]static QPixmap generateThumbnail(const std::string& filePath);
 
 protected:
     void establishConnections() override;
@@ -52,7 +52,7 @@ public:
      * or already before.
      */
     static QPointer<QLabel> getImageLabel(
-        const QString& path, const QString& currentHash, int mode
+        const std::string& path, const std::string& currentHash, int8_t mode
     );
 
     /**
@@ -71,7 +71,7 @@ public:
      * raises invalid argument error.
      * @param imageHash Hexadecimal hash value of Image File.
      */
-    [[nodiscard]] QImage releaseImageData(const QString& imageHash) const;
+    [[nodiscard]] QImage releaseImageData(const std::string& imageHash) const;
 
     /**
      * @brief Selects directory, file name for the image to be saved.
@@ -79,13 +79,13 @@ public:
      * in system then save operation isn't performed, Even if request comes.
      * @param imageHash Hexadecimal hash value of Image File.
      */
-    bool saveActionPerformed(const QString& imageHash);
+    bool saveActionPerformed(const std::string& imageHash);
 
     /**
      * @brief Return's the file address associated with imageHash.
      * @param imageHash hexadecimal hash value of ImageObject.
      */
-    [[nodiscard]] const QString* getImageFileName(const QString& imageHash) const;
+    [[nodiscard]] const QString* getImageFileName(const std::string& imageHash) const;
 
     void populateInfoLabels(
         const QString &imageHash, QLabel* extCard,

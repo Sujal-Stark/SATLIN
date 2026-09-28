@@ -53,7 +53,7 @@ class MimeDataAnalyzer : public QWidget{
      * @brief Returns the time stamp in readable format. The Time is presented
      * as HH/MM/SS/DATE format.
      */
-    static QString timeStampReadable();
+    static std::string timeStampReadable();
 
     /**
      * @brief This method creates folders to store incoming items as files
@@ -89,7 +89,7 @@ class MimeDataAnalyzer : public QWidget{
      * Throws runtime_error if the image file is failed to be saved.
      * @param imageData QImage File to store.
      */
-    [[nodiscard]] QString saveImageFile(const QImage& imageData) const;
+    [[nodiscard]] std::string saveImageFile(const QImage& imageData) const;
 
     /**
      * @brief Checks if the given string is a valid extension of supported
@@ -115,7 +115,7 @@ class MimeDataAnalyzer : public QWidget{
     void textReleaseSignal(QString text, QString hash);
 
     // image
-    void imageFilePathReleaseSignal(QString filePath, QString imageHash, int saveStaus);
+    void imageFilePathReleaseSignal(std::string filePath, std::string imageHash, int8_t saveStaus);
 
     // video
     void videoFilePathReleaseSignal(QString text, QString ext, int saveStatus);
